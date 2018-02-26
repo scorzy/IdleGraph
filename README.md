@@ -1,4 +1,7 @@
-# Graph
+# Idle Graph
+
+## This game is in development !
+This game is still in development, not ready for production. Prestige, options and other stuff are not implemented yet. This is just a prototype.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.0.
 
