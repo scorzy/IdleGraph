@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-lg-12 col-xl-10">
+    <div class="row top flex-items-xs-middle flex-items-xs-between">
+
+      <div class="col-xs min">
+        <span id="cur">{{serv.model.cuerrency.quantity | format}}</span>
+      </div>
+
+      <div class="col-xs recap min">
+        <span>{{serv.model.perSec | format}} /s</span>
+        <br/>
+        <span>{{serv.model.tickSpeed | format}} tick /s</span>
+        <br/>
+        <span>{{serv.model.myNodes.size | format}} / {{serv.model.maxNode | format}}</span>
+      </div>
+
+      <div>
+        <div class="col-xs btn-group min2">
+          <button class="btn tickBtn" (click)="serv.model.maxAll()">Max All</button>
+          <button class="btn tickBtn" (click)="serv.model.buyTickSpeed()">Tick {{serv.model.tickSpeedCost | format}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

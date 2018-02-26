@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group">
+
+      <button class="btn btn-sm" *ngIf="node.level > 1" (click)="node.buy(ser.model)" [disabled]="!node?.canBuy(ser.model)">Buy {{node.priceBuy | format}}
+      </button>
+
+      <button class="btn btn-sm btn-success-outline" (click)="node.buyNewProducer(ser.model)" [disabled]="!node?.canBuyNewProd(ser.model)">
+        Producer {{node.priceNewProd | format}}
+      </button>
+
+      <button class="btn btn-sm btn-warning-outline" (click)="sacrificeOrOpen()" *ngIf="node.level > 2" [disabled]="!node?.canSacrifice">
+        Sacrify +{{node.sacrificeMulti | format}} %
+      </button>
+
+      <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="node.collapsible ">
+        Collapse
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+
+<clr-modal [(clrModalOpen)]="colModal ">
+  <h3 class="modal-title ">Collapse</h3>
+  <div class="modal-body ">
+    <p>Collapse will merge all producers of this, grupped per level: quantity, manual bought and sacrifice
+      bonus will be the summ. The quantity of this and all children will be set to zero.</p>
+    <div class="checkbox-inline flex-items-xs-left">
+      <input type="checkbox" id="othercheckbox" [(ngModel)]="ser.options.colAlert">
+      <label for="othercheckbox">Show again</label>
+    </div>
+  </div>
+  <div class="modal-footer ">
+    <button type="button" class="btn btn-outline" (click)="colModal=false ">Cancel</button>
+    <button type="button" class="btn btn-primary btn-danger" (click)="node.collapse(ser.model); colModal=false">Collapse</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="sacModal ">
+  <h3 class="modal-title">Sacrifice</h3>
+  <div class="modal-body">
+    <p>
+      Sacrifice will set all children to zero, with cost and bonus unchanged. You will gain a bonus for this
+      node.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="sacModal=false">Cancel</button>
+    <button type="button" class="btn btn-primary btn-danger" (click)="node.sacrifice(); sacModal=false">Collapse</button>
+  </div>
+</clr-modal>

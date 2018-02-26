@@ -1,0 +1,31 @@
+<div class="content-area">
+
+  <h1>SoftReset</h1>
+  <p>
+    Reset everything except prestige bonus and get a tickspeed boost. You need {{ser.model.softResetReq |
+    format}} node of level {{ser.model.softResetNum +1}}.
+  </p>
+  <div *ngIf="!ser.model.canSoftReset; else softReset">
+    <div class="progress">
+      <progress max="100" [value]="getSoftVal()"></progress>
+    </div>
+  </div>
+
+  <h1>Prestige</h1>
+  <p>
+    Reset everything except prestige bonus, incluting soft reset.You need {{Number.MAX_VALUE | format}} cuerrency.
+  </p>
+  <div *ngIf="!ser.model.canPrestige; else Prestige">
+    <div class="progress">
+      <progress max="100" [value]="getVal()"></progress>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #softReset>
+  <button class="btn" (click)="ser.model.doSoftRest()">Soft Reset</button>
+</ng-template>
+<ng-template #Prestige>
+  <button class="btn" (click)="ser.model.prestige()">Prestige</button>
+</ng-template>

@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div *ngIf="!!node; else noNode">
+      <h3>{{node.label}} : {{node.quantity | format}} ({{node.bought | format}})</h3>
+      <a [routerLink]="'/main/ove'" class="exit">
+        <clr-icon shape="times"></clr-icon>
+      </a>
+      <div class="line">
+        <app-node-line [node]=node></app-node-line>
+      </div>
+      <clr-tabs>
+        <clr-tab>
+          <button clrTabLink id="link1">Stats</button>
+          <clr-tab-content *clrIfActive>
+            <p>
+              Node level: {{node.level | format}}<br/>
+              <span *ngIf="node.level >1; else main">
+                This node is producing {{node.prodPerSec | format }} /s
+              </span>
+              <ng-template #main>
+                <span>
+                  This is the main cuerrency.
+                </span>
+              </ng-template>
+              <br/>
+              <span>
+                You are getting {{node.thisPerSec | format}} /s
+              </span>
+              <br/>
+              <span>
+                Sacrifice bonuss: + {{node.sacrificeBonus | format}} %
+              </span>
+            </p>
+          </clr-tab-content>
+        </clr-tab>
+        <clr-tab *ngIf="sons?.length >0">
+          <button clrTabLink id="link1">Sons</button>
+          <clr-tab-content *clrIfActive>
+            <app-node-table [nodes]="sons"></app-node-table>
+          </clr-tab-content>
+        </clr-tab>
+        <clr-tab *ngIf="node.producer?.length >0">
+          <button clrTabLink>Parents</button>
+          <clr-tab-content *clrIfActive>
+            <div class="row">
+              <div class="col-xs-12">
+                <app-node-table [nodes]="node.producer"></app-node-table>
+              </div>
+            </div>
+          </clr-tab-content>
+        </clr-tab>
+      </clr-tabs>
+    </div>
+    <ng-template #noNode>
+      <h1>Nothing Selected</h1>
+      <p>
+        Click on a node.
+      </p>
+    </ng-template>
+  </div>
+</div>

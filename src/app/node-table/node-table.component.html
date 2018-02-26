@@ -1,0 +1,21 @@
+<clr-datagrid>
+  <clr-dg-column>ID</clr-dg-column>
+  <clr-dg-column>Qta</clr-dg-column>
+  <clr-dg-column>Bonus</clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let s of nodes">
+    <clr-dg-cell>
+      <a [routerLink]="'/main/node/'+s.id">
+        {{s.label}}
+      </a>
+    </clr-dg-cell>
+    <clr-dg-cell>{{s.quantity | format}} ({{s.bought | format}})</clr-dg-cell>
+    <clr-dg-cell>{{s.bonus | format}}</clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems]="nodes.length">
+      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

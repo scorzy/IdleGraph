@@ -1,0 +1,14 @@
+:host ::ng-deep .content-area {
+    padding: 0.5rem !important;
+}
+
+:host ::ng-deep .exit {
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
+}
+
+:host ::ng-deep h1 {
+    line-height: 1.5rem;
+    margin-top: 0.5rem;
+}

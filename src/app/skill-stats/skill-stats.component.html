@@ -1,0 +1,15 @@
+<div *ngIf="owned.length > 0; else noSkills">
+
+  <ul class="list">
+    <li *ngFor="let sk of owned">
+      {{sk}}
+    </li>
+  </ul>
+
+</div>
+
+<ng-template #noSkills>
+  <p>
+    You don't have any skills!
+  </p>
+</ng-template>

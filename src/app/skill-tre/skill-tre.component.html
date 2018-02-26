@@ -1,0 +1,13 @@
+<div id="mynetwork">
+</div>
+
+<clr-modal [(clrModalOpen)]="openModal">
+  <h3 class="modal-title"></h3>
+  <div class="modal-body">
+    <p>Buy this skill ?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="openModal = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="openModal = false; serv.model.buySkill(skill);">Buy</button>
+  </div>
+</clr-modal>
