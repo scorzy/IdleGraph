@@ -13,7 +13,8 @@
           <button clrTabLink id="link1">Stats</button>
           <clr-tab-content *clrIfActive>
             <p>
-              Node level: {{node.level | format}}<br/>
+              Node level: {{node.level | format}}
+              <br/>
               <span *ngIf="node.level >1; else main">
                 This node is producing {{node.prodPerSec | format }} /s
               </span>
@@ -35,19 +36,23 @@
         </clr-tab>
         <clr-tab *ngIf="sons?.length >0">
           <button clrTabLink id="link1">Sons</button>
-          <clr-tab-content *clrIfActive>
-            <app-node-table [nodes]="sons"></app-node-table>
-          </clr-tab-content>
+          <ng-template [(clrIfActive)]="sonsActive">
+            <clr-tab-content>
+              <app-node-table [nodes]="sons"></app-node-table>
+            </clr-tab-content>
+          </ng-template>
         </clr-tab>
         <clr-tab *ngIf="node.producer?.length >0">
           <button clrTabLink>Parents</button>
-          <clr-tab-content *clrIfActive>
-            <div class="row">
-              <div class="col-xs-12">
-                <app-node-table [nodes]="node.producer"></app-node-table>
+          <ng-template [(clrIfActive)]="parentsActive">
+            <clr-tab-content>
+              <div class="row">
+                <div class="col-xs-12">
+                  <app-node-table [nodes]="node.producer"></app-node-table>
+                </div>
               </div>
-            </div>
-          </clr-tab-content>
+            </clr-tab-content>
+          </ng-template>
         </clr-tab>
       </clr-tabs>
     </div>

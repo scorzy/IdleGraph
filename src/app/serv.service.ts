@@ -3,6 +3,7 @@ import { Model } from './model/model'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/interval'
+import { EventEmitter } from '@angular/core'
 
 @Injectable()
 export class ServService {
@@ -11,6 +12,8 @@ export class ServService {
   options: Options
   last = 0
   graph: any = null
+
+  edgeEmitter: EventEmitter<string> = new EventEmitter<string>()
 
   constructor() {
     this.last = Date.now()

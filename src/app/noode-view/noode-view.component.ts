@@ -15,8 +15,12 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
   sons: Array<MyNode>
   parents: Array<MyNode>
 
+  public sonsActive = false
+  public parentsActive = false
+
   paramsSub: any
   updateSub: any
+  edgeSub: any
 
   constructor(public ser: ServService,
     private activatedRoute: ActivatedRoute,
@@ -33,11 +37,13 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
       }
     })
     this.updateSub = this.ser.model.updateEmitter.subscribe(a => this.node && this.node.reloadStats())
+    this.edgeSub = this.ser.edgeEmitter.subscribe(e => this.onEdge(e))
   }
 
   ngOnDestroy() {
     this.paramsSub.unsubscribe()
     this.updateSub.unsubscribe()
+    this.edgeSub.unsubscribe()
   }
 
   exit() {
@@ -56,6 +62,12 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
 
   buyProd() {
     this.node.buyNewProducer(this.ser.model)
+  }
+
+  onEdge(id: string) {
+    this.parentsActive = id.endsWith("-" + this.node.id)
+    this.sonsActive = id.startsWith(this.node.id + "-")
+
   }
 
 }
