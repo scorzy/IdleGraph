@@ -13,6 +13,7 @@ export class Model {
   cuerrency = new MyNode()
   tickSpeed = new Decimal(1)
   tickSpeedMulti = new Decimal(1.5)
+  totalTickSpeedMulti = new Decimal(1)
   tickSpeedCost = new Decimal(1)
   tickSpeedCostMulti = new Decimal(30)
   maxNode = 100
@@ -47,16 +48,22 @@ export class Model {
     this.skills = new vis.DataSet()
     this.skillEdges = new vis.DataSet()
 
+    const tickSpeedNum = 10
+
     this.skills = new vis.DataSet([
       new Skill(1, Type.TICK_SPEED, "", false, true),
-      new Skill(2, Type.TICK_SPEED),
-      new Skill(3, Type.TICK_SPEED)
+      new Skill(tickSpeedNum + 3, Type.TICK_SPEED_ADD)
     ])
 
     this.skillEdges = new vis.DataSet([
-      { id: 1, from: 1, to: 2 },
-      { id: 2, from: 2, to: 3 }
+      { id: tickSpeedNum + 4, from: (tickSpeedNum + 4) / 2, to: tickSpeedNum + 3 },
+      { id: tickSpeedNum + 5, from: tickSpeedNum + 1, to: 2 }
     ])
+
+    for (let n = 2; n < tickSpeedNum + 2; n++) {
+      this.skills.add(new Skill(n, Type.TICK_SPEED))
+      this.skillEdges.add({ id: n, from: n - 1, to: n })
+    }
     //#endregion
   }
 
@@ -65,6 +72,7 @@ export class Model {
     this.tickSpeedMulti = new Decimal(1.5)
     this.tickSpeedCost = new Decimal(1)
     this.tickSpeedCostMulti = new Decimal(30)
+    this.totalTickSpeedMulti = new Decimal(1)
 
     this.myNodes = new Map<string, MyNode>()
 
@@ -121,14 +129,26 @@ export class Model {
     this.edges.remove(node.id + "-" + node.product.id)
     node.producer.forEach(prod => this.edges.remove(prod.id + "-" + node.id))
   }
-
+  reloadTickSpeed() {
+    //  Base
+    this.tickSpeed = new Decimal(1)
+    //  Prestige additive
+    this.tickSpeed = this.tickSpeed.plus(this.prestigeBonus[Type.TICK_SPEED_ADD])
+    //  Soft Reset
+    this.tickSpeed = this.tickSpeed.times(Decimal.pow(2, this.softResetNum - 1))
+    //  Manual buy
+    this.tickSpeed = this.tickSpeed.times(this.totalTickSpeedMulti)
+    //  Prestige
+    this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
+  }
   buyTickSpeed() {
     if (this.cuerrency.quantity.lt(this.tickSpeedCost))
       return false
 
     this.cuerrency.quantity = this.cuerrency.quantity.minus(this.tickSpeedCost)
-    this.tickSpeed = this.tickSpeed.times(this.tickSpeedMulti)
     this.tickSpeedCost = this.tickSpeedCost.times(this.tickSpeedCostMulti)
+    this.totalTickSpeedMulti = this.totalTickSpeedMulti.plus(this.tickSpeedMulti)
+    this.reloadTickSpeed()
     return true
   }
 
@@ -165,6 +185,7 @@ export class Model {
 
     this.prestigeCurrency -= 1
     this.setSkill(skill)
+    this.reloadTickSpeed()
   }
   setSkill(skill: Skill) {
     skill.owned = true
@@ -189,7 +210,7 @@ export class Model {
     if (!this.canSoftReset) return false
     this.init()
     this.softResetNum = this.softResetNum + 1
-    this.tickSpeed = this.tickSpeed.times(Decimal.pow(2, this.softResetNum - 1))
+    this.reloadTickSpeed()
   }
   //#endregion
   //#region Save Load
@@ -198,6 +219,8 @@ export class Model {
     d.c = this.cuerrency.getSave(this)
     d.s = this.softResetNum
     d.m = this.maxNode
+    d.t = this.totalTickSpeedMulti
+    d.h = this.tickSpeedCost
     d.p = this.prestigeCurrency
     d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
     return d
@@ -205,12 +228,22 @@ export class Model {
   load(data: any) {
     this.nodes = new vis.DataSet()
     this.edges = new vis.DataSet()
-    this.cuerrency = MyNode.generate(data.c, this, null)
+    if (!!data.c)
+      this.cuerrency = MyNode.generate(data.c, this, null)
     this.cuerrency.label = "Main"
-    this.maxNode = data.m
-    this.prestigeCurrency = data.p
-    this.softResetNum = data.s
-    this.skills.get(data.o).forEach(s => this.setSkill(s))
+    if (!!data.m)
+      this.maxNode = data.m
+    if (!!data.p)
+      this.prestigeCurrency = data.p
+    if (!!data.s)
+      this.softResetNum = data.s
+    if (!!data.t)
+      this.totalTickSpeedMulti = new Decimal(data.t)
+    if (!!data.h)
+      this.tickSpeedCost = new Decimal(data.h)
+    if (!!data.o)
+      this.skills.get(data.o).forEach(s => this.setSkill(s))
+    this.reloadTickSpeed()
     this.myNodes.forEach(n => n.reloadPerSec())
   }
   //#endregion

@@ -28,9 +28,11 @@ const ownedColor = "#FEFF73"
 const noColor = "#c0c0c0"
 
 export enum Type {
-  TICK_SPEED
+  TICK_SPEED,
+  TICK_SPEED_ADD
 }
 
 export const labels = [
-  "+10%\ntick speed"
+  "+10%\ntick speed",
+  "+1 tick /s"
 ]

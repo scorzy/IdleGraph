@@ -1,3 +1,4 @@
+import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ServService } from './../serv.service'
 import { Component, OnInit, HostBinding, AfterViewInit } from '@angular/core';
 import * as vis from 'vis'
@@ -8,7 +9,7 @@ import { Skill } from '../model/skill';
   templateUrl: './skill-tre.component.html',
   styleUrls: ['./skill-tre.component.scss']
 })
-export class SkillTreComponent implements OnInit {
+export class SkillTreComponent implements OnInit, OnDestroy {
 
   container: any
   network: vis.Network
@@ -45,8 +46,7 @@ export class SkillTreComponent implements OnInit {
       }
       ).bind(this))
   }
-
-  setColors() {
-
+  ngOnDestroy(): void {
+    this.network.storePositions()
   }
 }

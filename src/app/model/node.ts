@@ -38,8 +38,8 @@ export class MyNode {
     return {
       id: this.id,
       label: this.label,
-      x: this.x,
-      y: this.y
+      // x: this.x,
+      // y: this.y
     }
   }
   reloadPerSec() {
