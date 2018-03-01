@@ -31,12 +31,16 @@ export enum Type {
   TICK_SPEED,
   TICK_SPEED_ADD,
   MAX_NODE_ADD,
-  MAX_NODE_MULTI
+  MAX_NODE_MULTI,
+  SACRIFY_MULTI,
+  SACRIFY_SPECIAL
 }
 
 export const labels = [
   "+10%\ntick speed",
   "+1 tick /s",
   "+5\nmax node",
-  "+10%\nmax node"
+  "+10%\nmax node",
+  "+10%\nsacrify",
+  "sacrify only 90%\nof nodes"
 ]

@@ -48,6 +48,7 @@ export class Model {
     this.skills = new vis.DataSet()
     this.skillEdges = new vis.DataSet()
 
+    //  Tickspeed
     const tickSpeedNum = 10
 
     this.skills = new vis.DataSet([
@@ -65,6 +66,7 @@ export class Model {
       this.skillEdges.add({ id: n, from: n - 1, to: n })
     }
 
+    //  Max node
     const maxNodeAddNum = 10
     this.skills.add(new Skill(199, Type.MAX_NODE_ADD))
     this.skillEdges.add({ id: 198, from: 1, to: 199 })
@@ -75,6 +77,18 @@ export class Model {
     this.skillEdges.add({ id: 210, from: 209, to: 199 })
     this.skills.add(new Skill(220, Type.MAX_NODE_MULTI))
     this.skillEdges.add({ id: 220, from: 200 + maxNodeAddNum / 2, to: 220 })
+
+    //  Sacrify
+    const sacrifyMultiNum = 10
+    this.skills.add(new Skill(299, Type.SACRIFY_MULTI))
+    this.skillEdges.add({ id: 298, from: 1, to: 299 })
+    for (let n = 300; n < sacrifyMultiNum + 300; n++) {
+      this.skills.add(new Skill(n, Type.SACRIFY_MULTI))
+      this.skillEdges.add({ id: n, from: n - 1, to: n })
+    }
+    this.skillEdges.add({ id: 310, from: 309, to: 299 })
+    this.skills.add(new Skill(320, Type.SACRIFY_SPECIAL))
+    this.skillEdges.add({ id: 320, from: 300 + sacrifyMultiNum / 2, to: 320 })
     //#endregion
   }
 

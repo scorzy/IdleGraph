@@ -18,9 +18,9 @@ export class NodeLineComponent implements OnInit, OnDestroy {
   constructor(public ser: ServService) { }
 
   ngOnInit() {
-    this.updateSub = this.ser.model.updateEmitter.subscribe(a => this.node && this.node.reloadSacrificeMulti())
+    this.updateSub = this.ser.model.updateEmitter.subscribe(a => this.node && this.node.reloadSacrificeMulti(this.ser.model))
     if (!!this.node)
-      this.node.reloadSacrificeMulti()
+      this.node.reloadSacrificeMulti(this.ser.model)
   }
   ngOnDestroy() {
     this.updateSub.unsubscribe()
@@ -30,7 +30,7 @@ export class NodeLineComponent implements OnInit, OnDestroy {
     if (this.ser.options.sacAlert)
       this.sacModal = true
     else
-      this.node.sacrifice()
+      this.node.sacrifice(this.ser.model)
   }
 
   collapseOrOpen() {

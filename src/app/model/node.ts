@@ -1,5 +1,6 @@
 import { Model } from './model'
 import * as Decimal from 'break_infinity.js'
+import { Type } from './skill';
 
 export class MyNode {
 
@@ -24,7 +25,7 @@ export class MyNode {
   priceBuy = new Decimal(10)
   priceNewProd = new Decimal(10)
   sacrificeMulti = new Decimal(0)
-  sacrificeBonus = new Decimal(1)
+  sacrificeBonus = new Decimal(0)
   canSacrifice = false
 
   collapsible = false
@@ -85,7 +86,7 @@ export class MyNode {
       to: producer.id,
       arrows: 'from'
     })
-    this.collapsible = true
+    this.collapsible = this.level > 2 && this.producer.length > 1
     return producer
   }
 
@@ -104,7 +105,7 @@ export class MyNode {
   }
 
   //#region Sacrifice
-  reloadSacrificeMulti(): Decimal {
+  reloadSacrificeMulti(model: Model): Decimal {
     if (this.level < 3)
       return new Decimal(0)
 
@@ -119,20 +120,24 @@ export class MyNode {
       return new Decimal(0)
 
     this.sacrificeMulti = new Decimal(bonus.ln() * (this.level) / 2)
+      .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] / 10)
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus)
     return this.sacrificeMulti
   }
-  sacrifice(): boolean {
-    if (this.sacrificeBonus.gte(this.reloadSacrificeMulti()))
+  sacrifice(model: Model): boolean {
+    if (this.sacrificeBonus.gte(this.reloadSacrificeMulti(model)))
       return false
 
     this.sacrificeBonus = this.sacrificeMulti
     let product = this.product
     while (product && product.level > 1) {
-      product.quantity = new Decimal(0)
+      if (model.prestige[Type.SACRIFY_SPECIAL] > 0)
+        product.quantity = product.quantity.times(Decimal.pow(0.9, model.prestige[Type.SACRIFY_SPECIAL]))
+      else
+        product.quantity = new Decimal(0)
       product = product.product
     }
-    this.reloadSacrificeMulti()
+    this.reloadSacrificeMulti(model)
     this.reloadPerSec()
   }
   //#endregion

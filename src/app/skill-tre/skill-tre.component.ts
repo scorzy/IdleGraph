@@ -41,7 +41,7 @@ export class SkillTreComponent implements OnInit, OnDestroy {
         const nodeId = params.nodes[0]
         this.skill = skills.get(nodeId)
 
-        if (this.skill.avaiable && !this.skill.owned)
+        if (this.skill.avaiable && !this.skill.owned && this.serv.model.prestigeCurrency >= 1)
           this.openModal = true
       }
       ).bind(this))
