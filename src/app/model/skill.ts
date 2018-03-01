@@ -29,10 +29,14 @@ const noColor = "#c0c0c0"
 
 export enum Type {
   TICK_SPEED,
-  TICK_SPEED_ADD
+  TICK_SPEED_ADD,
+  MAX_NODE_ADD,
+  MAX_NODE_MULTI
 }
 
 export const labels = [
   "+10%\ntick speed",
-  "+1 tick /s"
+  "+1 tick /s",
+  "+5\nmax node",
+  "+10%\nmax node"
 ]

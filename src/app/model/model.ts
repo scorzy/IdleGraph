@@ -64,6 +64,17 @@ export class Model {
       this.skills.add(new Skill(n, Type.TICK_SPEED))
       this.skillEdges.add({ id: n, from: n - 1, to: n })
     }
+
+    const maxNodeAddNum = 10
+    this.skills.add(new Skill(199, Type.MAX_NODE_ADD))
+    this.skillEdges.add({ id: 198, from: 1, to: 199 })
+    for (let n = 200; n < maxNodeAddNum + 200; n++) {
+      this.skills.add(new Skill(n, Type.MAX_NODE_ADD))
+      this.skillEdges.add({ id: n, from: n - 1, to: n })
+    }
+    this.skillEdges.add({ id: 210, from: 209, to: 199 })
+    this.skills.add(new Skill(220, Type.MAX_NODE_MULTI))
+    this.skillEdges.add({ id: 220, from: 200 + maxNodeAddNum / 2, to: 220 })
     //#endregion
   }
 
@@ -141,6 +152,10 @@ export class Model {
     //  Prestige
     this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
   }
+  reloadMaxNode() {
+    this.maxNode = Math.floor((100 + this.prestigeBonus[Type.MAX_NODE_ADD] * 5) *
+      (this.prestigeBonus[Type.MAX_NODE_MULTI] / 10 + 1))
+  }
   buyTickSpeed() {
     if (this.cuerrency.quantity.lt(this.tickSpeedCost))
       return false
@@ -186,6 +201,7 @@ export class Model {
     this.prestigeCurrency -= 1
     this.setSkill(skill)
     this.reloadTickSpeed()
+    this.reloadMaxNode()
   }
   setSkill(skill: Skill) {
     skill.owned = true
@@ -244,6 +260,7 @@ export class Model {
     if (!!data.o)
       this.skills.get(data.o).forEach(s => this.setSkill(s))
     this.reloadTickSpeed()
+    this.reloadMaxNode()
     this.myNodes.forEach(n => n.reloadPerSec())
   }
   //#endregion
