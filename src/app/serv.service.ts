@@ -29,11 +29,14 @@ export class ServService {
       })
 
   }
-
+  clear() {
+    localStorage.removeItem("save")
+    window.location.reload()
+  }
   save() {
     const save: any = {}
     save.m = this.model.getSave()
-    save.o = this.options
+    save.o = this.options.save()
     localStorage.setItem("save", JSON.stringify(save))
   }
   load() {
@@ -41,7 +44,10 @@ export class ServService {
     const data = JSON.parse(raw)
     this.model = null
     this.model = new Model()
+    if (!!data.o)
+      this.options.load(data.o)
     this.model.load(data.m)
+
   }
 
 }

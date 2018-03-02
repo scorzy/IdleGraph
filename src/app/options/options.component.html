@@ -1,0 +1,16 @@
+<form class="compact">
+  <section class="form-block">
+    <label>Options</label>
+    <div class="form-group">
+      <label for="aForm_3">Number format:</label>
+      <div class="select">
+        <select id="numFormat" name="numFormat" [(ngModel)]="ser.options.numFormat" (change)="reformat()">
+          <option value="T">Standard</option>
+          <option value="S">Scientific</option>
+          <option value="E">Engineering</option>
+          <option value="L">Long Scale</option>
+        </select>
+      </div>
+    </div>
+  </section>
+</form>

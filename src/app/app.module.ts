@@ -18,6 +18,8 @@ import { PrestigeComponent } from './prestige/prestige.component';
 import { SkillTreComponent } from './skill-tre/skill-tre.component';
 import { PrestigeNavComponent } from './prestige-nav/prestige-nav.component';
 import { SkillStatsComponent } from './skill-stats/skill-stats.component';
+import { OptNavComponent } from './opt-nav/opt-nav.component';
+import { OptionsComponent } from './options/options.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: "main", pathMatch: "full" },
@@ -47,7 +49,12 @@ const appRoutes: Routes = [
     ]
   },
   { path: 'pre', component: PrestigeComponent },
-  { path: 'save', component: SaveComponent }
+  {
+    path: 'opt', component: OptNavComponent, children: [
+      { path: 'save', component: SaveComponent },
+      { path: 'opt', component: OptionsComponent }
+    ]
+  }
 ];
 
 @NgModule({
@@ -65,7 +72,9 @@ const appRoutes: Routes = [
     PrestigeComponent,
     SkillTreComponent,
     PrestigeNavComponent,
-    SkillStatsComponent
+    SkillStatsComponent,
+    OptNavComponent,
+    OptionsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),

@@ -8,6 +8,8 @@ import { ServService } from '../serv.service'
 })
 export class SaveComponent implements OnInit {
 
+  clearModal = false
+
   constructor(public serv: ServService) { }
 
   ngOnInit() {

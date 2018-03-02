@@ -9,14 +9,14 @@
         skipLocationChange>
         Presige
       </a>
-      <a href="javascript://" class="nav-link nav-text" [routerLink]="'pnav'"  [routerLinkActiveOptions]="{exact: false}" [routerLinkActive]="'active'"
-        skipLocationChange>
+      <a href="javascript://" class="nav-link nav-text" [routerLink]="'pnav'" [routerLinkActiveOptions]="{exact: false}"
+        [routerLinkActive]="'active'" skipLocationChange>
         Skill
         <span class="badge badge-success" *ngIf="serv.model.prestigeCurrency > 0">{{serv.model.prestigeCurrency | format}}</span>
       </a>
     </div>
     <div class="header-actions">
-      <a href="javascript://" class="nav-link nav-icon" [routerLink]="'save'" skipLocationChange>
+      <a href="javascript://" class="nav-link nav-icon" [routerLink]="'opt/save'" skipLocationChange>
         <clr-icon shape="cog"></clr-icon>
       </a>
     </div>
