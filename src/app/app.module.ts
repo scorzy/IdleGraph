@@ -20,6 +20,17 @@ import { PrestigeNavComponent } from './prestige-nav/prestige-nav.component';
 import { SkillStatsComponent } from './skill-stats/skill-stats.component';
 import { OptNavComponent } from './opt-nav/opt-nav.component';
 import { OptionsComponent } from './options/options.component';
+import { ToastOptions, ToastModule } from 'ng2-toastr/ng2-toastr';
+import { ServService } from './serv.service';
+
+export class CustomOptions extends ToastOptions {
+  animate = 'fade'
+  dismiss = 'auto'
+  showCloseButton = true
+  newestOnTop = true
+  enableHTML = true
+  positionClass = 'toast-bottom-right'
+}
 
 const appRoutes: Routes = [
   { path: '', redirectTo: "main", pathMatch: "full" },
@@ -81,9 +92,10 @@ const appRoutes: Routes = [
     BrowserModule,
     ClarityModule,
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    ToastModule.forRoot()
   ],
-  providers: [],
+  providers: [{ provide: ToastOptions, useClass: CustomOptions }, ServService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

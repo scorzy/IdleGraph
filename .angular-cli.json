@@ -20,6 +20,7 @@
       "prefix": "app",
       "styles": [
         "../node_modules/normalize.css/normalize.css",
+        "../node_modules/ng2-toastr/bundles/ng2-toastr.min.css",
         "../node_modules/vis/dist/vis.css",
         "../node_modules/@clr/icons/clr-icons.min.css",
         "../node_modules/@clr/ui/clr-ui-dark.min.css",

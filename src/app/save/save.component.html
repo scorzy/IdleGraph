@@ -13,7 +13,16 @@
     Clear
   </button>
 </div>
-
+<h2>Export / Import Save</h2>
+<textarea name="raw" [(ngModel)]="exp" rows="3"></textarea>
+<div class="btn-group btn-primary">
+  <button class="btn btn-success" (click)="export()">
+    Export
+  </button>
+  <button class="btn" (click)="import()">
+    Import
+  </button>
+</div>
 
 <clr-modal [(clrModalOpen)]="clearModal">
     <h3 class="modal-title">Clear</h3>
