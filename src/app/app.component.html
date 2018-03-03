@@ -1,5 +1,5 @@
 <div class="main-container">
-  <header class="header header-6">
+  <header  [ngClass]="getClass()">
     <div class="header-nav">
       <a href="javascript://" class="nav-link nav-text" [routerLink]="'main'" [routerLinkActive]="'active'"
         skipLocationChange>

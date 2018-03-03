@@ -23,14 +23,19 @@
     Import
   </button>
 </div>
+<h2>Autosave Options</h2>
+<div class="toggle-switch">
+  <input type="checkbox" id="t1" [(ngModel)]="serv.options.autosaveNotification">
+  <label for="t1">Autosave Notification</label>
+</div>
 
 <clr-modal [(clrModalOpen)]="clearModal">
-    <h3 class="modal-title">Clear</h3>
-    <div class="modal-body">
-        <p>Are you sure you want to delete everything ?</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline" (click)="clearModal = false">Cancel</button>
-        <button type="button" class="btn btn-danger" (click)="this.serv.clear(); clearModal = false">Clear</button>
-    </div>
+  <h3 class="modal-title">Clear</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to delete everything ?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="clearModal = false">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="this.serv.clear(); clearModal = false">Clear</button>
+  </div>
 </clr-modal>

@@ -2,7 +2,7 @@
   <section class="form-block">
     <label>Options</label>
     <div class="form-group">
-      <label for="aForm_3">Number format:</label>
+      <label for="numFormat">Number format:</label>
       <div class="select">
         <select id="numFormat" name="numFormat" [(ngModel)]="ser.options.numFormat" (change)="reformat()">
           <option value="T">Standard</option>
@@ -12,5 +12,26 @@
         </select>
       </div>
     </div>
+
+    <div class="form-group">
+      <label for="t1">Theme:</label>
+      <div class="toggle-switch">
+        <input type="checkbox" name="t1" id="t1" [(ngModel)]="ser.options.dark" (change)="ser.setTheme()">
+        <label for="t1">Dark</label>
+      </div>
+      <div class="select">
+        <select id="head" name="head" [(ngModel)]="ser.options.header">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+        </select>
+      </div>
+    </div>
+
+
   </section>
 </form>

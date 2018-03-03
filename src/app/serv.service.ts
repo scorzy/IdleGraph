@@ -1,11 +1,12 @@
 import { Options } from './model/options'
 import { Model } from './model/model'
-import { Injectable } from '@angular/core'
+import { Injectable, Inject } from '@angular/core'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/interval'
 import { EventEmitter } from '@angular/core'
 import * as LZString from 'lz-string'
 import { ToastsManager } from 'ng2-toastr'
+import { DOCUMENT } from '@angular/common'
 
 @Injectable()
 export class ServService {
@@ -16,18 +17,33 @@ export class ServService {
   graph: any = null
 
   edgeEmitter: EventEmitter<string> = new EventEmitter<string>()
+  linkTheme: HTMLLinkElement
 
-  constructor(public toastr: ToastsManager) {
+  constructor(
+    public toastr: ToastsManager,
+    @Inject(DOCUMENT) private document: Document) {
+
     this.last = Date.now()
     this.options = new Options()
     this.model = new Model()
     this.model.formatter = this.options.formatter
 
+    this.linkTheme = this.document.createElement('link')
+    this.linkTheme.rel = "stylesheet"
+    this.linkTheme.type = "text/css"
+    this.setTheme()
+    this.document.querySelector('head').appendChild(this.linkTheme)
+
     const source = Observable
-      .interval(100).subscribe(() => {
+      .interval(200).subscribe(() => {
         const now = Date.now()
         this.model.update(now - this.last)
         this.last = now
+      })
+
+    const saveO = Observable
+      .interval(60000).subscribe(() => {
+        this.save(true)
       })
 
   }
@@ -45,12 +61,13 @@ export class ServService {
       this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Save Error")
     }
   }
-  save() {
+  save(autosave = false) {
     try {
       const save = this.getSave()
       if (!!save) {
         localStorage.setItem("save", save)
-        this.toastr.success("", "Game Saved")
+        if (!autosave || this.options.autosaveNotification)
+          this.toastr.success("", "Game Saved")
       } else
         this.toastr.error("Unknow error 1", "Save Error")
     } catch (ex) {
@@ -73,6 +90,7 @@ export class ServService {
       this.model = new Model()
       if (!!data.o)
         this.options.load(data.o)
+      this.setTheme()
       this.model.load(data.m)
       this.toastr.success("", "Game Loaded")
     } catch (ex) {
@@ -85,6 +103,11 @@ export class ServService {
     } catch (ex) {
       this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Load Error")
     }
+  }
+
+  setTheme() {
+    this.linkTheme.href = this.options.dark ?
+      "clr-ui-dark.min.css" : "clr-ui.min.css"
   }
 
 }

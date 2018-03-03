@@ -6,6 +6,9 @@ export class Options {
   colAlert = true
   sacAlert = true
   numFormat = "S"
+  autosaveNotification = false
+  dark = true
+  header = 1
 
   constructor() {
   }
@@ -21,12 +24,16 @@ export class Options {
     return {
       c: this.colAlert,
       s: this.sacAlert,
-      n: this.numFormat
+      n: this.numFormat,
+      a: this.autosaveNotification,
+      d: this.dark
     }
   }
   load(data) {
     this.colAlert = !!data.c
     this.sacAlert = !!data.s
+    this.autosaveNotification = !!data.a
+    this.dark = !!data.d
     this.numFormat = "S"
     if (!!data.n)
       this.numFormat = data.n

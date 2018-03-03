@@ -9,7 +9,17 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        "favicon.ico"
+        "favicon.ico",
+        {
+          "glob": "clr-ui.min.css",
+          "input": "../node_modules/@clr/ui/",
+          "output": "./"
+        },
+        {
+          "glob": "clr-ui-dark.min.css",
+          "input": "../node_modules/@clr/ui/",
+          "output": "./"
+        }
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -23,7 +33,6 @@
         "../node_modules/ng2-toastr/bundles/ng2-toastr.min.css",
         "../node_modules/vis/dist/vis.css",
         "../node_modules/@clr/icons/clr-icons.min.css",
-        "../node_modules/@clr/ui/clr-ui-dark.min.css",
         "styles.scss"
       ],
       "scripts": [

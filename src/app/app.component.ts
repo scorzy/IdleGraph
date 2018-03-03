@@ -14,4 +14,8 @@ export class AppComponent {
     vcr: ViewContainerRef) {
     this.toastr.setRootViewContainerRef(vcr)
   }
+
+  getClass() {
+    return "header-" + this.serv.options.header
+  }
 }
