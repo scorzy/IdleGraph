@@ -196,6 +196,8 @@ export class MyNode {
   //#region Save and Load
   getSave(model: Model): any {
     const vis = model.nodes.get(this.id)
+    if (!vis)
+      console.log(this.id)
     return {
       i: this.id,
       q: this.quantity,

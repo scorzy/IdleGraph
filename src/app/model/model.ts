@@ -149,6 +149,7 @@ export class Model {
   }
 
   remove(node: MyNode) {
+    node.product.producer = node.product.producer.filter(n => n !== node)
     this.myNodes.delete("" + node.id)
     this.nodes.remove("" + node.id)
     this.edges.remove(node.id + "-" + node.product.id)
