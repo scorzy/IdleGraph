@@ -1,3 +1,20 @@
-<p>
-  overview works!
-</p>
+<h3>Overview</h3>
+<br />
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-lg-12 col-xl-12">
+    <div class="col-xs btn-group">
+      <button class="btn btn-sm" (click)="serv.model.buyTickSpeed(true)" [disabled]="!serv.model.canBuyTickSpeed()">
+        Max Tick Speed
+      </button>
+      <button class="btn btn-sm btn-success-outline" (click)="serv.model.leafProd()">
+        Leaf Prod.
+      </button>
+      <button class="btn btn-sm btn-danger-outline" (click)="serv.model.leafSacrify()">
+        Leaf Sacrifice
+      </button>
+      <button class="btn btn-sm btn-danger-outline" (click)="serv.model.maxCollapse()">
+        Collapse Max
+      </button>
+    </div>
+  </div>
+</div>

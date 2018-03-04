@@ -1,7 +1,7 @@
 <clr-datagrid>
-  <clr-dg-column>ID</clr-dg-column>
-  <clr-dg-column>Qta</clr-dg-column>
-  <clr-dg-column>Bonus</clr-dg-column>
+  <clr-dg-column [clrDgField]="'id'">ID</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="quantityComparator">Qta</clr-dg-column>
+  <clr-dg-column [clrDgSortBy]="prodComparator">Pro /t</clr-dg-column>
 
   <clr-dg-row *clrDgItems="let s of nodes">
     <clr-dg-cell>
@@ -10,7 +10,7 @@
       </a>
     </clr-dg-cell>
     <clr-dg-cell>{{s.quantity | format}} ({{s.bought | format}})</clr-dg-cell>
-    <clr-dg-cell>{{s.bonus | format}}</clr-dg-cell>
+    <clr-dg-cell>{{s.prodPerSec | format}}</clr-dg-cell>
   </clr-dg-row>
 
   <clr-dg-footer>

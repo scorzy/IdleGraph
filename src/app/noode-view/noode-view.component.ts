@@ -4,6 +4,7 @@ import { Component, OnInit, Input, AfterViewInit, OnChanges, SimpleChanges } fro
 import { ServService } from '../serv.service'
 import { Observable } from 'rxjs/Observable';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
+import { FormatPipe } from '../format.pipe';
 
 @Component({
   selector: 'app-noode-view',
@@ -14,6 +15,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
   @Input() node: MyNode
   sons: Array<MyNode>
   parents: Array<MyNode>
+  bonus: string = ""
 
   public sonsActive = false
   public parentsActive = false
@@ -32,6 +34,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
       this.node = this.ser.model.myNodes.get("" + id)
       this.sons = new Array<MyNode>()
       if (this.node) {
+        this.bonus = new FormatPipe(this.ser).transform(this.node.getBonus())
         this.reloadSons()
         this.node.reloadStats()
       }

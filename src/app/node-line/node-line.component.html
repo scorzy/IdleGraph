@@ -46,6 +46,10 @@
       Sacrifice will set all children to zero, with cost and bonus unchanged. You will gain a bonus for this
       node.
     </p>
+    <div class="checkbox-inline flex-items-xs-left">
+        <input type="checkbox" id="othercheckbox" [(ngModel)]="ser.options.sacAlert">
+        <label for="othercheckbox">Show again</label>
+      </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="sacModal=false">Cancel</button>

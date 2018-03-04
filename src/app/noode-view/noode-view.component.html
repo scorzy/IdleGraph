@@ -16,7 +16,7 @@
               Node level: {{node.level | format}}
               <br/>
               <span *ngIf="node.level >1; else main">
-                This node is producing {{node.prodPerSec | format }} /s
+                This node is producing {{node.prodPerSec | format }} /t
               </span>
               <ng-template #main>
                 <span>
@@ -25,10 +25,14 @@
               </ng-template>
               <br/>
               <span>
-                You are getting {{node.thisPerSec | format}} /s
+                You are getting {{node.thisPerSec | format}} /t
               </span>
               <br/>
-              <span>
+              <span *ngIf="node.level >1">
+                Bought bonus: + {{bonus}} %
+              </span>
+              <br/>
+              <span *ngIf="node.level >1">
                 Sacrifice bonuss: + {{node.sacrificeBonus | format}} %
               </span>
             </p>

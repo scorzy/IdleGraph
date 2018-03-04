@@ -2,6 +2,8 @@ import { Model } from './model'
 import * as Decimal from 'break_infinity.js'
 import { Type } from './skill';
 
+const BONUS = new Decimal(0.05)
+
 export class MyNode {
 
   id = 1
@@ -9,7 +11,6 @@ export class MyNode {
 
   quantity = new Decimal(0)
   bought = new Decimal(0)
-  bonus = new Decimal(0.05)
   level = 1
 
   prodPerSec = new Decimal(1)
@@ -43,9 +44,11 @@ export class MyNode {
       // y: this.y
     }
   }
+  getBonus(): Decimal {
+    return BONUS.times(this.bought)
+  }
   reloadPerSec() {
-    this.prodPerSec = new Decimal(1).plus(this.bonus.times(this.bought))
-    this.prodPerSec = this.prodPerSec.times(this.sacrificeBonus.div(100).plus(1))
+    this.prodPerSec = this.getBonus().plus(1).times(this.sacrificeBonus.div(100).plus(1))
   }
 
   buy(model: Model): boolean {
@@ -181,6 +184,7 @@ export class MyNode {
     this.reloadNewProdPrice()
     this.reloadPriceBuy()
     this.reloadPerSec()
+    this.collapsible = this.level > 2 && this.producer.length > 1
   }
   addToList(list: Array<MyNode>): Array<MyNode> {
     list.push(this)

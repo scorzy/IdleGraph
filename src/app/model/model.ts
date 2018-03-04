@@ -16,9 +16,9 @@ export class Model {
   cuerrency = new MyNode()
   tickSpeed = new Decimal(1)
   tickSpeedMulti = INIT_TICK_MULTI
-  totalTickSpeedMulti = new Decimal(1)
-  tickSpeedCost = INIT_TICK_COST
   tickSpeedCostMulti = new Decimal(30)
+  tickSpeedOwned = new Decimal(0)
+  tickSpeedCost = INIT_TICK_COST
   maxNode = 100
 
   softResetNum = 1
@@ -98,16 +98,15 @@ export class Model {
   init() {
     this.tickSpeed = new Decimal(1)
     this.tickSpeedMulti = INIT_TICK_MULTI
-    this.tickSpeedCost = INIT_TICK_COST
     this.tickSpeedCostMulti = new Decimal(30)
-    this.totalTickSpeedMulti = new Decimal(1)
+    this.tickSpeedOwned = new Decimal(0)
+    this.tickSpeedCost = INIT_TICK_COST
 
     this.myNodes = new Map<string, MyNode>()
 
     this.cuerrency = new MyNode()
     this.cuerrency.label = "Main"
     this.cuerrency.quantity = INIT_CUR
-    this.cuerrency.bonus = new Decimal(1)
     this.cuerrency.bought = new Decimal(0)
     this.cuerrency.producer = new Array<MyNode>()
     this.cuerrency.reloadNewProdPrice()
@@ -158,36 +157,14 @@ export class Model {
     this.edges.remove(node.id + "-" + node.product.id)
     node.producer.forEach(prod => this.edges.remove(prod.id + "-" + node.id))
   }
-  reloadTickSpeed() {
-    //  Base
-    this.tickSpeed = new Decimal(1)
-    //  Prestige additive
-    this.tickSpeed = this.tickSpeed.plus(this.prestigeBonus[Type.TICK_SPEED_ADD])
-    //  Soft Reset
-    this.tickSpeed = this.tickSpeed.times(Decimal.pow(2, this.softResetNum - 1))
-    //  Manual buy
-    this.tickSpeed = this.tickSpeed.times(this.totalTickSpeedMulti)
-    //  Prestige
-    this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
-  }
   reloadMaxNode() {
     this.maxNode = Math.floor((100 + this.prestigeBonus[Type.MAX_NODE_ADD] * 5) *
       (this.prestigeBonus[Type.MAX_NODE_MULTI] / 10 + 1))
   }
-  buyTickSpeed() {
-    if (this.cuerrency.quantity.lt(this.tickSpeedCost))
-      return false
-
-    this.cuerrency.quantity = this.cuerrency.quantity.minus(this.tickSpeedCost)
-    this.tickSpeedCost = this.tickSpeedCost.times(this.tickSpeedCostMulti)
-    this.totalTickSpeedMulti = this.totalTickSpeedMulti.plus(this.tickSpeedMulti)
-    this.reloadTickSpeed()
-    return true
-  }
-
+  //#region MAX
   maxAll() {
     let stuff = []
-    if (this.cuerrency.producer.length > 0 && this.cuerrency.quantity.gte(this.tickSpeedCost))
+    if (this.cuerrency.producer.length > 0 && this.canBuyTickSpeed())
       stuff.push([this.tickSpeedCost, this.buyTickSpeed.bind(this)])
 
     this.myNodes.forEach(n => {
@@ -197,12 +174,65 @@ export class Model {
         stuff.push([n.priceNewProd, n.buyNewProducer.bind(n)])
     })
     if (stuff.length > 0) {
-      stuff = stuff.sort((a, b) => a[0].gt(b[0]) ? 1 : -1)
+      stuff = stuff.sort((a, b) => a[0].cmp(b[0]))
       for (let el of stuff)
         if (!el[1](this))
           break
     }
   }
+  leafSacrify() {
+    this.myNodes.forEach(node => {
+      if (node.producer.length === 0)
+        node.sacrifice(this)
+    })
+  }
+  leafProd() {
+    this.myNodes.forEach(node => {
+      if (node.producer.length === 0)
+        node.buyNewProducer(this)
+    })
+  }
+  maxCollapse() {
+    this.myNodes.forEach(node => {
+      if (node.level === 3 && node.collapsible)
+        node.collapse(this)
+    })
+  }
+  //#endregion
+  //#region TickSped
+  canBuyTickSpeed(): boolean {
+    return this.cuerrency.quantity.gte(this.tickSpeedCost)
+  }
+  buyTickSpeed(max = false) {
+    if (!this.canBuyTickSpeed())
+      return false
+
+    const toBuy = max ?
+      Decimal.affordGeometricSeries(this.cuerrency.quantity, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
+      : new Decimal(1)
+    const totalPrice = Decimal.sumGeometricSeries(toBuy, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
+
+    this.cuerrency.quantity = this.cuerrency.quantity.minus(totalPrice)
+    this.tickSpeedOwned = this.tickSpeedOwned.plus(this.tickSpeedMulti.times(toBuy))
+    this.reloadTickSpeed()
+    return true
+  }
+  reloadTickSpeed() {
+    //  Base
+    this.tickSpeed = new Decimal(1)
+    //  Prestige additive
+    this.tickSpeed = this.tickSpeed.plus(this.prestigeBonus[Type.TICK_SPEED_ADD])
+    //  Soft Reset
+    this.tickSpeed = this.tickSpeed.times(Decimal.pow(2, this.softResetNum - 1))
+    //  Manual buy
+    this.tickSpeed = this.tickSpeed.times(Decimal.pow(INIT_TICK_MULTI, this.tickSpeedOwned))
+    //  Prestige
+    this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
+
+    //  Price
+    this.tickSpeedCost = Decimal.sumGeometricSeries(1, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
+  }
+  //#endregion
   //#region Prestige
   checkPrestige() {
     this.canPrestige = this.cuerrency.quantity.gte(Number.MAX_VALUE)
@@ -243,6 +273,12 @@ export class Model {
   doSoftRest() {
     if (!this.canSoftReset) return false
     this.init()
+    // this.cuerrency.collapse(this)
+    // let node = this.cuerrency
+    // while (!!node && node.producer.length > 0) {
+    //   node.quantity = new Decimal(0)
+    //   node = node.producer[0]
+    // }
     this.softResetNum = this.softResetNum + 1
     this.reloadTickSpeed()
   }
@@ -253,9 +289,8 @@ export class Model {
     d.c = this.cuerrency.getSave(this)
     d.s = this.softResetNum
     d.m = this.maxNode
-    d.t = this.totalTickSpeedMulti
-    d.h = this.tickSpeedCost
     d.p = this.prestigeCurrency
+    d.l = this.tickSpeedOwned
     d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
     return d
   }
@@ -271,12 +306,10 @@ export class Model {
       this.prestigeCurrency = data.p
     if (!!data.s)
       this.softResetNum = data.s
-    if (!!data.t)
-      this.totalTickSpeedMulti = new Decimal(data.t)
-    if (!!data.h)
-      this.tickSpeedCost = new Decimal(data.h)
     if (!!data.o)
       this.skills.get(data.o).forEach(s => this.setSkill(s))
+    if (!!data.l)
+      this.tickSpeedOwned = new Decimal(data.l)
     this.reloadTickSpeed()
     this.reloadMaxNode()
     this.myNodes.forEach(n => n.reloadPerSec())
