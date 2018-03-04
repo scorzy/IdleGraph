@@ -3,7 +3,7 @@
     <div *ngIf="!!node; else noNode">
       <h3>{{node.label}} : {{node.quantity | format}} ({{node.bought | format}})</h3>
       <a [routerLink]="'/main/ove'" class="exit">
-        <clr-icon shape="times"></clr-icon>
+        <clr-icon shape="close"></clr-icon>
       </a>
       <div class="line">
         <app-node-line [node]=node></app-node-line>

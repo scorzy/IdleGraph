@@ -9,6 +9,7 @@ export class Options {
   autosaveNotification = false
   dark = true
   header = 1
+  showGraph = true
 
   constructor() {
   }
@@ -26,7 +27,8 @@ export class Options {
       s: this.sacAlert,
       n: this.numFormat,
       a: this.autosaveNotification,
-      d: this.dark
+      d: this.dark,
+      g: this.showGraph
     }
   }
   load(data) {
@@ -34,6 +36,7 @@ export class Options {
     this.sacAlert = !!data.s
     this.autosaveNotification = !!data.a
     this.dark = !!data.d
+    this.showGraph = !!data.g
     this.numFormat = "S"
     if (!!data.n)
       this.numFormat = data.n

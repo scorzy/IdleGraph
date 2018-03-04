@@ -98,10 +98,10 @@ export class MyNode {
   }
 
   reloadPriceBuy() {
-    this.priceBuy = Decimal.pow(1.1, this.bought).times(Decimal.pow(10, this.level))
+    this.priceBuy = Decimal.pow(1.1, this.bought).times(Decimal.pow(50, this.level - 1))
   }
   reloadNewProdPrice() {
-    this.priceNewProd = Decimal.pow(1.1, this.producer.length).times(Decimal.pow(100, this.level))
+    this.priceNewProd = Decimal.pow(1.05, this.producer.length).times(Decimal.pow(50, this.level))
   }
 
   //#region Sacrifice

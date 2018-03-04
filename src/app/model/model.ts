@@ -5,16 +5,19 @@ import * as Decimal from 'break_infinity.js'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
 
+const INIT_CUR = new Decimal(200)
+const INIT_TICK_COST = new Decimal(500)
+const INIT_TICK_MULTI = new Decimal(1.5)
+
 export class Model {
 
-  initialVal = new Decimal(1E9)
   private deltaT = new Decimal(0)
 
   cuerrency = new MyNode()
   tickSpeed = new Decimal(1)
-  tickSpeedMulti = new Decimal(1.5)
+  tickSpeedMulti = INIT_TICK_MULTI
   totalTickSpeedMulti = new Decimal(1)
-  tickSpeedCost = new Decimal(1)
+  tickSpeedCost = INIT_TICK_COST
   tickSpeedCostMulti = new Decimal(30)
   maxNode = 100
 
@@ -94,8 +97,8 @@ export class Model {
 
   init() {
     this.tickSpeed = new Decimal(1)
-    this.tickSpeedMulti = new Decimal(1.5)
-    this.tickSpeedCost = new Decimal(1)
+    this.tickSpeedMulti = INIT_TICK_MULTI
+    this.tickSpeedCost = INIT_TICK_COST
     this.tickSpeedCostMulti = new Decimal(30)
     this.totalTickSpeedMulti = new Decimal(1)
 
@@ -103,7 +106,7 @@ export class Model {
 
     this.cuerrency = new MyNode()
     this.cuerrency.label = "Main"
-    this.cuerrency.quantity = this.initialVal
+    this.cuerrency.quantity = INIT_CUR
     this.cuerrency.bonus = new Decimal(1)
     this.cuerrency.bought = new Decimal(0)
     this.cuerrency.producer = new Array<MyNode>()
@@ -184,7 +187,7 @@ export class Model {
 
   maxAll() {
     let stuff = []
-    if (this.cuerrency.quantity.gte(this.tickSpeedCost))
+    if (this.cuerrency.producer.length > 0 && this.cuerrency.quantity.gte(this.tickSpeedCost))
       stuff.push([this.tickSpeedCost, this.buyTickSpeed.bind(this)])
 
     this.myNodes.forEach(n => {

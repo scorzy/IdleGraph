@@ -1,7 +1,11 @@
 <div class="content-area">
   <div class="row" style="width:100%;height: 100%">
     <div class="col-xs-6">
-      <app-graph></app-graph>
+      <app-graph *ngIf="serv.options.showGraph"></app-graph>
+      <div class="toggle-switch exit">
+        <input type="checkbox" name="t1" id="t1" [(ngModel)]="serv.options.showGraph">
+        <label for="t1">Show</label>
+      </div>
     </div>
     <div class="col-xs-6">
       <app-top></app-top>
