@@ -1,5 +1,5 @@
 <div class="main-container">
-  <header  [ngClass]="getClass()">
+  <header [ngClass]="getClass()">
     <div class="header-nav">
       <a href="javascript://" class="nav-link nav-text" [routerLink]="'main'" [routerLinkActive]="'active'"
         skipLocationChange>
@@ -16,6 +16,9 @@
       </a>
     </div>
     <div class="header-actions">
+      <a href="javascript://" class="nav-link nav-icon" (click)="serv.warpModal = true" skipLocationChange>
+        <clr-icon shape="clock"></clr-icon>
+      </a>
       <a href="javascript://" class="nav-link nav-icon" [routerLink]="'opt/save'" skipLocationChange>
         <clr-icon shape="cog"></clr-icon>
       </a>
@@ -23,3 +26,38 @@
   </header>
   <router-outlet></router-outlet>
 </div>
+
+<!-- Time Warp Modal -->
+<clr-modal [(clrModalOpen)]="serv.warpModal">
+  <h3 class="modal-title">Time Warp !</h3>
+  <div class="modal-body">
+    <p>You can skip up to {{serv.model.time | upToTime}}; max: {{serv.model.maxTime}} </p>
+    <form class="form" [formGroup]="warpForm">
+      <section class="form-block">
+        <div class="form-group row">
+          <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <label for="gForm_1">Warp:
+              <span class="p7">(hh:mm:ss)</span>
+            </label>
+          </div>
+          <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
+            <input class="form-control" type="number" id="gForm_1" placeholder="0" name="hh"size="10" [(ngModel)]="hh" min=0
+            (max)="max_hh" (onchange)="checkTime()" [class.invalid]="no_hh" formControlName="hh">
+          </div>
+          <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
+            <input class="form-control" type="number" id="gForm_2" placeholder="0" name="mm"size="10" [(ngModel)]="mm" min=0
+              (max)="max_mm" (onchange)="checkTime()" [class.invalid]="no_mm" formControlName="mm">
+          </div>
+          <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
+            <input class="form-control" type="number" id="gForm_3" placeholder="0" name="ss"size="10" [(ngModel)]="ss" min=0
+            (max)="max_ss" (onchange)="checkTime()" [class.invalid]="no_ss" formControlName="ss">
+          </div>
+        </div>
+      </section>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="serv.warpModal = false">Cancel</button>
+    <button type="button" class="btn btn-success" (click)="serv.model.warp(serv.warp);serv.warpModal = false">Warp</button>
+  </div>
+</clr-modal>

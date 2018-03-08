@@ -22,6 +22,7 @@ import { OptNavComponent } from './opt-nav/opt-nav.component';
 import { OptionsComponent } from './options/options.component';
 import { ToastOptions, ToastModule } from 'ng2-toastr/ng2-toastr';
 import { ServService } from './serv.service';
+import { UpToTimePipe } from './up-to-time.pipe';
 
 export class CustomOptions extends ToastOptions {
   animate = 'fade'
@@ -85,7 +86,8 @@ const appRoutes: Routes = [
     PrestigeNavComponent,
     SkillStatsComponent,
     OptNavComponent,
-    OptionsComponent
+    OptionsComponent,
+    UpToTimePipe
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),

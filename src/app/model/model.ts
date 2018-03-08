@@ -1,3 +1,4 @@
+import { UpToTimePipe } from './../up-to-time.pipe';
 import { MyNode } from './node'
 import * as vis from 'vis'
 import { Edge } from 'vis'
@@ -8,6 +9,7 @@ import { Skill, Type, labels } from './skill'
 const INIT_CUR = new Decimal(200)
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(1.5)
+const BASE_TIME_BANK = new Decimal(4)
 
 export class Model {
 
@@ -44,6 +46,9 @@ export class Model {
 
   prestigeBonus = new Array<number>(labels.length)
 
+  time = new Decimal(0)
+  maxTime = ""
+
   constructor() {
     this.prestigeBonus.fill(0)
     this.init()
@@ -55,46 +60,31 @@ export class Model {
     const tickSpeedNum = 10
 
     this.skills = new vis.DataSet([
-      new Skill(1, Type.TICK_SPEED, "", false, true),
-      new Skill(tickSpeedNum + 3, Type.TICK_SPEED_ADD)
+      new Skill(1, Type.TICK_SPEED, "", false, true)
     ])
 
-    this.skillEdges = new vis.DataSet([
-      { id: tickSpeedNum + 4, from: (tickSpeedNum + 4) / 2, to: tickSpeedNum + 3 },
-      { id: tickSpeedNum + 5, from: tickSpeedNum + 1, to: 2 }
-    ])
+    this.skillEdges = new vis.DataSet()
 
-    for (let n = 2; n < tickSpeedNum + 2; n++) {
-      this.skills.add(new Skill(n, Type.TICK_SPEED))
-      this.skillEdges.add({ id: n, from: n - 1, to: n })
-    }
-
-    //  Max node
-    const maxNodeAddNum = 10
-    this.skills.add(new Skill(199, Type.MAX_NODE_ADD))
-    this.skillEdges.add({ id: 198, from: 1, to: 199 })
-    for (let n = 200; n < maxNodeAddNum + 200; n++) {
-      this.skills.add(new Skill(n, Type.MAX_NODE_ADD))
-      this.skillEdges.add({ id: n, from: n - 1, to: n })
-    }
-    this.skillEdges.add({ id: 210, from: 209, to: 199 })
-    this.skills.add(new Skill(220, Type.MAX_NODE_MULTI))
-    this.skillEdges.add({ id: 220, from: 200 + maxNodeAddNum / 2, to: 220 })
-
-    //  Sacrify
-    const sacrifyMultiNum = 10
-    this.skills.add(new Skill(299, Type.SACRIFY_MULTI))
-    this.skillEdges.add({ id: 298, from: 1, to: 299 })
-    for (let n = 300; n < sacrifyMultiNum + 300; n++) {
-      this.skills.add(new Skill(n, Type.SACRIFY_MULTI))
-      this.skillEdges.add({ id: n, from: n - 1, to: n })
-    }
-    this.skillEdges.add({ id: 310, from: 309, to: 299 })
-    this.skills.add(new Skill(320, Type.SACRIFY_SPECIAL))
-    this.skillEdges.add({ id: 320, from: 300 + sacrifyMultiNum / 2, to: 320 })
+    const stuff = [
+      [12, 100, Type.TICK_SPEED, Type.TICK_SPEED_ADD],
+      [12, 200, Type.MAX_NODE_ADD, Type.MAX_NODE_MULTI],
+      [12, 300, Type.SACRIFY_MULTI, Type.SACRIFY_SPECIAL],
+      [12, 400, Type.TIME_PER_SEC, Type.TIME_BANK_1H]
+    ]
+    stuff.forEach(s => {
+      this.skills.add(new Skill(s[1] - 1, s[2]))
+      this.skillEdges.add({ id: s[1] - 2, from: 1, to: s[1] - 1 })
+      for (let n = s[1]; n < s[0] + s[1]; n++) {
+        this.skills.add(new Skill(n, s[2]))
+        this.skillEdges.add({ id: n, from: n - 1, to: n })
+      }
+      this.skillEdges.add({ id: s[0] + s[1], from: s[0] + s[1] - 1, to: s[1] - 1 })
+      this.skills.add(new Skill(s[1] + 80, s[3]))
+      this.skillEdges.add({ id: s[1] + 80, from: s[1] + s[0] / 2, to: s[1] + 80 })
+    })
+    this.reloadMaxTime()
     //#endregion
   }
-
   init() {
     this.tickSpeed = new Decimal(1)
     this.tickSpeedMulti = INIT_TICK_MULTI
@@ -116,7 +106,15 @@ export class Model {
     this.myNodes.set("" + this.cuerrency.id, this.cuerrency)
     this.nodes.add(this.cuerrency.getVisNode())
   }
-
+  reloadMaxTime() {
+    this.maxTime = new UpToTimePipe().transform((BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H])).times(3600))
+  }
+  //#region Update
+  mainUpdate(delta: number) {
+    this.time = Decimal.min(this.time.plus(this.prestigeBonus[Type.TIME_PER_SEC] * delta * 0.05),
+      BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H]).times(3600))
+    this.update(delta)
+  }
   update(delta: number) {
     this.deltaT = this.tickSpeed.times(delta / 1000)
     // this.myNodes.forEach(n => n.reloadPerSec())
@@ -129,14 +127,21 @@ export class Model {
 
     this.updateEmitter.emit(delta)
   }
-
+  warp(delta: Decimal): boolean {
+    if (delta.gt(this.time))
+      return false
+    this.time = this.time.min(delta)
+    this.update(delta)  // update require number, but should work anyway...
+    return true
+  }
   getToAdd(node: MyNode, level: number): Decimal {
 
     let toAdd = node.quantity.times(node.prodPerSec.times(Decimal.pow(this.deltaT, level).div(level)))
     node.producer.forEach(n => toAdd = toAdd.plus(this.getToAdd(n, level + 1)))
     return toAdd
   }
-
+  //#endregion
+  //#region Node management
   getNewNode(): MyNode {
     const node = new MyNode()
     node.id = this.nodes.max('id').id + 1
@@ -149,7 +154,6 @@ export class Model {
     this.nodes.add(node.getVisNode())
     return node
   }
-
   remove(node: MyNode) {
     node.product.producer = node.product.producer.filter(n => n !== node)
     this.myNodes.delete("" + node.id)
@@ -161,6 +165,7 @@ export class Model {
     this.maxNode = Math.floor((100 + this.prestigeBonus[Type.MAX_NODE_ADD] * 5) *
       (this.prestigeBonus[Type.MAX_NODE_MULTI] / 10 + 1))
   }
+  //#endregion
   //#region MAX
   maxAll() {
     let stuff = []
@@ -250,6 +255,7 @@ export class Model {
     this.setSkill(skill)
     this.reloadTickSpeed()
     this.reloadMaxNode()
+    this.reloadMaxTime()
   }
   setSkill(skill: Skill) {
     skill.owned = true
@@ -292,6 +298,7 @@ export class Model {
     d.p = this.prestigeCurrency
     d.l = this.tickSpeedOwned
     d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
+    d.t = this.time
     return d
   }
   load(data: any) {
@@ -310,9 +317,12 @@ export class Model {
       this.skills.get(data.o).forEach(s => this.setSkill(s))
     if (!!data.l)
       this.tickSpeedOwned = new Decimal(data.l)
+    if (!!data.t)
+      this.time = new Decimal(data.t)
     this.reloadTickSpeed()
     this.reloadMaxNode()
     this.myNodes.forEach(n => n.reloadPerSec())
+    this.reloadMaxTime()
   }
   //#endregion
 

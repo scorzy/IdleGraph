@@ -7,6 +7,8 @@ import { EventEmitter } from '@angular/core'
 import * as LZString from 'lz-string'
 import { ToastsManager } from 'ng2-toastr'
 import { DOCUMENT } from '@angular/common'
+import * as moment from 'moment'
+import * as Decimal from 'break_infinity.js'
 
 @Injectable()
 export class ServService {
@@ -19,9 +21,13 @@ export class ServService {
   edgeEmitter: EventEmitter<string> = new EventEmitter<string>()
   linkTheme: HTMLLinkElement
 
+  warpModal = false
+  warp = new Decimal(0)
+
   constructor(
     public toastr: ToastsManager,
     @Inject(DOCUMENT) private document: Document) {
+    moment.locale('en')
 
     this.last = Date.now()
     this.options = new Options()
