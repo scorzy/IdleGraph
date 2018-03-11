@@ -32,7 +32,7 @@
   <h3 class="modal-title">Time Warp !</h3>
   <div class="modal-body">
     <p>You can skip up to {{serv.model.time | upToTime}}; max: {{serv.model.maxTime}} </p>
-    <form class="form" [formGroup]="warpForm">
+    <form class="form">
       <section class="form-block">
         <div class="form-group row">
           <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
@@ -41,16 +41,16 @@
             </label>
           </div>
           <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
-            <input class="form-control" type="number" id="gForm_1" placeholder="0" name="hh"size="10" [(ngModel)]="hh" min=0
-            (max)="max_hh" (onchange)="checkTime()" [class.invalid]="no_hh" formControlName="hh">
+            <input class="form-control" type="number" id="gForm_1" placeholder="0" name="hh" size="10" [(ngModel)]="hh"
+              min=0 max={{max_hh}} (onchange)="checkTime()" [class.invalid]="no_hh">
           </div>
           <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
-            <input class="form-control" type="number" id="gForm_2" placeholder="0" name="mm"size="10" [(ngModel)]="mm" min=0
-              (max)="max_mm" (onchange)="checkTime()" [class.invalid]="no_mm" formControlName="mm">
+            <input class="form-control" type="number" id="gForm_2" placeholder="0" name="mm" size="10" [(ngModel)]="mm"
+              min=0 max={{max_mm}} (onchange)="checkTime()" [class.invalid]="no_mm" >
           </div>
           <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
-            <input class="form-control" type="number" id="gForm_3" placeholder="0" name="ss"size="10" [(ngModel)]="ss" min=0
-            (max)="max_ss" (onchange)="checkTime()" [class.invalid]="no_ss" formControlName="ss">
+            <input class="form-control" type="number" id="gForm_3" placeholder="0" name="ss" size="10" [(ngModel)]="ss"
+              min=0 max={{max_ss}} (onchange)="checkTime()" [class.invalid]="no_ss" >
           </div>
         </div>
       </section>
