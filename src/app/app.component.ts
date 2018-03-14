@@ -20,6 +20,7 @@ export class AppComponent {
   max_hh = 0
   max_mm = 0
   max_ss = 0
+  canWarp = false
 
   warpForm = new FormGroup({
     hh: new FormControl('', Validators.required),
@@ -46,6 +47,8 @@ export class AppComponent {
     this.no_hh = this.hh > this.max_hh || this.hh < 0
     this.no_mm = this.mm > this.max_mm || this.mm < 0
     this.no_ss = this.ss > this.max_ss || this.ss < 0
+
+    this.canWarp = !(this.no_hh || this.no_mm || this.no_ss)
   }
 }
 

@@ -111,7 +111,7 @@ export class Model {
   }
   //#region Update
   mainUpdate(delta: number) {
-    this.time = Decimal.min(this.time.plus(this.prestigeBonus[Type.TIME_PER_SEC] * delta * 0.05),
+    this.time = Decimal.min(this.time.plus(this.prestigeBonus[Type.TIME_PER_SEC] * delta * 0.05 / 1000),
       BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H]).times(3600))
     this.update(delta)
   }
@@ -304,20 +304,20 @@ export class Model {
   load(data: any) {
     this.nodes = new vis.DataSet()
     this.edges = new vis.DataSet()
-    if (!!data.c)
+    if ("c" in data)
       this.cuerrency = MyNode.generate(data.c, this, null)
     this.cuerrency.label = "Main"
-    if (!!data.m)
+    if ("m" in data)
       this.maxNode = data.m
-    if (!!data.p)
+    if ("p" in data)
       this.prestigeCurrency = data.p
-    if (!!data.s)
+    if ("s" in data)
       this.softResetNum = data.s
-    if (!!data.o)
+    if ("o" in data)
       this.skills.get(data.o).forEach(s => this.setSkill(s))
-    if (!!data.l)
+    if ("l" in data)
       this.tickSpeedOwned = new Decimal(data.l)
-    if (!!data.t)
+    if ("t" in data)
       this.time = new Decimal(data.t)
     this.reloadTickSpeed()
     this.reloadMaxNode()

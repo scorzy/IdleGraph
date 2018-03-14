@@ -31,7 +31,9 @@
 <clr-modal [(clrModalOpen)]="serv.warpModal">
   <h3 class="modal-title">Time Warp !</h3>
   <div class="modal-body">
-    <p>You can skip up to {{serv.model.time | upToTime}}; max: {{serv.model.maxTime}} </p>
+    <p>You can skip up to {{serv.model.time | upToTime}}
+       ({{serv.model.time | format}} s)
+       ; max: {{serv.model.maxTime}} </p>
     <form class="form">
       <section class="form-block">
         <div class="form-group row">
@@ -58,6 +60,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="serv.warpModal = false">Cancel</button>
-    <button type="button" class="btn btn-success" (click)="serv.model.warp(serv.warp);serv.warpModal = false">Warp</button>
+    <button type="button" class="btn btn-success" (click)="serv.model.warp(serv.warp);serv.warpModal = false"
+    [disabled]="!canWarp" >Warp</button>
   </div>
 </clr-modal>

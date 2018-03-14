@@ -43,7 +43,7 @@ export class ServService {
     const source = Observable
       .interval(200).subscribe(() => {
         const now = Date.now()
-        this.model.update(now - this.last)
+        this.model.mainUpdate(now - this.last)
         this.last = now
       })
 

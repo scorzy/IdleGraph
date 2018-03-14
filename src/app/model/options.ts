@@ -37,9 +37,7 @@ export class Options {
     this.autosaveNotification = !!data.a
     this.dark = !!data.d
     this.showGraph = !!data.g
-    this.numFormat = "S"
-    if (!!data.n)
-      this.numFormat = data.n
+    this.numFormat = "n" in data ? data.n : "S"
     this.generateFormatter()
   }
 }
