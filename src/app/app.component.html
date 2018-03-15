@@ -16,7 +16,7 @@
       </a>
     </div>
     <div class="header-actions">
-      <a href="javascript://" class="nav-link nav-icon" (click)="serv.warpModal = true" skipLocationChange>
+      <a href="javascript://" class="nav-link nav-icon" (click)="warpModal = true" skipLocationChange>
         <clr-icon shape="clock"></clr-icon>
       </a>
       <a href="javascript://" class="nav-link nav-icon" [routerLink]="'opt/save'" skipLocationChange>
@@ -28,7 +28,7 @@
 </div>
 
 <!-- Time Warp Modal -->
-<clr-modal [(clrModalOpen)]="serv.warpModal">
+<clr-modal [(clrModalOpen)]="warpModal">
   <h3 class="modal-title">Time Warp !</h3>
   <div class="modal-body">
     <p>You can skip up to {{serv.model.time | upToTime}}
@@ -59,8 +59,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="serv.warpModal = false">Cancel</button>
-    <button type="button" class="btn btn-success" (click)="serv.model.warp(serv.warp);serv.warpModal = false"
+    <button type="button" class="btn btn-outline" (click)="warpModal = false">Cancel</button>
+    <button type="button" class="btn btn-success" (click)="warp()"
     [disabled]="!canWarp" >Warp</button>
   </div>
 </clr-modal>

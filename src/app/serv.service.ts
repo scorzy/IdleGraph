@@ -19,10 +19,8 @@ export class ServService {
   graph: any = null
 
   edgeEmitter: EventEmitter<string> = new EventEmitter<string>()
+  updateEmitter: EventEmitter<number> = new EventEmitter<number>()
   linkTheme: HTMLLinkElement
-
-  warpModal = false
-  warp = new Decimal(0)
 
   constructor(
     public toastr: ToastsManager,
@@ -43,7 +41,9 @@ export class ServService {
     const source = Observable
       .interval(200).subscribe(() => {
         const now = Date.now()
-        this.model.mainUpdate(now - this.last)
+        const delta = now - this.last
+        this.model.mainUpdate(delta)
+        this.updateEmitter.emit(delta)
         this.last = now
       })
 

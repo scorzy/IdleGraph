@@ -1,4 +1,4 @@
-import { UpToTimePipe } from './../up-to-time.pipe';
+import { UpToTimePipe } from './../up-to-time.pipe'
 import { MyNode } from './node'
 import * as vis from 'vis'
 import { Edge } from 'vis'
@@ -38,8 +38,6 @@ export class Model {
   formatter: any
 
   perSec = new Decimal(0)
-
-  updateEmitter: EventEmitter<number> = new EventEmitter<number>()
 
   skills: vis.DataSet<Skill>
   skillEdges: vis.DataSet<any>
@@ -124,14 +122,12 @@ export class Model {
 
     this.perSec = this.cuerrency.producer.map(n => n.prodPerSec.times(n.quantity))
       .reduce((p, n) => p.plus(n), new Decimal(0)).times(this.tickSpeed)
-
-    this.updateEmitter.emit(delta)
   }
   warp(delta: Decimal): boolean {
     if (delta.gt(this.time))
       return false
     this.time = this.time.min(delta)
-    this.update(delta)  // update require number, but should work anyway...
+    this.update(delta.times(1000))  // update require number, but should work anyway...
     return true
   }
   getToAdd(node: MyNode, level: number): Decimal {

@@ -39,7 +39,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
         this.node.reloadStats()
       }
     })
-    this.updateSub = this.ser.model.updateEmitter.subscribe(a => this.node && this.node.reloadStats())
+    this.updateSub = this.ser.updateEmitter.subscribe(a => this.node && this.node.reloadStats())
     this.edgeSub = this.ser.edgeEmitter.subscribe(e => this.onEdge(e))
   }
 

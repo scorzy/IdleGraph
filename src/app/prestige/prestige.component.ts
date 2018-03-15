@@ -16,7 +16,7 @@ export class PrestigeComponent implements OnInit, OnDestroy {
   constructor(public ser: ServService) { }
 
   ngOnInit() {
-    this.upSub = this.ser.model.updateEmitter.subscribe(a => {
+    this.upSub = this.ser.updateEmitter.subscribe(a => {
       this.ser.model.checkPrestige()
       this.ser.model.softResetCheck()
     })

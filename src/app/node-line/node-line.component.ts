@@ -18,7 +18,7 @@ export class NodeLineComponent implements OnInit, OnDestroy {
   constructor(public ser: ServService) { }
 
   ngOnInit() {
-    this.updateSub = this.ser.model.updateEmitter.subscribe(a => this.node && this.node.reloadSacrificeMulti(this.ser.model))
+    this.updateSub = this.ser.updateEmitter.subscribe(a => this.node && this.node.reloadSacrificeMulti(this.ser.model))
     if (!!this.node)
       this.node.reloadSacrificeMulti(this.ser.model)
   }
