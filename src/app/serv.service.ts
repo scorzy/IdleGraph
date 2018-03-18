@@ -31,6 +31,7 @@ export class ServService {
     this.options = new Options()
     this.model = new Model()
     this.model.formatter = this.options.formatter
+    setTimeout(this.load.bind(this), 0)
 
     this.linkTheme = this.document.createElement('link')
     this.linkTheme.rel = "stylesheet"

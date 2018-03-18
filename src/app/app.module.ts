@@ -23,6 +23,8 @@ import { OptionsComponent } from './options/options.component';
 import { ToastOptions, ToastModule } from 'ng2-toastr/ng2-toastr';
 import { ServService } from './serv.service';
 import { UpToTimePipe } from './up-to-time.pipe';
+import { AutoBuyTabComponent } from './auto-buy-tab/auto-buy-tab.component';
+import { AutoBuyerComponent } from './auto-buyer/auto-buyer.component';
 
 export class CustomOptions extends ToastOptions {
   animate = 'fade'
@@ -57,7 +59,8 @@ const appRoutes: Routes = [
         pathMatch: 'full'
       },
       { path: 'skill', component: SkillTreComponent },
-      { path: 'skillStats', component: SkillStatsComponent }
+      { path: 'skillStats', component: SkillStatsComponent },
+      { path: 'auto', component: AutoBuyTabComponent }
     ]
   },
   { path: 'pre', component: PrestigeComponent },
@@ -87,7 +90,9 @@ const appRoutes: Routes = [
     SkillStatsComponent,
     OptNavComponent,
     OptionsComponent,
-    UpToTimePipe
+    UpToTimePipe,
+    AutoBuyTabComponent,
+    AutoBuyerComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),

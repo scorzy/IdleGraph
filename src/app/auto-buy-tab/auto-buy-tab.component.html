@@ -1,0 +1,14 @@
+<h1>Auto Buyers</h1>
+
+<ng-container *ngIf="haveAutoBuy; else noAutoBuy">
+  <p>
+    You can use up to {{maxAuto}} auto buyers at time.
+  </p>
+  <div class="card-columns">
+    <app-auto-buyer *ngFor="let a of ser.model.autoBuyers; trackBy getId" [autoB]="a"></app-auto-buyer>
+  </div>
+</ng-container>
+
+<ng-template #noAutoBuy>
+  <p>You don't have any autobuyer avaiable, unlock them with skill points !</p>
+</ng-template>

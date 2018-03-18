@@ -35,7 +35,9 @@ export enum Type {
   SACRIFY_MULTI,
   SACRIFY_SPECIAL,
   TIME_PER_SEC,
-  TIME_BANK_1H
+  TIME_BANK_1H,
+  MAX_AUTO_BUY,
+  MAX_ALL_INTERVAL
 }
 
 export const labels = [
@@ -46,5 +48,7 @@ export const labels = [
   "+10%\nsacrify",
   "sacrify only 90%\nof nodes",
   "+0.05 \ntime /s",
-  "+1H \nmax time"
+  "+1H \nmax time",
+  "+1 \nmax autobuyers",
+  "-5% maxAll\ninterval"
 ]

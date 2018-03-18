@@ -1,6 +1,6 @@
 import { Model } from './model'
 import * as Decimal from 'break_infinity.js'
-import { Type } from './skill';
+import { Type } from './skill'
 
 const BONUS = new Decimal(0.05)
 
@@ -104,7 +104,7 @@ export class MyNode {
     this.priceBuy = Decimal.pow(1.1, this.bought).times(Decimal.pow(50, this.level - 1))
   }
   reloadNewProdPrice() {
-    this.priceNewProd = Decimal.pow(1.05, this.producer.length).times(Decimal.pow(50, this.level))
+    this.priceNewProd = Decimal.pow(1.07, this.producer.length).times(Decimal.pow(50, this.level))
   }
 
   //#region Sacrifice

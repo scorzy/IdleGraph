@@ -5,6 +5,7 @@ import { Edge } from 'vis'
 import * as Decimal from 'break_infinity.js'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
+import { AutoBuy, MaxAllAutoBuy } from './autoBuy'
 
 const INIT_CUR = new Decimal(200)
 const INIT_TICK_COST = new Decimal(500)
@@ -47,10 +48,17 @@ export class Model {
   time = new Decimal(0)
   maxTime = ""
 
+  autoBuyers = new Array<AutoBuy>()
+  autoBuyersActiveOrder = new Array<AutoBuy>()
+
   constructor() {
     this.prestigeBonus.fill(0)
     this.init()
     //#region Prestige
+    this.autoBuyers = [
+      new MaxAllAutoBuy()
+    ]
+
     this.skills = new vis.DataSet()
     this.skillEdges = new vis.DataSet()
 
@@ -67,10 +75,11 @@ export class Model {
       [12, 100, Type.TICK_SPEED, Type.TICK_SPEED_ADD],
       [12, 200, Type.MAX_NODE_ADD, Type.MAX_NODE_MULTI],
       [12, 300, Type.SACRIFY_MULTI, Type.SACRIFY_SPECIAL],
-      [12, 400, Type.TIME_PER_SEC, Type.TIME_BANK_1H]
+      [12, 400, Type.TIME_PER_SEC, Type.TIME_BANK_1H],
+      [12, 500, Type.MAX_ALL_INTERVAL, Type.MAX_AUTO_BUY, Type.MAX_AUTO_BUY]
     ]
     stuff.forEach(s => {
-      this.skills.add(new Skill(s[1] - 1, s[2]))
+      this.skills.add(new Skill(s[1] - 1, s.length > 4 ? s[4] : s[2]))
       this.skillEdges.add({ id: s[1] - 2, from: 1, to: s[1] - 1 })
       for (let n = s[1]; n < s[0] + s[1]; n++) {
         this.skills.add(new Skill(n, s[2]))
@@ -80,7 +89,9 @@ export class Model {
       this.skills.add(new Skill(s[1] + 80, s[3]))
       this.skillEdges.add({ id: s[1] + 80, from: s[1] + s[0] / 2, to: s[1] + 80 })
     })
+
     this.reloadMaxTime()
+    this.reloadAutoBuyers()
     //#endregion
   }
   init() {
@@ -112,6 +123,7 @@ export class Model {
     this.time = Decimal.min(this.time.plus(this.prestigeBonus[Type.TIME_PER_SEC] * delta * 0.05 / 1000),
       BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H]).times(3600))
     this.update(delta)
+    this.autoBuyersActiveOrder.forEach(a => a.update(delta / 1000, this))
   }
   update(delta: number) {
     this.deltaT = this.tickSpeed.times(delta / 1000)
@@ -163,7 +175,8 @@ export class Model {
   }
   //#endregion
   //#region MAX
-  maxAll() {
+  maxAll(): boolean {
+    let bought = false
     let stuff = []
     if (this.cuerrency.producer.length > 0 && this.canBuyTickSpeed())
       stuff.push([this.tickSpeedCost, this.buyTickSpeed.bind(this)])
@@ -179,6 +192,10 @@ export class Model {
       for (let el of stuff)
         if (!el[1](this))
           break
+        else
+          bought = true
+
+      return bought
     }
   }
   leafSacrify() {
@@ -198,6 +215,12 @@ export class Model {
       if (node.level === 3 && node.collapsible)
         node.collapse(this)
     })
+  }
+  //#endregion
+  //#region Auto Buyers
+  reloadAutoBuyers() {
+    this.autoBuyers.forEach(a => a.reloadInterval(this))
+    this.autoBuyersActiveOrder = this.autoBuyers.filter(a => a.on).sort((a, b) => a.priority - b.priority)
   }
   //#endregion
   //#region TickSped
@@ -295,6 +318,7 @@ export class Model {
     d.l = this.tickSpeedOwned
     d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
     d.t = this.time
+    d.a = this.autoBuyers.map(a => a.save())
     return d
   }
   load(data: any) {
@@ -315,10 +339,20 @@ export class Model {
       this.tickSpeedOwned = new Decimal(data.l)
     if ("t" in data)
       this.time = new Decimal(data.t)
+    if ("a" in data) {
+      for (let d of data.a) {
+        const autoBuyer = this.autoBuyers.find(a => a.id === d.i)
+        if (!!autoBuyer)
+          autoBuyer.load(d)
+      }
+
+    }
+
     this.reloadTickSpeed()
     this.reloadMaxNode()
     this.myNodes.forEach(n => n.reloadPerSec())
     this.reloadMaxTime()
+    this.reloadAutoBuyers()
   }
   //#endregion
 
