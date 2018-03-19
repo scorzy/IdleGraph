@@ -49,22 +49,28 @@ export class AppComponent implements OnInit, OnDestroy {
   checkTime() {
 
     const maxTime = this.serv.model.time.toNumber()
-    this.max_hh = maxTime / 3600
-    this.max_mm = maxTime % 3600
-    this.max_ss = maxTime % 60
+    if (maxTime > 0) {
+      this.max_hh = maxTime / 3600
+      this.max_mm = maxTime % 3600
+      this.max_ss = maxTime % 60
 
-    this.no_hh = this.hh > this.max_hh || this.hh < 0
-    this.no_mm = this.mm > this.max_mm || this.mm < 0
-    this.no_ss = this.ss > this.max_ss || this.ss < 0
+      this.no_hh = this.hh > this.max_hh || this.hh < 0
+      this.no_mm = this.mm > this.max_mm || this.mm < 0
+      this.no_ss = this.ss > this.max_ss || this.ss < 0
 
-    this.canWarp = !(this.no_hh || this.no_mm || this.no_ss)
+      this.canWarp = !(this.no_hh || this.no_mm || this.no_ss)
+    } else {
+      this.max_hh = this.max_mm = this.max_ss = 0
+      this.no_hh = this.no_mm = this.no_ss = true
+      this.canWarp = false
+    }
   }
   warp() {
     if (!this.canWarp)
       return false
 
     const warpTime = Math.min(this.ss + this.mm * 60 + this.hh * 3600, this.serv.model.time.toNumber())
-    this.serv.model.warp(new Decimal(warpTime ))
+    this.serv.model.warp(new Decimal(warpTime))
     this.warpModal = false
   }
 }

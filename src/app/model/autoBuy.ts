@@ -26,8 +26,10 @@ export abstract class AutoBuy {
     this.wait = this.wait + time
     this.canBuy = this.canBuy || this.wait >= this.interval
 
-    if (this.canBuy && this.buyAction(model, this.upTo))
+    if (this.canBuy && this.buyAction(model, this.upTo)) {
       this.canBuy = false
+      this.wait = 0
+    }
 
   }
 

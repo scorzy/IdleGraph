@@ -6,4 +6,8 @@
   <p class="card-text">
     Interval: {{autoB.interval | format}} s
   </p>
+  <div class="toggle-switch">
+    <input type="checkbox" id={{autoB.id}} [(ngModel)]="autoB.on" (ngModelChange)="change()">
+    <label for={{autoB.id}}>On:</label>
+  </div>
 </div>
