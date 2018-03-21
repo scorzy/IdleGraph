@@ -6,8 +6,27 @@
   <p class="card-text">
     Interval: {{autoB.interval | format}} s
   </p>
-  <div class="toggle-switch">
-    <input type="checkbox" id={{autoB.id}} [(ngModel)]="autoB.on" (ngModelChange)="change()">
-    <label for={{autoB.id}}>On:</label>
-  </div>
+
+
+  <form class="compact">
+    <section class="form-block">
+
+      <div class="form-group">
+        <label>Priority:</label>
+
+        <div class="toggle-switch">
+          <input type="checkbox" id={{autoB.id}} [(ngModel)]="autoB.on" (ngModelChange)="change()" [ngModelOptions]="{standalone: true}">
+          <label for={{autoB.id}}>On:</label>
+        </div>
+
+        <div class="select">
+          <select [(ngModel)]="autoB.priority" (ngModelChange)="change()" [ngModelOptions]="{standalone: true}">
+            <option value={{i}} *ngFor="let i of numbers">{{i}}</option>
+          </select>
+        </div>
+
+      </div>
+    </section>
+  </form>
+
 </div>

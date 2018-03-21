@@ -11,8 +11,11 @@ export class AutoBuyerComponent implements OnInit {
   @HostBinding('class.card') className = 'card'
 
   @Input() autoB: AutoBuy
+  numbers = []
 
-  constructor(public ser: ServService) { }
+  constructor(public ser: ServService) {
+    this.numbers = Array(this.ser.model.autoBuyers.length).fill(1, 0, this.ser.model.autoBuyers.length)
+  }
 
   ngOnInit() {
   }
@@ -21,7 +24,6 @@ export class AutoBuyerComponent implements OnInit {
     return (this.autoB.wait / this.autoB.interval) * 100
   }
   change() {
-    console.log("aaa")
     this.ser.model.reloadAutoBuyers()
   }
 }

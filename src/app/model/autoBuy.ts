@@ -60,7 +60,6 @@ export abstract class AutoBuy {
 }
 
 export class MaxAllAutoBuy extends AutoBuy {
-
   constructor() {
     super(
       (model, upTo) => model.maxAll(),
@@ -71,5 +70,4 @@ export class MaxAllAutoBuy extends AutoBuy {
     this.id = 0
     this.name = "Max All"
   }
-
 }
