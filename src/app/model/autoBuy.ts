@@ -71,3 +71,17 @@ export class MaxAllAutoBuy extends AutoBuy {
     this.name = "Max All"
   }
 }
+
+export class TimeAutoBuy extends AutoBuy {
+  constructor() {
+    super(
+      (model, upTo) => model.warp(upTo),
+      (model) => {
+        return 10
+      }
+    )
+    this.id = 1
+    this.name = "Time Warp"
+    this.upTo = new Decimal(10)
+  }
+}

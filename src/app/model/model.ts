@@ -5,7 +5,7 @@ import { Edge } from 'vis'
 import * as Decimal from 'break_infinity.js'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
-import { AutoBuy, MaxAllAutoBuy } from './autoBuy'
+import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy } from './autoBuy'
 
 const INIT_CUR = new Decimal(200)
 const INIT_TICK_COST = new Decimal(500)
@@ -30,7 +30,7 @@ export class Model {
   canSoftReset = false
 
   canPrestige = false
-  prestigeCurrency = 10
+  prestigeCurrency = 20
 
   myNodes = new Map<string, MyNode>()
   nodes: vis.DataSet<MyNode>
@@ -56,7 +56,8 @@ export class Model {
     this.init()
     //#region Prestige
     this.autoBuyers = [
-      new MaxAllAutoBuy()
+      new MaxAllAutoBuy(),
+      new TimeAutoBuy()
     ]
 
     this.skills = new vis.DataSet()
@@ -136,9 +137,8 @@ export class Model {
       .reduce((p, n) => p.plus(n), new Decimal(0)).times(this.tickSpeed)
   }
   warp(delta: Decimal): boolean {
-    if (delta.gt(this.time))
-      return false
-    this.time = this.time.min(delta)
+    if (delta.gt(this.time)) return false
+    this.time = this.time.minus(delta)
     this.update(delta.times(1000))  // update require number, but should work anyway...
     return true
   }
@@ -272,9 +272,13 @@ export class Model {
 
     this.prestigeCurrency -= 1
     this.setSkill(skill)
-    this.reloadTickSpeed()
-    this.reloadMaxNode()
-    this.reloadMaxTime()
+
+    if (skill.type === Type.TICK_SPEED || skill.type === Type.TICK_SPEED_ADD || skill.type === INIT_TICK_MULTI)
+      this.reloadTickSpeed()
+    if (skill.type === Type.MAX_NODE_ADD || skill.type === Type.MAX_NODE_MULTI)
+      this.reloadMaxNode()
+    if (skill.type === Type.TIME_BANK_1H)
+      this.reloadMaxTime()
   }
   setSkill(skill: Skill) {
     skill.owned = true
