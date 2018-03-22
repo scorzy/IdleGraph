@@ -81,19 +81,31 @@ export class Model {
     ]
     stuff.forEach(s => {
       this.skills.add(new Skill(s[1] - 1, s.length > 4 ? s[4] : s[2]))
-      this.skillEdges.add({ id: s[1] - 2, from: 1, to: s[1] - 1 })
+      this.skillEdges.add({ from: 1, to: s[1] - 1 })
       for (let n = s[1]; n < s[0] + s[1]; n++) {
         this.skills.add(new Skill(n, s[2]))
-        this.skillEdges.add({ id: n, from: n - 1, to: n })
+        this.skillEdges.add({ from: n - 1, to: n })
       }
-      this.skillEdges.add({ id: s[0] + s[1], from: s[0] + s[1] - 1, to: s[1] - 1 })
+      this.skillEdges.add({ from: s[0] + s[1] - 1, to: s[1] - 1 })
       this.skills.add(new Skill(s[1] + 80, s[3]))
-      this.skillEdges.add({ id: s[1] + 80, from: s[1] + s[0] / 2, to: s[1] + 80 })
+      this.skillEdges.add({ from: s[1] + s[0] / 2, to: s[1] + 80 })
     })
+
+    this.makeLine(580, 600, Type.MAX_TIME_INTERVAL, 6)
+    this.makeLine(580, 610, Type.MAX_TIME_INTERVAL, 6)
+    this.skillEdges.add({ from: 605, to: 615 })
 
     this.reloadMaxTime()
     this.reloadAutoBuyers()
     //#endregion
+  }
+  makeLine(from: number, startId: number, type: Type, num: number) {
+    this.skills.add(new Skill(startId, type))
+    this.skillEdges.add({ id: startId, from: from, to: startId })
+    for (let k = startId + 1; k < startId + num; k++) {
+      this.skills.add(new Skill(k, type))
+      this.skillEdges.add({ id: k, from: k - 1, to: k })
+    }
   }
   init() {
     this.tickSpeed = new Decimal(1)

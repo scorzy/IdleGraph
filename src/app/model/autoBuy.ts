@@ -77,7 +77,7 @@ export class TimeAutoBuy extends AutoBuy {
     super(
       (model, upTo) => model.warp(upTo),
       (model) => {
-        return 10
+        return 300 * Math.pow(0.95, model.prestigeBonus[Type.MAX_TIME_INTERVAL])
       }
     )
     this.id = 1

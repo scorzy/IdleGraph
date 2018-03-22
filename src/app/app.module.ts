@@ -36,7 +36,7 @@ export class CustomOptions extends ToastOptions {
 }
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: "main", pathMatch: "full" },
+  { path: '', redirectTo: "main/ove", pathMatch: "full" },
   {
     path: 'main', component: MainComponent,
     children: [

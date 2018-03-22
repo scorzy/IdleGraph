@@ -37,7 +37,8 @@ export enum Type {
   TIME_PER_SEC,
   TIME_BANK_1H,
   MAX_AUTO_BUY,
-  MAX_ALL_INTERVAL
+  MAX_ALL_INTERVAL,
+  MAX_TIME_INTERVAL
 }
 
 export const labels = [
@@ -50,5 +51,6 @@ export const labels = [
   "+0.05 \ntime /s",
   "+1H \nmax time",
   "+1 \nmax autobuyers",
-  "-5% maxAll\ninterval"
+  "-5% maxAll\ninterval",
+  "-5% warp\ninterval"
 ]

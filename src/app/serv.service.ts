@@ -31,7 +31,8 @@ export class ServService {
     this.options = new Options()
     this.model = new Model()
     this.model.formatter = this.options.formatter
-    setTimeout(this.load.bind(this), 0)
+
+    // setTimeout(this.load.bind(this), 0)
 
     this.linkTheme = this.document.createElement('link')
     this.linkTheme.rel = "stylesheet"
@@ -52,7 +53,6 @@ export class ServService {
       .interval(60000).subscribe(() => {
         this.save(true)
       })
-
   }
   clear() {
     localStorage.removeItem("save")
