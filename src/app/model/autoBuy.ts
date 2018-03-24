@@ -85,3 +85,69 @@ export class TimeAutoBuy extends AutoBuy {
     this.upTo = new Decimal(10)
   }
 }
+
+export class BuyAutoBuy extends AutoBuy {
+  constructor(public level = 2) {
+    super(
+      (model, upTo) => {
+        let done = false
+        Array.from(model.myNodes.values())
+          .filter(n => n.level === this.level && n.canBuy(model))
+          .sort((a, b) => a.priceBuy.cmp(b.priceBuy))
+          .forEach(n => { if (n.buy(model)) done = true })
+        return done
+      },
+      (model) => {
+        return 300 * Math.pow(0.95, model.prestigeBonus[Type.BUY_NODE_INTERVAL])
+      }
+    )
+    this.id = 100 * this.level
+    this.name = "Buy node of level " + this.level
+  }
+}
+
+export class ProdAutoBuy extends AutoBuy {
+  constructor(public level = 2) {
+    super(
+      (model, upTo) => {
+        let done = false
+        Array.from(model.myNodes.values())
+          .filter(n => n.level === this.level && n.canBuyNewProd(model))
+          .sort((a, b) => a.priceNewProd.cmp(b.priceNewProd))
+          .forEach(n => { if (n.buyNewProducer(model)) done = true })
+        return done
+      },
+      (model) => {
+        return 600 * Math.pow(0.95, model.prestigeBonus[Type.BUY_PRODUCER_INTERVAL])
+      }
+    )
+    this.id = 10000 * this.level
+    this.name = "Buy prod. of level " + (this.level + 1)
+  }
+}
+
+export class TickAutoBuy extends AutoBuy {
+  constructor() {
+    super(
+      (model, upTo) => model.buyTickSpeed(),
+      (model) => {
+        return 300 * Math.pow(0.95, model.prestigeBonus[Type.BUY_TICKSPEED_INTERVAL])
+      }
+    )
+    this.id = 2
+    this.name = "Buy Tickspeed"
+  }
+}
+
+export class BuyLeafProd extends AutoBuy {
+  constructor() {
+    super(
+      (model, upTo) => model.leafProd(),
+      (model) => {
+        return 900 * Math.pow(0.95, model.prestigeBonus[Type.BUY_LEAF_PROD_INTERVAL])
+      }
+    )
+    this.id = 3
+    this.name = "Buy Leaf Producers"
+  }
+}

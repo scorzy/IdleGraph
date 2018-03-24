@@ -20,6 +20,7 @@ export class ServService {
 
   edgeEmitter: EventEmitter<string> = new EventEmitter<string>()
   updateEmitter: EventEmitter<number> = new EventEmitter<number>()
+  autoBuyersEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
   linkTheme: HTMLLinkElement
 
   constructor(
@@ -48,11 +49,15 @@ export class ServService {
         this.updateEmitter.emit(delta)
         this.last = now
       })
-
     const saveO = Observable
       .interval(60000).subscribe(() => {
         this.save(true)
       })
+    const autoBuyUp = Observable
+      .interval(1500).subscribe(() => {
+        this.autoBuyersEmitter.emit(false)
+      })
+
   }
   clear() {
     localStorage.removeItem("save")

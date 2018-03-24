@@ -38,7 +38,11 @@ export enum Type {
   TIME_BANK_1H,
   MAX_AUTO_BUY,
   MAX_ALL_INTERVAL,
-  MAX_TIME_INTERVAL
+  MAX_TIME_INTERVAL,
+  BUY_NODE_INTERVAL,
+  BUY_PRODUCER_INTERVAL,
+  BUY_TICKSPEED_INTERVAL,
+  BUY_LEAF_PROD_INTERVAL
 }
 
 export const labels = [
@@ -52,5 +56,9 @@ export const labels = [
   "+1H \nmax time",
   "+1 \nmax autobuyers",
   "-5% maxAll\ninterval",
-  "-5% warp\ninterval"
+  "-5% warp\ninterval",
+  "-5% buy node\ninterval",
+  "-5% buy producer\ninterval",
+  "-5% buy tickspeed\ninterval",
+  "-5% buy leaf prod.\ninterval"
 ]

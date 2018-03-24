@@ -1,9 +1,34 @@
-.form .form-group, form .form-group{
-  padding-left: 4rem;
+.form .form-group,
+form .form-group {
+    padding-left: 2.5rem;
 }
-.form, form{
-  padding-top: 0px;
+
+.form,
+form {
+    padding-top: 0px;
 }
-.form.compact .form-block, form.compact .form-block{
-  margin-bottom: 0px;
+
+.form.compact .form-block,
+form.compact .form-block {
+    margin-bottom: 0px;
+}
+
+.card-title,
+.card-text,
+.form-block {
+    margin-bottom: 0.1rem;
+}
+
+.card-text {
+    margin-bottom: 0px !important;
+}
+
+.form-block {
+    margin: 0px !important;
+}
+
+.onOff {
+    position: absolute;
+    top: 1.5rem;
+    right: 0;
 }

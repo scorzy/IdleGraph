@@ -5,7 +5,7 @@ import { Edge } from 'vis'
 import * as Decimal from 'break_infinity.js'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
-import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy } from './autoBuy'
+import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd } from './autoBuy'
 
 const INIT_CUR = new Decimal(200)
 const INIT_TICK_COST = new Decimal(500)
@@ -57,8 +57,14 @@ export class Model {
     //#region Prestige
     this.autoBuyers = [
       new MaxAllAutoBuy(),
-      new TimeAutoBuy()
+      new TimeAutoBuy(),
+      new TickAutoBuy(),
+      new BuyLeafProd()
     ]
+    for (let n = 2; n < 41; n++) {
+      this.autoBuyers.push(new BuyAutoBuy(n))
+      this.autoBuyers.push(new ProdAutoBuy(n))
+    }
 
     this.skills = new vis.DataSet()
     this.skillEdges = new vis.DataSet()
@@ -136,7 +142,11 @@ export class Model {
     this.time = Decimal.min(this.time.plus(this.prestigeBonus[Type.TIME_PER_SEC] * delta * 0.05 / 1000),
       BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H]).times(3600))
     this.update(delta)
-    this.autoBuyersActiveOrder.forEach(a => a.update(delta / 1000, this))
+    this.autoBuyersActiveOrder.forEach(a => {
+      a.update(delta / 1000, this)
+      console.log(delta + " - " + a.id)
+    }
+    )
   }
   update(delta: number) {
     this.deltaT = this.tickSpeed.times(delta / 1000)
@@ -217,10 +227,13 @@ export class Model {
     })
   }
   leafProd() {
+    let ret = false
     this.myNodes.forEach(node => {
       if (node.producer.length === 0)
-        node.buyNewProducer(this)
+        if (node.buyNewProducer(this))
+          ret = true
     })
+    return ret
   }
   maxCollapse() {
     this.myNodes.forEach(node => {
@@ -239,7 +252,7 @@ export class Model {
   canBuyTickSpeed(): boolean {
     return this.cuerrency.quantity.gte(this.tickSpeedCost)
   }
-  buyTickSpeed(max = false) {
+  buyTickSpeed(max = false): boolean {
     if (!this.canBuyTickSpeed())
       return false
 

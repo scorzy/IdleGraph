@@ -3,10 +3,18 @@
     <progress value={{getPercent()}} max=100></progress>
   </div>
   <h4 class="card-title">{{autoB.name}}</h4>
-  <p class="card-text">
-    Interval: {{autoB.interval | format}} s
-  </p>
 
+  <div>
+    <p class="card-text">
+      Interval: {{autoB.interval | format}} s
+    </p>
+
+    <div class="toggle-switch onOff">
+      <input type="checkbox" id={{autoB.id}} [(ngModel)]="autoB.on" (ngModelChange)="change()" [ngModelOptions]="{standalone: true}"
+        [disabled]="!canChange()">
+      <label for={{autoB.id}}></label>
+    </div>
+  </div>
 
   <form class="compact">
     <section class="form-block">
@@ -14,19 +22,12 @@
       <div class="form-group">
         <label>Priority:</label>
 
-        <div class="toggle-switch">
-          <input type="checkbox" id={{autoB.id}} [(ngModel)]="autoB.on" (ngModelChange)="change()" [ngModelOptions]="{standalone: true}" [disabled]="!canChange()">
-          <label for={{autoB.id}}>On:</label>
-        </div>
-
-        <div class="select">
-          <select [(ngModel)]="autoB.priority" (ngModelChange)="change()" [ngModelOptions]="{standalone: true}">
-            <option value={{i}} *ngFor="let i of numbers">{{i}}</option>
-          </select>
-        </div>
+        <input type="number" [(ngModel)]="autoB.priority" (ngModelChange)="change()" [ngModelOptions]="{standalone: true}"
+        />
 
       </div>
     </section>
   </form>
+
 
 </div>
