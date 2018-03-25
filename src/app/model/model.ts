@@ -6,6 +6,7 @@ import * as Decimal from 'break_infinity.js'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
 import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
+import { Achievement } from './achievement';
 
 const INIT_CUR = new Decimal(200)
 const INIT_TICK_COST = new Decimal(500)
@@ -53,6 +54,8 @@ export class Model {
 
   showLeafSacrify = false
   showMaxCollapse = false
+
+  achievements = new Array<Achievement>()
 
   constructor() {
     this.prestigeBonus.fill(0)
@@ -435,6 +438,7 @@ export class Model {
     d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
     d.t = this.time
     d.a = this.autoBuyers.map(a => a.save())
+    d.k = this.achievements.map(a => a.getData())
     return d
   }
   load(data: any) {
@@ -454,7 +458,13 @@ export class Model {
         if (!!autoBuyer)
           autoBuyer.load(d)
       }
-
+    }
+    if ("k" in data) {
+      this.achievements.forEach(a => a.done = false)
+      for (let acks of data.k) {
+        const ac = this.achievements.find(a => a.id === acks.i)
+        if (ac) ac.done = acks.d
+      }
     }
 
     this.reloadTickSpeed()
