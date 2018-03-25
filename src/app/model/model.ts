@@ -110,7 +110,7 @@ export class Model {
     this.makeLine(509, 800, Type.BUY_PRODUCER_INTERVAL, 6)
     this.makeLine(509, 810, Type.BUY_PRODUCER_INTERVAL, 6)
     this.skillEdges.add({ from: 805, to: 815 })
-    this.makeLine(815, 881, Type.MAX_AUTO_BUY, 1)
+    this.makeLine(815, 881, Type.MAX_AUTO_BUY, 3)
 
     this.makeLine(504, 1000, Type.BUY_LEAF_PROD_INTERVAL, 6)
     this.makeLine(504, 1010, Type.BUY_LEAF_PROD_INTERVAL, 6)
@@ -145,6 +145,8 @@ export class Model {
     this.makeLine(781, 1500, Type.MAX_AUTO_BUY, 6)
     this.skillEdges.add({ from: 1505, to: 1081 })
 
+    this.makeLine(681, 1600, Type.MAX_AUTO_BUY, 6)
+    this.skillEdges.add({ from: 1605, to: 981 })
 
     this.reloadMaxTime()
     this.reloadAutoBuyers()

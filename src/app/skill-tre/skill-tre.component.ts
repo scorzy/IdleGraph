@@ -28,7 +28,12 @@ export class SkillTreComponent implements OnInit, OnDestroy {
     }
     const options: any = {
       autoResize: true,
-      physics: true,
+      physics: {
+        "barnesHut": {
+          "gravitationalConstant": -3000
+        },
+        "minVelocity": 0.75
+      },
       height: '100%',
       width: '100%',
       layout: {
