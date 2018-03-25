@@ -2,6 +2,7 @@ import { MyNode } from '../model/node'
 import { Component, OnInit, Input } from '@angular/core'
 import { ClrDatagridComparatorInterface } from "@clr/angular"
 import * as Decimal from 'break_infinity.js'
+import { ServService } from '../serv.service';
 
 class QuantityComparator implements ClrDatagridComparatorInterface<MyNode> {
   compare(a: MyNode, b: MyNode) { return a.quantity.cmp(b.quantity) }
@@ -21,7 +22,7 @@ export class NodeTableComponent implements OnInit {
   quantityComparator = new QuantityComparator()
   prodComparator = new ProdComparator()
 
-  constructor() { }
+  constructor(public ser: ServService) { }
 
   ngOnInit() {
   }

@@ -16,9 +16,10 @@ export class Skill {
   ) {
     if (this.id === 0)
       this.avaiable = true
-    if (this.label === "")
-      this.label = labels[this.type]
-
+    if (this.label === "") {
+      this.label = this.id + " - " + labels[this.type]
+      // this.label = labels[this.type]
+    }
     if (this.id in positions) {
       this.x = positions[this.id].x
       this.y = positions[this.id].y
@@ -54,7 +55,8 @@ export enum Type {
   BUY_LEAF_PROD_INTERVAL,
   LEAF_SACRIFY_INTERVAL,
   COLLAPSE_INTERVAL,
-  ALL_AUTOBUY_INTERVAL
+  ALL_AUTOBUY_INTERVAL,
+  MAX_AUTO_BUY_PERC
 }
 
 export const labels = [
@@ -75,5 +77,6 @@ export const labels = [
   "-5% buy leaf prod.\ninterval",
   "-5% leaf sacrify\ninterval",
   "-5% collapse\ninterval",
-  "-5% autobuyers\ninterval"
+  "-5% autobuyers\ninterval",
+  "+20% max\nautobuyers"
 ]

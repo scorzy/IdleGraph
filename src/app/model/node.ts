@@ -90,6 +90,8 @@ export class MyNode {
       arrows: 'from'
     })
     this.collapsible = this.level > 2 && this.producer.length > 1
+    model.checkLeafSacrify()
+    model.checkMaxCollapse()
     return producer
   }
 
@@ -124,6 +126,7 @@ export class MyNode {
 
     this.sacrificeMulti = new Decimal(bonus.ln() * (this.level) / 2.5)
       .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] / 10)
+      .times(Decimal.pow(1.2, model.softResetNum))
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus)
     return this.sacrificeMulti
   }
@@ -186,6 +189,8 @@ export class MyNode {
     this.reloadPriceBuy()
     this.reloadPerSec()
     this.collapsible = this.level > 2 && this.producer.length > 1
+    model.checkLeafSacrify()
+    model.checkMaxCollapse()
     return true
   }
   addToList(list: Array<MyNode>): Array<MyNode> {

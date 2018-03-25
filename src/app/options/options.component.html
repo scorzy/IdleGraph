@@ -32,6 +32,34 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label>Line number:</label>
+      <input type="number" name="t4" id="t4" [(ngModel)]="ser.options.lines">
+    </div>
+
+    <div class="form-group">
+      <label for="t1">Sacrify alert:</label>
+      <div class="toggle-switch">
+        <input type="checkbox" name="s" id="s" [(ngModel)]="ser.options.sacAlert">
+        <label for="t1">Single</label>
+      </div>
+      <div class="toggle-switch">
+        <input type="checkbox" name="s1" id="s1" [(ngModel)]="ser.options.sacAllAlert">
+        <label for="t1">All</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="t1">Collapse alert:</label>
+      <div class="toggle-switch">
+        <input type="checkbox" name="s" id="s" [(ngModel)]="ser.options.colAlert">
+        <label for="t1">Single</label>
+      </div>
+      <div class="toggle-switch">
+        <input type="checkbox" name="s1" id="s1" [(ngModel)]="ser.options.colAllAlert">
+        <label for="t1">All</label>
+      </div>
+    </div>
 
   </section>
 </form>

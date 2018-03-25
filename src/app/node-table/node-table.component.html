@@ -14,7 +14,7 @@
   </clr-dg-row>
 
   <clr-dg-footer>
-    <clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems]="nodes.length">
+    <clr-dg-pagination #pagination [clrDgPageSize]="ser.options.lines" [clrDgTotalItems]="nodes.length">
       {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} nodes
     </clr-dg-pagination>
   </clr-dg-footer>

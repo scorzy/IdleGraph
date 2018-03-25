@@ -8,9 +8,26 @@ import { ServService } from '../serv.service';
 })
 export class OverviewComponent implements OnInit {
 
-  constructor(public serv: ServService) { }
+  public sacModal = false
+  public colModal = false
+
+  constructor(public ser: ServService) { }
 
   ngOnInit() {
+  }
+
+  sacrificeOrOpen() {
+    if (this.ser.options.sacAllAlert)
+      this.sacModal = true
+    else
+      this.ser.model.leafSacrify()
+  }
+
+  collapseOrOpen() {
+    if (this.ser.options.colAllAlert)
+      this.colModal = true
+    else
+      this.ser.model.maxCollapse()
   }
 
 }

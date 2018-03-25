@@ -16,7 +16,7 @@ export class AutoBuyTabComponent implements OnInit {
   constructor(public ser: ServService) { }
 
   ngOnInit() {
-    this.maxAuto = this.ser.model.prestigeBonus[Type.MAX_AUTO_BUY]
+    this.maxAuto = this.ser.model.getMaxAutoBuy()
     this.haveAutoBuy = this.maxAuto > 0
   }
 

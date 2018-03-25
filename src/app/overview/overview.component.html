@@ -1,20 +1,51 @@
-<h3>Overview</h3>
-<br />
 <div class="row">
-  <div class="col-xs-12 col-sm-12 col-lg-12 col-xl-12">
     <div class="col-xs btn-group">
-      <button class="btn btn-sm" (click)="serv.model.buyTickSpeed(true)" [disabled]="!serv.model.canBuyTickSpeed()">
+      <button class="btn btn-sm" (click)="ser.model.buyTickSpeed(true)" [disabled]="!ser.model.canBuyTickSpeed()">
         Max Tick Speed
       </button>
-      <button class="btn btn-sm btn-success-outline" (click)="serv.model.leafProd()">
+      <button class="btn btn-sm btn-success-outline" (click)="ser.model.leafProd()">
         Leaf Prod.
       </button>
-      <button class="btn btn-sm btn-danger-outline" (click)="serv.model.leafSacrify()">
+      <button class="btn btn-sm btn-danger-outline" (click)="sacrificeOrOpen()" *ngIf="ser.model.showLeafSacrify">
         Leaf Sacrifice
       </button>
-      <button class="btn btn-sm btn-danger-outline" (click)="serv.model.maxCollapse()">
+      <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="ser.model.showMaxCollapse">
         Collapse Max
       </button>
     </div>
   </div>
-</div>
+
+
+<clr-modal [(clrModalOpen)]="colModal">
+  <h3 class="modal-title ">Collapse</h3>
+  <div class="modal-body ">
+    <p>Collapse will merge all producers of this, grupped per level: quantity, manual bought and sacrifice
+      bonus will be the summ. The quantity of this and all children will be set to zero.</p>
+    <div class="checkbox-inline flex-items-xs-left">
+      <input type="checkbox" id="othercheckbox" [(ngModel)]="ser.options.colAllAlert">
+      <label for="othercheckbox">Show again</label>
+    </div>
+  </div>
+  <div class="modal-footer ">
+    <button type="button" class="btn btn-outline" (click)="colModal=false ">Cancel</button>
+    <button type="button" class="btn btn-primary btn-danger" (click)="ser.model.maxCollapse(); colModal=false">Collapse</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="sacModal">
+  <h3 class="modal-title">Sacrifice</h3>
+  <div class="modal-body">
+    <p>
+      Sacrifice will set all children to zero, with cost and bonus unchanged. You will gain a bonus for this
+      node.
+    </p>
+    <div class="checkbox-inline flex-items-xs-left">
+      <input type="checkbox" id="othercheckbox" [(ngModel)]="ser.options.sacAllAlert">
+      <label for="othercheckbox">Show again</label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="sacModal=false">Cancel</button>
+    <button type="button" class="btn btn-primary btn-danger" (click)="ser.model.leafSacrify();sacModal=false">Sacrify</button>
+  </div>
+</clr-modal>

@@ -2,8 +2,8 @@
 
   <h1>SoftReset</h1>
   <p>
-    Reset everything except prestige bonus and get a tickspeed boost. You need {{ser.model.softResetReq |
-    format}} node of level {{ser.model.softResetNum +1}}.
+    Reset everything except prestige bonus and get a tickspeed boost and a sacrifice boost. You need {{ser.model.softResetReq
+    | format}} node of level {{ser.model.softResetNum +1}}.
   </p>
   <div *ngIf="!ser.model.canSoftReset; else softReset">
     <div class="progress">

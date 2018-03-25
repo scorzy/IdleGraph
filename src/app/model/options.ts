@@ -10,6 +10,9 @@ export class Options {
   dark = true
   header = 1
   showGraph = true
+  colAllAlert = true
+  sacAllAlert = true
+  lines = 6
 
   constructor() {
   }
@@ -28,16 +31,23 @@ export class Options {
       n: this.numFormat,
       a: this.autosaveNotification,
       d: this.dark,
-      g: this.showGraph
+      g: this.showGraph,
+      k: this.colAllAlert,
+      l: this.sacAllAlert,
+      p: this.lines
     }
   }
   load(data) {
     this.colAlert = !!data.c
     this.sacAlert = !!data.s
+    this.colAllAlert = !!data.k
+    this.sacAllAlert = !!data.l
     this.autosaveNotification = !!data.a
     this.dark = !!data.d
     this.showGraph = !!data.g
     this.numFormat = "n" in data ? data.n : "S"
+    if ("p" in data)
+      this.lines = data.p
     this.generateFormatter()
   }
 }

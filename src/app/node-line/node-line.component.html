@@ -23,7 +23,7 @@
 
 <!-- Modal -->
 
-<clr-modal [(clrModalOpen)]="colModal ">
+<clr-modal [(clrModalOpen)]="colModal">
   <h3 class="modal-title ">Collapse</h3>
   <div class="modal-body ">
     <p>Collapse will merge all producers of this, grupped per level: quantity, manual bought and sacrifice
@@ -39,7 +39,7 @@
   </div>
 </clr-modal>
 
-<clr-modal [(clrModalOpen)]="sacModal ">
+<clr-modal [(clrModalOpen)]="sacModal">
   <h3 class="modal-title">Sacrifice</h3>
   <div class="modal-body">
     <p>
@@ -47,9 +47,9 @@
       node.
     </p>
     <div class="checkbox-inline flex-items-xs-left">
-        <input type="checkbox" id="othercheckbox" [(ngModel)]="ser.options.sacAlert">
-        <label for="othercheckbox">Show again</label>
-      </div>
+      <input type="checkbox" id="othercheckbox" [(ngModel)]="ser.options.sacAlert">
+      <label for="othercheckbox">Show again</label>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="sacModal=false">Cancel</button>

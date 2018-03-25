@@ -30,7 +30,7 @@ export class Model {
   canSoftReset = false
 
   canPrestige = false
-  prestigeCurrency = 20
+  prestigeCurrency = 200
 
   myNodes = new Map<string, MyNode>()
   nodes: vis.DataSet<MyNode>
@@ -50,6 +50,9 @@ export class Model {
 
   autoBuyers = new Array<AutoBuy>()
   autoBuyersActiveOrder = new Array<AutoBuy>()
+
+  showLeafSacrify = false
+  showMaxCollapse = false
 
   constructor() {
     this.prestigeBonus.fill(0)
@@ -148,8 +151,21 @@ export class Model {
     this.makeLine(681, 1600, Type.MAX_AUTO_BUY, 6)
     this.skillEdges.add({ from: 1605, to: 981 })
 
+    this.makeLine(1502, 1700, Type.MAX_AUTO_BUY, 3)
+    this.skillEdges.add({ from: 1702, to: 1401 })
+
+    this.makeLine(1603, 1800, Type.TICK_SPEED, 6)
+    this.makeLine(1602, 1850, Type.TIME_PER_SEC, 6)
+    this.makeLine(1855, 1870, Type.TIME_BANK_1H, 1)
+    this.skillEdges.add({ from: 1805, to: 1870 })
+
+    this.makeLine(1401, 1900, Type.MAX_AUTO_BUY, 3)
+    this.makeLine(1902, 1910, Type.MAX_AUTO_BUY_PERC, 1)
+
     this.reloadMaxTime()
     this.reloadAutoBuyers()
+    this.checkLeafSacrify()
+    this.checkMaxCollapse()
     //#endregion
   }
   makeLine(from: number, startId: number, type: Type, num: number) {
@@ -212,7 +228,6 @@ export class Model {
     return true
   }
   getToAdd(node: MyNode, level: number): Decimal {
-
     let toAdd = node.quantity.times(node.prodPerSec.times(Decimal.pow(this.deltaT, level).div(level)))
     node.producer.forEach(n => toAdd = toAdd.plus(this.getToAdd(n, level + 1)))
     return toAdd
@@ -263,9 +278,10 @@ export class Model {
           break
         else
           bought = true
-
-      return bought
     }
+    this.checkLeafSacrify()
+    this.checkMaxCollapse()
+    return bought
   }
   leafSacrify() {
     let ret = false
@@ -283,6 +299,8 @@ export class Model {
         if (node.buyNewProducer(this))
           ret = true
     })
+    this.checkLeafSacrify()
+    this.checkMaxCollapse()
     return ret
   }
   maxCollapse() {
@@ -292,13 +310,24 @@ export class Model {
         if (node.collapse(this))
           ret = true
     })
+    this.checkLeafSacrify()
+    this.checkMaxCollapse()
     return ret
+  }
+  checkLeafSacrify() {
+    this.showLeafSacrify = !!Array.from(this.myNodes.values()).find(n => n.level > 2)
+  }
+  checkMaxCollapse() {
+    this.showMaxCollapse = !!Array.from(this.myNodes.values()).find(n => n.collapsible)
   }
   //#endregion
   //#region Auto Buyers
   reloadAutoBuyers() {
     this.autoBuyers.forEach(a => a.reloadInterval(this))
     this.autoBuyersActiveOrder = this.autoBuyers.filter(a => a.on).sort((a, b) => a.priority - b.priority)
+  }
+  getMaxAutoBuy(): number {
+    return this.prestigeBonus[Type.MAX_AUTO_BUY] * (Math.pow(1.2, this.prestigeBonus[Type.MAX_AUTO_BUY_PERC]))
   }
   //#endregion
   //#region TickSped
@@ -343,6 +372,8 @@ export class Model {
     this.init()
     this.softResetNum = 0
     this.prestigeCurrency += 1
+    this.checkLeafSacrify()
+    this.checkMaxCollapse()
   }
   buySkill(skill: Skill) {
     if (this.prestigeCurrency < 1)
@@ -389,6 +420,8 @@ export class Model {
     // }
     this.softResetNum = this.softResetNum + 1
     this.reloadTickSpeed()
+    this.checkLeafSacrify()
+    this.checkMaxCollapse()
   }
   //#endregion
   //#region Save Load
@@ -402,27 +435,19 @@ export class Model {
     d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
     d.t = this.time
     d.a = this.autoBuyers.map(a => a.save())
-    console.log(d)
     return d
   }
   load(data: any) {
     this.nodes = new vis.DataSet()
     this.edges = new vis.DataSet()
-    if ("c" in data)
-      this.cuerrency = MyNode.generate(data.c, this, null)
+    if ("c" in data) this.cuerrency = MyNode.generate(data.c, this, null)
     this.cuerrency.label = "Main"
-    if ("m" in data)
-      this.maxNode = data.m
-    if ("p" in data)
-      this.prestigeCurrency = data.p
-    if ("s" in data)
-      this.softResetNum = data.s
-    if ("o" in data)
-      this.skills.get(data.o).forEach(s => this.setSkill(s))
-    if ("l" in data)
-      this.tickSpeedOwned = new Decimal(data.l)
-    if ("t" in data)
-      this.time = new Decimal(data.t)
+    if ("m" in data) this.maxNode = data.m
+    if ("p" in data) this.prestigeCurrency = data.p
+    if ("s" in data) this.softResetNum = data.s
+    if ("o" in data) this.skills.get(data.o).forEach(s => this.setSkill(s))
+    if ("l" in data) this.tickSpeedOwned = new Decimal(data.l)
+    if ("t" in data) this.time = new Decimal(data.t)
     if ("a" in data) {
       for (let d of data.a) {
         const autoBuyer = this.autoBuyers.find(a => a.id === d.i)
@@ -437,6 +462,8 @@ export class Model {
     this.myNodes.forEach(n => n.reloadPerSec())
     this.reloadMaxTime()
     this.reloadAutoBuyers()
+    this.checkLeafSacrify()
+    this.checkMaxCollapse()
   }
   //#endregion
 
