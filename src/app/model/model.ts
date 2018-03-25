@@ -353,10 +353,11 @@ export class Model {
 
     if (skill.type === Type.TICK_SPEED || skill.type === Type.TICK_SPEED_ADD || skill.type === INIT_TICK_MULTI)
       this.reloadTickSpeed()
-    if (skill.type === Type.MAX_NODE_ADD || skill.type === Type.MAX_NODE_MULTI)
+    else if (skill.type === Type.MAX_NODE_ADD || skill.type === Type.MAX_NODE_MULTI)
       this.reloadMaxNode()
-    if (skill.type === Type.TIME_BANK_1H)
+    else if (skill.type === Type.TIME_BANK_1H)
       this.reloadMaxTime()
+    else this.reloadAutoBuyers()
   }
   setSkill(skill: Skill) {
     skill.owned = true
@@ -401,6 +402,7 @@ export class Model {
     d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
     d.t = this.time
     d.a = this.autoBuyers.map(a => a.save())
+    console.log(d)
     return d
   }
   load(data: any) {

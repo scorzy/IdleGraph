@@ -122,7 +122,7 @@ export class MyNode {
     if (bonus.lte(10))
       return new Decimal(0)
 
-    this.sacrificeMulti = new Decimal(bonus.ln() * (this.level) / 2)
+    this.sacrificeMulti = new Decimal(bonus.ln() * (this.level) / 2.5)
       .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] / 10)
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus)
     return this.sacrificeMulti
@@ -131,7 +131,7 @@ export class MyNode {
     if (this.sacrificeBonus.gte(this.reloadSacrificeMulti(model)))
       return false
 
-    this.sacrificeBonus = this.sacrificeMulti
+    this.sacrificeBonus = new Decimal(this.sacrificeMulti)
     let product = this.product
     while (product && product.level > 1) {
       if (model.prestige[Type.SACRIFY_SPECIAL] > 0)
@@ -211,6 +211,7 @@ export class MyNode {
       l: this.level,
       x: vis.x,
       y: vis.y,
+      s: this.sacrificeBonus,
       p: this.producer.map(prod => prod.getSave(model))
     }
   }
@@ -228,6 +229,9 @@ export class MyNode {
     node.level = data.l
     node.x = data.x
     node.y = data.y
+    if ("s" in data)
+      node.sacrificeBonus = new Decimal(data.s)
+
     node.reloadNewProdPrice()
     node.reloadPriceBuy()
 
