@@ -142,10 +142,11 @@ export class MyNode {
     }
     this.reloadSacrificeMulti(model)
     this.reloadPerSec()
+    return true
   }
   //#endregion
   //#region Collapse
-  collapse(model: Model) {
+  collapse(model: Model): boolean {
     const firstProducer = this.producer[0]
     if (!firstProducer)
       return false
@@ -185,6 +186,7 @@ export class MyNode {
     this.reloadPriceBuy()
     this.reloadPerSec()
     this.collapsible = this.level > 2 && this.producer.length > 1
+    return true
   }
   addToList(list: Array<MyNode>): Array<MyNode> {
     list.push(this)

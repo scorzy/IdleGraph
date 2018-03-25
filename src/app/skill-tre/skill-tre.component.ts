@@ -15,6 +15,7 @@ export class SkillTreComponent implements OnInit, OnDestroy {
   network: vis.Network
   skill: any
   openModal = false
+  exp = ""
 
   constructor(public serv: ServService) { }
 
@@ -27,8 +28,12 @@ export class SkillTreComponent implements OnInit, OnDestroy {
     }
     const options: any = {
       autoResize: true,
+      physics: true,
       height: '100%',
-      width: '100%'
+      width: '100%',
+      layout: {
+        improvedLayout: false
+      }
     }
 
     this.network = new vis.Network(this.container, data, options)
@@ -48,5 +53,9 @@ export class SkillTreComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.network.storePositions()
+  }
+  export() {
+    this.network.storePositions()
+    this.exp = JSON.stringify(this.network.getPositions())
   }
 }

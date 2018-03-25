@@ -17,7 +17,7 @@ export abstract class AutoBuy {
   ) { }
 
   reloadInterval(model: Model) {
-    const int = this.getInterval(model)
+    const int = this.getInterval(model) * Math.pow(0.95, model.prestigeBonus[Type.ALL_AUTOBUY_INTERVAL])
     this.interval = int
   }
 
@@ -64,7 +64,7 @@ export class MaxAllAutoBuy extends AutoBuy {
     super(
       (model, upTo) => model.maxAll(),
       (model) => {
-        return 300 * Math.pow(0.95, model.prestigeBonus[Type.MAX_ALL_INTERVAL])
+        return 400 * Math.pow(0.95, model.prestigeBonus[Type.MAX_ALL_INTERVAL])
       }
     )
     this.id = 0
@@ -98,7 +98,7 @@ export class BuyAutoBuy extends AutoBuy {
         return done
       },
       (model) => {
-        return 300 * Math.pow(0.95, model.prestigeBonus[Type.BUY_NODE_INTERVAL])
+        return 200 * Math.pow(0.95, model.prestigeBonus[Type.BUY_NODE_INTERVAL])
       }
     )
     this.id = 100 * this.level
@@ -149,5 +149,31 @@ export class BuyLeafProd extends AutoBuy {
     )
     this.id = 3
     this.name = "Buy Leaf Producers"
+  }
+}
+
+export class LeafSacrify extends AutoBuy {
+  constructor() {
+    super(
+      (model, upTo) => model.leafSacrify(),
+      (model) => {
+        return 900 * Math.pow(0.95, model.prestigeBonus[Type.LEAF_SACRIFY_INTERVAL])
+      }
+    )
+    this.id = 4
+    this.name = "Leaf Sacrify"
+  }
+}
+
+export class Collapse extends AutoBuy {
+  constructor() {
+    super(
+      (model, upTo) => model.maxCollapse(),
+      (model) => {
+        return 900 * Math.pow(0.95, model.prestigeBonus[Type.COLLAPSE_INTERVAL])
+      }
+    )
+    this.id = 5
+    this.name = "Collapse"
   }
 }

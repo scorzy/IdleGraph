@@ -1,3 +1,5 @@
+import * as positions from '../skillsPositions.json'
+
 export class Skill {
 
   color = noColor
@@ -8,12 +10,19 @@ export class Skill {
     public type: Type,
     public label: string = "",
     public owned = false,
-    public avaiable = false
+    public avaiable = false,
+    public x = 0,
+    public y = 0
   ) {
     if (this.id === 0)
       this.avaiable = true
     if (this.label === "")
       this.label = labels[this.type]
+
+    if (this.id in positions) {
+      this.x = positions[this.id].x
+      this.y = positions[this.id].y
+    }
 
     this.setColor()
   }
@@ -42,7 +51,10 @@ export enum Type {
   BUY_NODE_INTERVAL,
   BUY_PRODUCER_INTERVAL,
   BUY_TICKSPEED_INTERVAL,
-  BUY_LEAF_PROD_INTERVAL
+  BUY_LEAF_PROD_INTERVAL,
+  LEAF_SACRIFY_INTERVAL,
+  COLLAPSE_INTERVAL,
+  ALL_AUTOBUY_INTERVAL
 }
 
 export const labels = [
@@ -60,5 +72,8 @@ export const labels = [
   "-5% buy node\ninterval",
   "-5% buy producer\ninterval",
   "-5% buy tickspeed\ninterval",
-  "-5% buy leaf prod.\ninterval"
+  "-5% buy leaf prod.\ninterval",
+  "-5% leaf sacrify\ninterval",
+  "-5% collapse\ninterval",
+  "-5% autobuyers\ninterval"
 ]

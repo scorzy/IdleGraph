@@ -5,7 +5,7 @@ import { Edge } from 'vis'
 import * as Decimal from 'break_infinity.js'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
-import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd } from './autoBuy'
+import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
 
 const INIT_CUR = new Decimal(200)
 const INIT_TICK_COST = new Decimal(500)
@@ -59,7 +59,9 @@ export class Model {
       new MaxAllAutoBuy(),
       new TimeAutoBuy(),
       new TickAutoBuy(),
-      new BuyLeafProd()
+      new BuyLeafProd(),
+      new LeafSacrify(),
+      new Collapse()
     ]
     for (let n = 2; n < 41; n++) {
       this.autoBuyers.push(new BuyAutoBuy(n))
@@ -96,10 +98,53 @@ export class Model {
       this.skills.add(new Skill(s[1] + 80, s[3]))
       this.skillEdges.add({ from: s[1] + s[0] / 2, to: s[1] + 80 })
     })
+    this.makeLine(580, 1300, Type.MAX_AUTO_BUY, 4)
+    this.makeLine(580, 1310, Type.MAX_AUTO_BUY, 4)
+    this.skillEdges.add({ from: 1303, to: 1313 })
 
-    this.makeLine(580, 600, Type.MAX_TIME_INTERVAL, 6)
-    this.makeLine(580, 610, Type.MAX_TIME_INTERVAL, 6)
+    this.makeLine(503, 700, Type.BUY_NODE_INTERVAL, 6)
+    this.makeLine(503, 710, Type.BUY_NODE_INTERVAL, 6)
+    this.skillEdges.add({ from: 705, to: 715 })
+    this.makeLine(715, 781, Type.MAX_AUTO_BUY, 1)
+
+    this.makeLine(509, 800, Type.BUY_PRODUCER_INTERVAL, 6)
+    this.makeLine(509, 810, Type.BUY_PRODUCER_INTERVAL, 6)
+    this.skillEdges.add({ from: 805, to: 815 })
+    this.makeLine(815, 881, Type.MAX_AUTO_BUY, 1)
+
+    this.makeLine(504, 1000, Type.BUY_LEAF_PROD_INTERVAL, 6)
+    this.makeLine(504, 1010, Type.BUY_LEAF_PROD_INTERVAL, 6)
+    this.skillEdges.add({ from: 1005, to: 1015 })
+    this.makeLine(1015, 1081, Type.MAX_AUTO_BUY, 1)
+
+    this.makeLine(505, 1200, Type.COLLAPSE_INTERVAL, 6)
+    this.makeLine(505, 1210, Type.COLLAPSE_INTERVAL, 6)
+    this.skillEdges.add({ from: 1205, to: 1215 })
+    this.makeLine(1215, 1281, Type.MAX_AUTO_BUY, 1)
+
+
+    this.makeLine(380, 1100, Type.LEAF_SACRIFY_INTERVAL, 6)
+    this.makeLine(380, 1110, Type.LEAF_SACRIFY_INTERVAL, 6)
+    this.skillEdges.add({ from: 1105, to: 1115 })
+    this.makeLine(1115, 1181, Type.MAX_AUTO_BUY, 1)
+
+    this.makeLine(180, 900, Type.BUY_TICKSPEED_INTERVAL, 6)
+    this.makeLine(180, 910, Type.BUY_TICKSPEED_INTERVAL, 6)
+    this.skillEdges.add({ from: 905, to: 915 })
+    this.makeLine(915, 981, Type.MAX_AUTO_BUY, 1)
+
+    this.makeLine(480, 600, Type.MAX_TIME_INTERVAL, 6)
+    this.makeLine(480, 610, Type.MAX_TIME_INTERVAL, 6)
     this.skillEdges.add({ from: 605, to: 615 })
+    this.makeLine(615, 681, Type.MAX_AUTO_BUY, 1)
+
+
+    this.makeLine(1281, 1400, Type.ALL_AUTOBUY_INTERVAL, 4)
+    this.skillEdges.add({ from: 1403, to: 1181 })
+
+    this.makeLine(781, 1500, Type.MAX_AUTO_BUY, 6)
+    this.skillEdges.add({ from: 1505, to: 1081 })
+
 
     this.reloadMaxTime()
     this.reloadAutoBuyers()
@@ -144,7 +189,7 @@ export class Model {
     this.update(delta)
     this.autoBuyersActiveOrder.forEach(a => {
       a.update(delta / 1000, this)
-      console.log(delta + " - " + a.id)
+      // console.log(delta + " - " + a.id)
     }
     )
   }
@@ -221,10 +266,13 @@ export class Model {
     }
   }
   leafSacrify() {
+    let ret = false
     this.myNodes.forEach(node => {
       if (node.producer.length === 0)
-        node.sacrifice(this)
+        if (node.sacrifice(this))
+          ret = true
     })
+    return ret
   }
   leafProd() {
     let ret = false
@@ -236,10 +284,13 @@ export class Model {
     return ret
   }
   maxCollapse() {
+    let ret = false
     this.myNodes.forEach(node => {
       if (node.level === 3 && node.collapsible)
-        node.collapse(this)
+        if (node.collapse(this))
+          ret = true
     })
+    return ret
   }
   //#endregion
   //#region Auto Buyers
