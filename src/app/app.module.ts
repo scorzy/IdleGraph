@@ -25,6 +25,8 @@ import { ServService } from './serv.service';
 import { UpToTimePipe } from './up-to-time.pipe';
 import { AutoBuyTabComponent } from './auto-buy-tab/auto-buy-tab.component';
 import { AutoBuyerComponent } from './auto-buyer/auto-buyer.component';
+import { AchivementComponent } from './achivement/achivement.component';
+import { AchivementListComponent } from './achivement-list/achivement-list.component';
 
 export class CustomOptions extends ToastOptions {
   animate = 'fade'
@@ -90,7 +92,9 @@ const appRoutes: Routes = [
     OptionsComponent,
     UpToTimePipe,
     AutoBuyTabComponent,
-    AutoBuyerComponent
+    AutoBuyerComponent,
+    AchivementComponent,
+    AchivementListComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),

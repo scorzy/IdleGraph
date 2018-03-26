@@ -30,7 +30,7 @@ export class ServService {
 
     this.last = Date.now()
     this.options = new Options()
-    this.model = new Model()
+    this.model = new Model(toastr)
     this.model.formatter = this.options.formatter
 
     // setTimeout(this.load.bind(this), 0)
@@ -99,7 +99,7 @@ export class ServService {
         return false
       }
       this.model = null
-      this.model = new Model()
+      this.model = new Model(this.toastr)
       if (!!data.o)
         this.options.load(data.o)
       this.setTheme()

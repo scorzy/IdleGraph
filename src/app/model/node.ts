@@ -126,7 +126,7 @@ export class MyNode {
 
     this.sacrificeMulti = new Decimal(bonus.ln() * (this.level) / 2.5)
       .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] / 10)
-      .times(Decimal.pow(1.2, model.softResetNum))
+      .times(Decimal.pow(1.8, model.softResetNum))
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus)
     return this.sacrificeMulti
   }

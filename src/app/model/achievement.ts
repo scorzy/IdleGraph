@@ -1,6 +1,7 @@
 export class Achievement {
 
   done = false
+
   constructor(
     public id: number,
     public description = ""

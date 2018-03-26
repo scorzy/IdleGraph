@@ -6,9 +6,11 @@ import * as Decimal from 'break_infinity.js'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
 import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
-import { Achievement } from './achievement';
+import { Achievement } from './achievement'
+import { ToastsManager } from 'ng2-toastr';
 
-const INIT_CUR = new Decimal(200)
+// const INIT_CUR = new Decimal(200)
+const INIT_CUR = new Decimal(200E20)
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(1.5)
 const BASE_TIME_BANK = new Decimal(4)
@@ -56,8 +58,9 @@ export class Model {
   showMaxCollapse = false
 
   achievements = new Array<Achievement>()
+  firsthAck: Achievement
 
-  constructor() {
+  constructor(public toastr: ToastsManager) {
     this.prestigeBonus.fill(0)
     this.init()
     //#region Prestige
@@ -170,6 +173,11 @@ export class Model {
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     //#endregion
+
+    //#region Achivements
+    this.firsthAck = new Achievement(0, "First soft reset")
+    this.achievements.push(this.firsthAck)
+    //#region
   }
   makeLine(from: number, startId: number, type: Type, num: number) {
     this.skills.add(new Skill(startId, type))
@@ -425,6 +433,11 @@ export class Model {
     this.reloadTickSpeed()
     this.checkLeafSacrify()
     this.checkMaxCollapse()
+
+    if (!this.firsthAck.done) {
+      this.firsthAck.done = true
+      this.toastr.info("first", "title")
+    }
   }
   //#endregion
   //#region Save Load
