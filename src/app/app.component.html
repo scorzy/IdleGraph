@@ -14,6 +14,10 @@
         Skill
         <span class="badge badge-success" *ngIf="serv.model.prestigeCurrency > 0">{{serv.model.prestigeCurrency | format}}</span>
       </a>
+      <a href="javascript://" class="nav-link nav-text" [routerLink]="'ack'" [routerLinkActiveOptions]="{exact: false}"
+        [routerLinkActive]="'active'" skipLocationChange>
+        Ack
+      </a>
     </div>
     <div class="header-actions">
       <a href="javascript://" class="nav-link nav-icon" (click)="warpModal = true" skipLocationChange>

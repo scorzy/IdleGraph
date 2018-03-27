@@ -2,7 +2,7 @@ import { Model } from './model'
 import * as Decimal from 'break_infinity.js'
 import { Type } from './skill'
 
-const BONUS = new Decimal(0.05)
+const BONUS = new Decimal(0.1)
 
 export class MyNode {
 
@@ -47,8 +47,11 @@ export class MyNode {
   getBonus(): Decimal {
     return BONUS.times(this.bought)
   }
-  reloadPerSec() {
+  reloadPerSec(model: Model) {
     this.prodPerSec = this.getBonus().plus(1).times(this.sacrificeBonus.div(100).plus(1))
+
+    if (this.level === 1 && model.firsthAck.done)
+      this.prodPerSec = this.prodPerSec.times(1.1)
   }
 
   buy(model: Model): boolean {
@@ -59,7 +62,8 @@ export class MyNode {
     this.quantity = this.quantity.plus(buyQta)
     this.bought = this.bought.plus(buyQta)
     this.reloadPriceBuy()
-    this.reloadPerSec()
+    this.reloadPerSec(model)
+    model.buyNodeEmitter.emit(this)
     return true
   }
   buyNewProducer(model: Model): MyNode {
@@ -144,7 +148,7 @@ export class MyNode {
       product = product.product
     }
     this.reloadSacrificeMulti(model)
-    this.reloadPerSec()
+    this.reloadPerSec(model)
     return true
   }
   //#endregion
@@ -175,7 +179,7 @@ export class MyNode {
 
       prod.reloadNewProdPrice()
       prod.reloadPriceBuy()
-      prod.reloadPerSec()
+      prod.reloadPerSec(model)
       prev = prod
       level += 1
     }
@@ -187,7 +191,7 @@ export class MyNode {
     }
     this.reloadNewProdPrice()
     this.reloadPriceBuy()
-    this.reloadPerSec()
+    this.reloadPerSec(model)
     this.collapsible = this.level > 2 && this.producer.length > 1
     model.checkLeafSacrify()
     model.checkMaxCollapse()

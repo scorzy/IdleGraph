@@ -23,6 +23,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
   paramsSub: any
   updateSub: any
   edgeSub: any
+  subNode: any
 
   constructor(public ser: ServService,
     private activatedRoute: ActivatedRoute,
@@ -41,12 +42,20 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
     })
     this.updateSub = this.ser.updateEmitter.subscribe(a => this.node && this.node.reloadStats())
     this.edgeSub = this.ser.edgeEmitter.subscribe(e => this.onEdge(e))
+
+    this.subNode = this.ser.buyNodeEmitter.subscribe(n => {
+      if (this.node && this.node === n) {
+        this.bonus = new FormatPipe(this.ser).transform(this.node.getBonus())
+        this.node.reloadStats()
+      }
+    })
   }
 
   ngOnDestroy() {
     this.paramsSub.unsubscribe()
     this.updateSub.unsubscribe()
     this.edgeSub.unsubscribe()
+    this.subNode.unsubscribe()
   }
 
   exit() {

@@ -9,6 +9,8 @@ import { ToastsManager } from 'ng2-toastr'
 import { DOCUMENT } from '@angular/common'
 import * as moment from 'moment'
 import * as Decimal from 'break_infinity.js'
+import { Achievement } from './model/achievement';
+import { MyNode } from './model/node';
 
 @Injectable()
 export class ServService {
@@ -21,6 +23,9 @@ export class ServService {
   edgeEmitter: EventEmitter<string> = new EventEmitter<string>()
   updateEmitter: EventEmitter<number> = new EventEmitter<number>()
   autoBuyersEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
+  achievementsEmitter: EventEmitter<Achievement> = new EventEmitter<Achievement>()
+  buyNodeEmitter: EventEmitter<MyNode> = new EventEmitter<MyNode>()
+
   linkTheme: HTMLLinkElement
 
   constructor(
@@ -30,7 +35,7 @@ export class ServService {
 
     this.last = Date.now()
     this.options = new Options()
-    this.model = new Model(toastr)
+    this.model = new Model(toastr, this.achievementsEmitter, this.buyNodeEmitter)
     this.model.formatter = this.options.formatter
 
     // setTimeout(this.load.bind(this), 0)
@@ -99,7 +104,7 @@ export class ServService {
         return false
       }
       this.model = null
-      this.model = new Model(this.toastr)
+      this.model = new Model(this.toastr, this.achievementsEmitter, this.buyNodeEmitter)
       if (!!data.o)
         this.options.load(data.o)
       this.setTheme()

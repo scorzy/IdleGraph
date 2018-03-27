@@ -4,7 +4,10 @@ export class Achievement {
 
   constructor(
     public id: number,
-    public description = ""
+    public title: string,
+    public description: string,
+    public reward = "",
+    public reloadFun: (Model) => {} = null
   ) { }
 
   //#region Save Load

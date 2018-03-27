@@ -69,6 +69,8 @@ const appRoutes: Routes = [
       { path: 'save', component: SaveComponent },
       { path: 'opt', component: OptionsComponent }
     ]
+  }, {
+    path: 'ack', component: AchivementListComponent
   }
 ];
 

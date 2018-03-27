@@ -1,3 +1,9 @@
-<p>
-  achivement works!
-</p>
+<div class="card-block">
+  <h3 class="card-title">
+    <clr-icon shape="success-standard" class="is-success is-solid" *ngIf="ack.done"></clr-icon>
+    {{ack.title}}</h3>
+  <p class="card-text">
+    {{ack.description}}
+    <br/> {{ack.reward}}
+  </p>
+</div>

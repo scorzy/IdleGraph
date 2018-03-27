@@ -1,3 +1,5 @@
-<p>
-  achivement-list works!
-</p>
+<div class="content-area">
+  <div class="card-columns-4">
+    <app-achivement [ack]="a" *ngFor="let a of ser.model.achievements; trackBy:getId"></app-achivement>
+  </div>
+</div>

@@ -7,7 +7,7 @@ import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
 import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
 import { Achievement } from './achievement'
-import { ToastsManager } from 'ng2-toastr';
+import { ToastsManager } from 'ng2-toastr'
 
 // const INIT_CUR = new Decimal(200)
 const INIT_CUR = new Decimal(200E20)
@@ -60,7 +60,9 @@ export class Model {
   achievements = new Array<Achievement>()
   firsthAck: Achievement
 
-  constructor(public toastr: ToastsManager) {
+  constructor(public toastr: ToastsManager,
+    public achievementsEmitter: EventEmitter<Achievement>,
+    public buyNodeEmitter: EventEmitter<MyNode>) {
     this.prestigeBonus.fill(0)
     this.init()
     //#region Prestige
@@ -175,7 +177,8 @@ export class Model {
     //#endregion
 
     //#region Achivements
-    this.firsthAck = new Achievement(0, "First soft reset")
+    this.firsthAck = new Achievement(0, "First soft reset", "Do one soft reset", "+10% production from node of level 1",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
     this.achievements.push(this.firsthAck)
     //#region
   }
@@ -381,10 +384,11 @@ export class Model {
   }
   prestige() {
     this.init()
-    this.softResetNum = 0
+    this.softResetNum = 1
     this.prestigeCurrency += 1
     this.checkLeafSacrify()
     this.checkMaxCollapse()
+    this.softResetCheck()
   }
   buySkill(skill: Skill) {
     if (this.prestigeCurrency < 1)
@@ -433,11 +437,20 @@ export class Model {
     this.reloadTickSpeed()
     this.checkLeafSacrify()
     this.checkMaxCollapse()
+    this.unlockAchievement(this.firsthAck)
+  }
+  //#endregion
+  //#region Achievements
+  unlockAchievement(ack: Achievement): boolean {
+    if (ack.done)
+      return false
 
-    if (!this.firsthAck.done) {
-      this.firsthAck.done = true
-      this.toastr.info("first", "title")
-    }
+    ack.done = true
+    if (ack.reloadFun)
+      ack.reloadFun(this)
+
+    this.toastr.info(ack.reward, ack.title)
+    this.achievementsEmitter.emit(ack)
   }
   //#endregion
   //#region Save Load
@@ -482,11 +495,12 @@ export class Model {
 
     this.reloadTickSpeed()
     this.reloadMaxNode()
-    this.myNodes.forEach(n => n.reloadPerSec())
+    this.myNodes.forEach(n => n.reloadPerSec(this))
     this.reloadMaxTime()
     this.reloadAutoBuyers()
     this.checkLeafSacrify()
     this.checkMaxCollapse()
+    this.softResetCheck()
   }
   //#endregion
 
