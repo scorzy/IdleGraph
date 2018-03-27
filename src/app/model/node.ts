@@ -44,13 +44,16 @@ export class MyNode {
       // y: this.y
     }
   }
-  getBonus(): Decimal {
+  getBonus(model: Model): Decimal {
     return BONUS.times(this.bought)
+      .times(1 + model.prestigeBonus[Type.BOUGHT_BONUS] * 0.2)
+      .times(Math.pow(2, model.prestigeBonus[Type.DOUBLE_BONUS]))
+
   }
   reloadPerSec(model: Model) {
-    this.prodPerSec = this.getBonus().plus(1).times(this.sacrificeBonus.div(100).plus(1))
+    this.prodPerSec = this.getBonus(model).plus(1).times(this.sacrificeBonus.div(100).plus(1))
 
-    if (this.level === 1 && model.firsthAck.done)
+    if (this.level <= model.softResetAcks.length && model.softResetAcks[this.level - 1].done)
       this.prodPerSec = this.prodPerSec.times(1.1)
   }
 

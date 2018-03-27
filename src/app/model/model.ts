@@ -58,7 +58,7 @@ export class Model {
   showMaxCollapse = false
 
   achievements = new Array<Achievement>()
-  firsthAck: Achievement
+  softResetAcks = new Array<Achievement>()
 
   constructor(public toastr: ToastsManager,
     public achievementsEmitter: EventEmitter<Achievement>,
@@ -96,7 +96,8 @@ export class Model {
       [12, 200, Type.MAX_NODE_ADD, Type.MAX_NODE_MULTI],
       [12, 300, Type.SACRIFY_MULTI, Type.SACRIFY_SPECIAL],
       [12, 400, Type.TIME_PER_SEC, Type.TIME_BANK_1H],
-      [12, 500, Type.MAX_ALL_INTERVAL, Type.MAX_AUTO_BUY, Type.MAX_AUTO_BUY]
+      [12, 500, Type.MAX_ALL_INTERVAL, Type.MAX_AUTO_BUY, Type.MAX_AUTO_BUY],
+      [12, 2000, Type.BOUGHT_BONUS, Type.DOUBLE_BONUS]
     ]
     stuff.forEach(s => {
       this.skills.add(new Skill(s[1] - 1, s.length > 4 ? s[4] : s[2]))
@@ -170,17 +171,43 @@ export class Model {
     this.makeLine(1401, 1900, Type.MAX_AUTO_BUY, 3)
     this.makeLine(1902, 1910, Type.MAX_AUTO_BUY_PERC, 1)
 
+    this.makeLine(2080, 2085, Type.BOUGHT_BONUS, 3)
+    this.makeLine(2080, 2090, Type.BOUGHT_BONUS, 3)
+    this.skillEdges.add({ from: 2087, to: 1603 })
+    this.skillEdges.add({ from: 2092, to: 1602 })
+
+    console.log("Tot skill point: " + this.skills.length)
+
     this.reloadMaxTime()
     this.reloadAutoBuyers()
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     //#endregion
-
     //#region Achivements
-    this.firsthAck = new Achievement(0, "First soft reset", "Do one soft reset", "+10% production from node of level 1",
+    const firsthAck = new Achievement(0, "Linear", "Do one soft reset", "+10% production from node of level 1",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    this.achievements.push(this.firsthAck)
-    //#region
+    const secondAck = new Achievement(0, "Quadratic", "Do two soft reset", "+10% production from node of level 2",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    const thirdAck = new Achievement(0, "Cubic", "Do three reset", "+10% production from node of level 3",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    const g4Ack = new Achievement(0, "Quartic ", "Do four soft reset", "+10% production from node of level 4",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    const g5Ack = new Achievement(0, "Quintic ", "Do five soft reset", "+10% production from node of level 5",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    const g6Ack = new Achievement(0, "Sextic", "Do six soft reset", "+10% production from node of level 6",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    const g7Ack = new Achievement(0, "Septic", "Do seven soft reset", "+10% production from node of level 7",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    const g8Ack = new Achievement(0, "Octic", "Do eight soft reset", "+10% production from node of level 8",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    const g9Ack = new Achievement(0, "Nonic", "Do nine soft reset", "+10% production from node of level 9",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    const g10Ack = new Achievement(0, "Decic", "Do ten soft reset", "+10% production from node of level 10",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+
+    this.softResetAcks.push(firsthAck, secondAck, thirdAck, g4Ack, g5Ack, g6Ack, g7Ack, g8Ack, g9Ack, g10Ack)
+    this.achievements = this.achievements.concat(this.softResetAcks)
+    //#endregion
   }
   makeLine(from: number, startId: number, type: Type, num: number) {
     this.skills.add(new Skill(startId, type))
@@ -368,7 +395,7 @@ export class Model {
     //  Prestige additive
     this.tickSpeed = this.tickSpeed.plus(this.prestigeBonus[Type.TICK_SPEED_ADD])
     //  Soft Reset
-    this.tickSpeed = this.tickSpeed.times(Decimal.pow(2, this.softResetNum - 1))
+    this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.2, this.softResetNum - 1))
     //  Manual buy
     this.tickSpeed = this.tickSpeed.times(Decimal.pow(INIT_TICK_MULTI, this.tickSpeedOwned))
     //  Prestige
@@ -433,11 +460,14 @@ export class Model {
     //   node.quantity = new Decimal(0)
     //   node = node.producer[0]
     // }
+
+    if (this.softResetAcks.length >= this.softResetNum)
+      this.unlockAchievement(this.softResetAcks[this.softResetNum - 1])
+
     this.softResetNum = this.softResetNum + 1
     this.reloadTickSpeed()
     this.checkLeafSacrify()
     this.checkMaxCollapse()
-    this.unlockAchievement(this.firsthAck)
   }
   //#endregion
   //#region Achievements

@@ -35,7 +35,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
       this.node = this.ser.model.myNodes.get("" + id)
       this.sons = new Array<MyNode>()
       if (this.node) {
-        this.bonus = new FormatPipe(this.ser).transform(this.node.getBonus())
+        this.bonus = new FormatPipe(this.ser).transform(this.node.getBonus(this.ser.model))
         this.reloadSons()
         this.node.reloadStats()
       }
@@ -45,7 +45,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
 
     this.subNode = this.ser.buyNodeEmitter.subscribe(n => {
       if (this.node && this.node === n) {
-        this.bonus = new FormatPipe(this.ser).transform(this.node.getBonus())
+        this.bonus = new FormatPipe(this.ser).transform(this.node.getBonus(this.ser.model))
         this.node.reloadStats()
       }
     })

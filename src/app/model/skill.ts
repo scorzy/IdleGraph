@@ -56,7 +56,9 @@ export enum Type {
   LEAF_SACRIFY_INTERVAL,
   COLLAPSE_INTERVAL,
   ALL_AUTOBUY_INTERVAL,
-  MAX_AUTO_BUY_PERC
+  MAX_AUTO_BUY_PERC,
+  BOUGHT_BONUS,
+  DOUBLE_BONUS
 }
 
 export const labels = [
@@ -78,5 +80,7 @@ export const labels = [
   "-5% leaf sacrify\ninterval",
   "-5% collapse\ninterval",
   "-5% autobuyers\ninterval",
-  "+20% max\nautobuyers"
+  "+20% max\nautobuyers",
+  "+20% bought\nbonus",
+  "double \nbought bonus"
 ]
