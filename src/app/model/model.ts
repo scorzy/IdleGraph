@@ -7,6 +7,7 @@ import { Skill, Type, labels } from './skill'
 import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
 import { Achievement } from './achievement'
 import { ToastsManager } from 'ng2-toastr'
+import { Modifier, suffixs, Mod } from './modifiers';
 
 // const INIT_CUR = new Decimal(200)
 const INIT_CUR = new Decimal(200E20)
@@ -61,6 +62,7 @@ export class Model {
   achievements = new Array<Achievement>()
   softResetAcks = new Array<Achievement>()
 
+  currentMods = new Array<Modifier>()
 
   constructor(public toastr: ToastsManager,
     public achievementsEmitter: EventEmitter<Achievement>,
@@ -243,6 +245,13 @@ export class Model {
   reloadMaxTime() {
     this.maxTime = new UpToTimePipe().transform((BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H])).times(3600))
   }
+  getTotalMod(mod: Mod): number {
+    let ret = 0
+    this.currentMods.forEach(m =>
+      m.mods.filter(n => n[0] === mod).forEach(q => { ret = ret + q[1] })
+    )
+    return ret
+  }
   //#region Update
   mainUpdate(delta: number) {
     this.time = Decimal.min(this.time.plus(this.prestigeBonus[Type.TIME_PER_SEC] * delta * 0.05 / 1000),
@@ -403,6 +412,8 @@ export class Model {
     //  Prestige
     this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
 
+    // Mod
+    this.tickSpeed = this.tickSpeed.times(1 + this.getTotalMod(Mod.TICK_SPEED) / 100)
     //  Price
     this.tickSpeedCost = Decimal.sumGeometricSeries(1, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
   }
@@ -508,6 +519,7 @@ export class Model {
     d.a = this.autoBuyers.map(a => a.save())
     d.k = this.achievements.filter(k => k.done).map(a => a.id)
     d.u = this.totalCuerrency
+    d.h = this.currentMods.map(m => m.id)
     return d
   }
   load(data: any) {
@@ -539,6 +551,14 @@ export class Model {
       this.totalCuerrency = new Decimal(data.u)
     else
       this.totalCuerrency = new Decimal(0)
+    if ("h" in data) {
+      for (let mod of data.h) {
+        const newMod = suffixs.find(n => n.id === mod)
+        if (newMod)
+          this.currentMods.push(newMod)
+      }
+    } else
+      this.currentMods = new Array<Modifier>()
 
     this.reloadTickSpeed()
     this.reloadMaxNode()
