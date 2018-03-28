@@ -37,7 +37,6 @@ export class AppComponent implements OnInit, OnDestroy {
       if (this.warpModal)
         this.checkTime()
     })
-    this.serv.load()
   }
   ngOnDestroy() {
     this.updateSub.unsubscribe()

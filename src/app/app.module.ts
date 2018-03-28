@@ -106,7 +106,7 @@ const appRoutes: Routes = [
     FormsModule,
     ToastModule.forRoot()
   ],
-  providers: [{ provide: ToastOptions, useClass: CustomOptions }, ServService],
+  providers: [ServService, { provide: ToastOptions, useClass: CustomOptions }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

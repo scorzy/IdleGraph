@@ -1,6 +1,6 @@
 import { Options } from './model/options'
 import { Model } from './model/model'
-import { Injectable, Inject } from '@angular/core'
+import { Injectable, Inject, ViewContainerRef } from '@angular/core'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/interval'
 import { EventEmitter } from '@angular/core'
@@ -30,20 +30,22 @@ export class ServService {
 
   constructor(
     public toastr: ToastsManager,
-    @Inject(DOCUMENT) private document: Document) {
+    @Inject(DOCUMENT) private document: Document
+  ) {
+
     moment.locale('en')
-
-    this.last = Date.now()
-    this.options = new Options()
-    this.model = new Model(toastr, this.achievementsEmitter, this.buyNodeEmitter)
-    this.model.formatter = this.options.formatter
-
-    // setTimeout(this.load.bind(this), 0)
-
     this.linkTheme = this.document.createElement('link')
     this.linkTheme.rel = "stylesheet"
     this.linkTheme.type = "text/css"
-    this.setTheme()
+
+    this.last = Date.now()
+    this.options = new Options()
+    this.load(true)
+    if (!this.model) {
+      this.model = new Model(toastr, this.achievementsEmitter, this.buyNodeEmitter)
+      this.setTheme()
+    }
+    this.model.formatter = this.options.formatter
     this.document.querySelector('head').appendChild(this.linkTheme)
 
     const source = Observable
@@ -91,16 +93,21 @@ export class ServService {
       this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Save Error")
     }
   }
-  import(raw: string): boolean {
+  import(raw: string, first = false): boolean {
     try {
       if (!raw) {
-        this.toastr.error("No save foud", "Not Loaded")
+        if (!first)
+          setTimeout(() =>
+            this.toastr.error("No save foud", "Not Loaded")
+            , 0)
         return false
       }
       const json = LZString.decompressFromBase64(raw)
       const data = JSON.parse(json)
       if (!data.m) {
-        this.toastr.error("Save is not valid", "Not Loaded")
+        setTimeout(() =>
+          this.toastr.error("Save is not valid", "Not Loaded")
+          , 0)
         return false
       }
       this.model = null
@@ -109,16 +116,20 @@ export class ServService {
         this.options.load(data.o)
       this.setTheme()
       this.model.load(data.m)
-      this.toastr.success("", "Game Loaded")
+      setTimeout(() => this.toastr.success("", "Game Loaded"), 0)
     } catch (ex) {
-      this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Load Error")
+      setTimeout(() =>
+        this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Load Error")
+        , 0)
     }
   }
-  load() {
+  load(first = false) {
     try {
-      this.import(localStorage.getItem("save"))
+      this.import(localStorage.getItem("save"), first)
     } catch (ex) {
-      this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Load Error")
+      setTimeout(() =>
+        this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Load Error")
+        , 0)
     }
   }
 
