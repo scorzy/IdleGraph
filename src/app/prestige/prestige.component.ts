@@ -26,7 +26,7 @@ export class PrestigeComponent implements OnInit, OnDestroy {
     this.upSub.unsubscribe()
   }
   getVal() {
-    return this.ser.model.cuerrency.quantity.div(Number.MAX_VALUE).times(100).toNumber()
+    return this.ser.model.thisRunPrestige * 100
   }
   getSoftVal() {
     return this.ser.model.softResetHave.div(this.ser.model.softResetReq).times(100).toNumber()

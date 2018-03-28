@@ -1,6 +1,6 @@
 import { Model } from './model'
-import * as Decimal from 'break_infinity.js'
 import { Type } from './skill'
+// declare let Decimal
 
 export abstract class AutoBuy {
   id = 0

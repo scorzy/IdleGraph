@@ -1,11 +1,11 @@
-import { Router } from '@angular/router';
-import { Component, OnInit, HostBinding } from '@angular/core';
-import { AfterViewInit } from '@angular/core';
-import * as vis from 'vis';
-import { MyNode } from '../model/node';
-import { ServService } from '../serv.service';
-import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
-import { element } from 'protractor';
+import { Router } from '@angular/router'
+import { Component, OnInit, HostBinding } from '@angular/core'
+import { AfterViewInit } from '@angular/core'
+import * as vis from 'vis'
+import { MyNode } from '../model/node'
+import { ServService } from '../serv.service'
+import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks'
+import { element } from 'protractor'
 
 @Component({
   selector: 'app-graph',

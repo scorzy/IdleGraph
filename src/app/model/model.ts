@@ -2,7 +2,6 @@ import { UpToTimePipe } from './../up-to-time.pipe'
 import { MyNode } from './node'
 import * as vis from 'vis'
 import { Edge } from 'vis'
-import * as Decimal from 'break_infinity.js'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
 import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
@@ -12,7 +11,7 @@ import { ToastsManager } from 'ng2-toastr'
 // const INIT_CUR = new Decimal(200)
 const INIT_CUR = new Decimal(200E20)
 const INIT_TICK_COST = new Decimal(500)
-const INIT_TICK_MULTI = new Decimal(1.5)
+const INIT_TICK_MULTI = new Decimal(1E300)
 const BASE_TIME_BANK = new Decimal(4)
 
 export class Model {
@@ -34,6 +33,8 @@ export class Model {
 
   canPrestige = false
   prestigeCurrency = 200
+  totalCuerrency = new Decimal(0)
+  thisRunPrestige = 0
 
   myNodes = new Map<string, MyNode>()
   nodes: vis.DataSet<MyNode>
@@ -265,7 +266,7 @@ export class Model {
   warp(delta: Decimal): boolean {
     if (delta.gt(this.time)) return false
     this.time = this.time.minus(delta)
-    this.update(delta.times(1000))  // update require number, but should work anyway...
+    this.update(delta.times(1000).toNumber())  // update require number, but should work anyway...
     return true
   }
   getToAdd(node: MyNode, level: number): Decimal {
@@ -397,7 +398,7 @@ export class Model {
     //  Soft Reset
     this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.2, this.softResetNum - 1))
     //  Manual buy
-    this.tickSpeed = this.tickSpeed.times(Decimal.pow(INIT_TICK_MULTI, this.tickSpeedOwned))
+    this.tickSpeed = this.tickSpeed.times(INIT_TICK_MULTI.times(this.tickSpeedOwned))
     //  Prestige
     this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
 
@@ -406,13 +407,22 @@ export class Model {
   }
   //#endregion
   //#region Prestige
+  reloadEarnPrestigeCur() {
+    this.thisRunPrestige = Decimal.affordGeometricSeries(this.cuerrency.quantity,
+      Number.MAX_VALUE, new Decimal(1.7), this.totalCuerrency).toNumber()
+  }
   checkPrestige() {
-    this.canPrestige = this.cuerrency.quantity.gte(Number.MAX_VALUE)
+    this.reloadEarnPrestigeCur()
+    this.canPrestige = this.thisRunPrestige > 1
   }
   prestige() {
+    if (!this.canPrestige)
+      return false
+
+    this.prestigeCurrency = Math.floor(this.thisRunPrestige + this.prestigeCurrency)
+
     this.init()
     this.softResetNum = 1
-    this.prestigeCurrency += 1
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     this.softResetCheck()
@@ -424,7 +434,7 @@ export class Model {
     this.prestigeCurrency -= 1
     this.setSkill(skill)
 
-    if (skill.type === Type.TICK_SPEED || skill.type === Type.TICK_SPEED_ADD || skill.type === INIT_TICK_MULTI)
+    if (skill.type === Type.TICK_SPEED || skill.type === Type.TICK_SPEED_ADD || skill.type === Type.BUY_TICKSPEED_INTERVAL)
       this.reloadTickSpeed()
     else if (skill.type === Type.MAX_NODE_ADD || skill.type === Type.MAX_NODE_MULTI)
       this.reloadMaxNode()
@@ -495,6 +505,7 @@ export class Model {
     d.t = this.time
     d.a = this.autoBuyers.map(a => a.save())
     d.k = this.achievements.map(a => a.getData())
+    d.u = this.totalCuerrency
     return d
   }
   load(data: any) {
@@ -522,6 +533,10 @@ export class Model {
         if (ac) ac.done = acks.d
       }
     }
+    if ("u" in data)
+      this.totalCuerrency = new Decimal(data.u)
+    else
+      this.totalCuerrency = new Decimal(0)
 
     this.reloadTickSpeed()
     this.reloadMaxNode()

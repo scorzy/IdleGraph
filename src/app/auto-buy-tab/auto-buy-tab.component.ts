@@ -1,7 +1,7 @@
 import { Type } from './../model/skill'
 import { ServService } from './../serv.service'
 import { Component, OnInit } from '@angular/core'
-import { AutoBuy } from '../model/autoBuy';
+import { AutoBuy } from '../model/autoBuy'
 
 @Component({
   selector: 'app-auto-buy-tab',

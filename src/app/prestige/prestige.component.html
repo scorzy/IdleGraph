@@ -13,7 +13,7 @@
 
   <h1>Prestige</h1>
   <p>
-    Reset everything except prestige bonus, incluting soft reset.You need {{Number.MAX_VALUE | format}} cuerrency.
+    Reset everything except prestige bonus, incluting soft reset.
   </p>
   <div *ngIf="!ser.model.canPrestige; else Prestige">
     <div class="progress">
@@ -27,5 +27,7 @@
   <button class="btn" (click)="ser.model.doSoftRest()">Soft Reset</button>
 </ng-template>
 <ng-template #Prestige>
-  <button class="btn" (click)="ser.model.prestige()">Prestige</button>
+  <button class="btn" (click)="ser.model.prestige()">
+    Prestige +{{ser.model.thisRunPrestige | format}}
+  </button>
 </ng-template>

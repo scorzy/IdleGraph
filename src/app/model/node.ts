@@ -1,7 +1,5 @@
 import { Model } from './model'
-import * as Decimal from 'break_infinity.js'
 import { Type } from './skill'
-
 const BONUS = new Decimal(0.1)
 
 export class MyNode {
@@ -103,10 +101,10 @@ export class MyNode {
   }
 
   canBuy(model: Model): boolean {
-    return !model.cuerrency.quantity.lessThan(this.priceBuy) && this.level > 1
+    return !model.cuerrency.quantity.lt(this.priceBuy) && this.level > 1
   }
   canBuyNewProd(model: Model): boolean {
-    return !model.cuerrency.quantity.lessThan(this.priceNewProd) && model.myNodes.size < model.maxNode
+    return !model.cuerrency.quantity.lt(this.priceNewProd) && model.myNodes.size < model.maxNode
   }
 
   reloadPriceBuy() {
