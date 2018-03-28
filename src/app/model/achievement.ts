@@ -9,13 +9,4 @@ export class Achievement {
     public reward = "",
     public reloadFun: (Model) => {} = null
   ) { }
-
-  //#region Save Load
-  getData(): any {
-    return {
-      i: this.id,
-      d: this.done
-    }
-  }
-  //#endregion
 }

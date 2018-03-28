@@ -11,7 +11,7 @@ import { ToastsManager } from 'ng2-toastr'
 // const INIT_CUR = new Decimal(200)
 const INIT_CUR = new Decimal(200E20)
 const INIT_TICK_COST = new Decimal(500)
-const INIT_TICK_MULTI = new Decimal(1E300)
+const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
 
 export class Model {
@@ -60,6 +60,7 @@ export class Model {
 
   achievements = new Array<Achievement>()
   softResetAcks = new Array<Achievement>()
+
 
   constructor(public toastr: ToastsManager,
     public achievementsEmitter: EventEmitter<Achievement>,
@@ -386,7 +387,7 @@ export class Model {
     const totalPrice = Decimal.sumGeometricSeries(toBuy, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
 
     this.cuerrency.quantity = this.cuerrency.quantity.minus(totalPrice)
-    this.tickSpeedOwned = this.tickSpeedOwned.plus(this.tickSpeedMulti.times(toBuy))
+    this.tickSpeedOwned = this.tickSpeedOwned.plus(toBuy)
     this.reloadTickSpeed()
     return true
   }
@@ -398,7 +399,7 @@ export class Model {
     //  Soft Reset
     this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.2, this.softResetNum - 1))
     //  Manual buy
-    this.tickSpeed = this.tickSpeed.times(INIT_TICK_MULTI.times(this.tickSpeedOwned))
+    this.tickSpeed = this.tickSpeed.times(INIT_TICK_MULTI.times(this.tickSpeedOwned).plus(1))
     //  Prestige
     this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
 
@@ -415,12 +416,13 @@ export class Model {
     this.reloadEarnPrestigeCur()
     this.canPrestige = this.thisRunPrestige > 1
   }
-  prestige() {
-    if (!this.canPrestige)
-      return false
+  prestige(surrender = false) {
+    if (!surrender) {
+      if (!this.canPrestige)
+        return false
 
-    this.prestigeCurrency = Math.floor(this.thisRunPrestige + this.prestigeCurrency)
-
+      this.prestigeCurrency = Math.floor(this.thisRunPrestige + this.prestigeCurrency)
+    }
     this.init()
     this.softResetNum = 1
     this.checkLeafSacrify()
@@ -504,7 +506,7 @@ export class Model {
     d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
     d.t = this.time
     d.a = this.autoBuyers.map(a => a.save())
-    d.k = this.achievements.map(a => a.getData())
+    d.k = this.achievements.filter(k => k.done).map(a => a.id)
     d.u = this.totalCuerrency
     return d
   }
@@ -529,8 +531,8 @@ export class Model {
     if ("k" in data) {
       this.achievements.forEach(a => a.done = false)
       for (let acks of data.k) {
-        const ac = this.achievements.find(a => a.id === acks.i)
-        if (ac) ac.done = acks.d
+        const ac = this.achievements.find(a => a.id === acks)
+        if (ac) ac.done = true
       }
     }
     if ("u" in data)

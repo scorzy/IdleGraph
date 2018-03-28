@@ -12,6 +12,7 @@ export class PrestigeComponent implements OnInit, OnDestroy {
   @HostBinding('class.content-container') className = 'content-container'
   upSub: any
   Number = Number
+  surrenderModal = false
 
   constructor(public ser: ServService) { }
 

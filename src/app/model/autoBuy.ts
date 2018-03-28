@@ -1,6 +1,5 @@
 import { Model } from './model'
 import { Type } from './skill'
-// declare let Decimal
 
 export abstract class AutoBuy {
   id = 0

@@ -1,6 +1,6 @@
 <div class="content-area">
 
-  <h1>SoftReset</h1>
+  <h3>SoftReset</h3>
   <p>
     Reset everything except prestige bonus and get a tickspeed boost and a sacrifice boost. You need {{ser.model.softResetReq
     | format}} node of level {{ser.model.softResetNum +1}}.
@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <h1>Prestige</h1>
+  <h3>Prestige</h3>
   <p>
     Reset everything except prestige bonus, incluting soft reset.
   </p>
@@ -20,6 +20,15 @@
       <progress max="100" [value]="getVal()"></progress>
     </div>
   </div>
+
+  <h3>Surrender</h3>
+  <p>
+    Restart this run.
+  </p>
+  <button class="btn btn-danger-outline" (click)="surrenderModal = true">
+    Surrender
+  </button>
+
 </div>
 
 
@@ -31,3 +40,17 @@
     Prestige +{{ser.model.thisRunPrestige | format}}
   </button>
 </ng-template>
+
+
+<clr-modal [(clrModalOpen)]="surrenderModal" [clrModalSize]="'sm'">
+  <h3 class="modal-title">Surrender</h3>
+  <div class="modal-body">
+    <p>Are you sure ?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="surrenderModal = false">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="ser.model.prestige(true); surrenderModal = false">
+      Surrender
+    </button>
+  </div>
+</clr-modal>
