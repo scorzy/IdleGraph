@@ -1,16 +1,23 @@
-<h1>Your Skills</h1>
-<div *ngIf="owned.length > 0; else noSkills">
+<div class="card-columns">
+  <div class="card">
+    <div class="card-block">
+      <h3 class="card-title">
+        Your Skills
+      </h3>
+      <ul class="list" *ngIf="owned.length > 0; else noSkills">
+        <li *ngFor="let sk of owned">
+          {{sk}}
+        </li>
+      </ul>
+    </div>
+  </div>
 
-  <ul class="list">
-    <li *ngFor="let sk of owned">
-      {{sk}}
-    </li>
-  </ul>
 
+  <ng-template #noSkills>
+    <p>
+      You don't have any skills!
+    </p>
+  </ng-template>
+
+  <app-world [mod]="serv.model.currentMods"></app-world>
 </div>
-
-<ng-template #noSkills>
-  <p>
-    You don't have any skills!
-  </p>
-</ng-template>

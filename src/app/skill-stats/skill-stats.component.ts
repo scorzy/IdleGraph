@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ServService } from '../serv.service'
 import { Skill, labels } from '../model/skill'
 import { Model } from '../model/model'
@@ -6,7 +6,8 @@ import { Model } from '../model/model'
 @Component({
   selector: 'app-skill-stats',
   templateUrl: './skill-stats.component.html',
-  styleUrls: ['./skill-stats.component.scss']
+  styleUrls: ['./skill-stats.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkillStatsComponent implements OnInit {
 

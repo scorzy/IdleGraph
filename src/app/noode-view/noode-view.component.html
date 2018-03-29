@@ -2,7 +2,7 @@
   <div class="col-xs-12">
     <div *ngIf="!!node; else noNode">
       <h3>{{node.label}} : {{node.quantity | format}} ({{node.bought | format}})</h3>
-      <a [routerLink]="'/main/ove'" class="exit">
+      <a [routerLink]="'/main'" class="exit">
         <clr-icon shape="close"></clr-icon>
       </a>
       <div class="line">

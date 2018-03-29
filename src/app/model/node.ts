@@ -1,5 +1,6 @@
 import { Model } from './model'
 import { Type } from './skill'
+import { Mod } from './modifiers';
 const BONUS = new Decimal(0.1)
 
 export class MyNode {
@@ -46,7 +47,7 @@ export class MyNode {
     return BONUS.times(this.bought)
       .times(1 + model.prestigeBonus[Type.BOUGHT_BONUS] * 0.2)
       .times(Math.pow(2, model.prestigeBonus[Type.DOUBLE_BONUS]))
-
+      .times(model.getTotalMod(Mod.BONUS))
   }
   reloadPerSec(model: Model) {
     this.prodPerSec = this.getBonus(model).plus(1).times(this.sacrificeBonus.div(100).plus(1))
@@ -132,7 +133,11 @@ export class MyNode {
     this.sacrificeMulti = new Decimal(bonus.ln() * (this.level) / 2.5)
       .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] / 10)
       .times(Decimal.pow(1.8, model.softResetNum))
+      .times(model.getTotalMod(Mod.SACRIFY, true))
+
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus)
+
+
     return this.sacrificeMulti
   }
   sacrifice(model: Model): boolean {

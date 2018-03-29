@@ -7,10 +7,10 @@ import { Skill, Type, labels } from './skill'
 import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
 import { Achievement } from './achievement'
 import { ToastsManager } from 'ng2-toastr'
-import { Modifier, suffixs, Mod } from './modifiers';
+import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers';
 
 // const INIT_CUR = new Decimal(200)
-const INIT_CUR = new Decimal(200E20)
+const INIT_CUR = new Decimal(1E300).times(new Decimal(1E300))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
@@ -62,7 +62,8 @@ export class Model {
   achievements = new Array<Achievement>()
   softResetAcks = new Array<Achievement>()
 
-  currentMods = new Array<Modifier>()
+  currentMods = new Modifier(-1, "")
+  nextMods = new Array<Modifier>()
 
   constructor(public toastr: ToastsManager,
     public achievementsEmitter: EventEmitter<Achievement>,
@@ -212,6 +213,8 @@ export class Model {
     this.softResetAcks.push(firsthAck, secondAck, thirdAck, g4Ack, g5Ack, g6Ack, g7Ack, g8Ack, g9Ack, g10Ack)
     this.achievements = this.achievements.concat(this.softResetAcks)
     //#endregion
+    this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
+    this.currentMods = this.getRandomGraph()
   }
   makeLine(from: number, startId: number, type: Type, num: number) {
     this.skills.add(new Skill(startId, type))
@@ -245,23 +248,20 @@ export class Model {
   reloadMaxTime() {
     this.maxTime = new UpToTimePipe().transform((BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H])).times(3600))
   }
-  getTotalMod(mod: Mod): number {
-    let ret = 0
-    this.currentMods.forEach(m =>
-      m.mods.filter(n => n[0] === mod).forEach(q => { ret = ret + q[1] })
-    )
+  getTotalMod(mod: Mod, noPercent = false): number {
+    let ret = this.currentMods.mods.filter(n => n[0] === mod).map(m => m[1]).reduce((p, c) => p + c, 0)
+    if (!noPercent)
+      ret = 1 + ret / 100
     return ret
   }
   //#region Update
   mainUpdate(delta: number) {
-    this.time = Decimal.min(this.time.plus(this.prestigeBonus[Type.TIME_PER_SEC] * delta * 0.05 / 1000),
+    this.time = Decimal.min(
+      this.time.plus(this.prestigeBonus[Type.TIME_PER_SEC] * delta * this.getTotalMod(Mod.TIME) * 0.05 / 1000),
       BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H]).times(3600))
+
     this.update(delta)
-    this.autoBuyersActiveOrder.forEach(a => {
-      a.update(delta / 1000, this)
-      // console.log(delta + " - " + a.id)
-    }
-    )
+    this.autoBuyersActiveOrder.forEach(a => a.update(delta / 1000, this))
   }
   update(delta: number) {
     this.deltaT = this.tickSpeed.times(delta / 1000)
@@ -276,7 +276,7 @@ export class Model {
   warp(delta: Decimal): boolean {
     if (delta.gt(this.time)) return false
     this.time = this.time.minus(delta)
-    this.update(delta.times(1000).toNumber())  // update require number, but should work anyway...
+    this.update(delta.times(1000).times(this.getTotalMod(Mod.WARP)).toNumber())
     return true
   }
   getToAdd(node: MyNode, level: number): Decimal {
@@ -413,7 +413,7 @@ export class Model {
     this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
 
     // Mod
-    this.tickSpeed = this.tickSpeed.times(1 + this.getTotalMod(Mod.TICK_SPEED) / 100)
+    this.tickSpeed = this.tickSpeed.times(this.getTotalMod(Mod.TICK_SPEED))
     //  Price
     this.tickSpeedCost = Decimal.sumGeometricSeries(1, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
   }
@@ -434,6 +434,7 @@ export class Model {
 
       this.prestigeCurrency = Math.floor(this.thisRunPrestige + this.prestigeCurrency)
     }
+    this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
     this.init()
     this.softResetNum = 1
     this.checkLeafSacrify()
@@ -465,6 +466,23 @@ export class Model {
     this.prestigeBonus[skill.type]++
     this.skills.update(av)
     this.skills.update(skill)
+  }
+  getRandomGraph(): Modifier {
+    const prefix = Prefixs[Math.floor(Math.random() * (Prefixs.length))]
+    const graph = Ggraph[Math.floor(Math.random() * (Ggraph.length))]
+    const suffix = Suffixs[Math.floor(Math.random() * (Suffixs.length))]
+
+    const mod = new Modifier(-1, prefix.name + " " + graph.name + " " + suffix.name)
+
+    prefix.mods.concat(graph.mods).concat(suffix.mods).forEach(m => {
+      const old = mod.mods.find(o => o[0] === m[0])
+      if (old === undefined)
+        mod.mods.push([m[0], m[1]])
+      else
+        old[1] = old[1] + m[1]
+    })
+
+    return mod
   }
   //#endregion
   //#region SoftReset
@@ -519,7 +537,8 @@ export class Model {
     d.a = this.autoBuyers.map(a => a.save())
     d.k = this.achievements.filter(k => k.done).map(a => a.id)
     d.u = this.totalCuerrency
-    d.h = this.currentMods.map(m => m.id)
+    d.h = this.currentMods.getSave()
+    d.n = this.nextMods.map(m => m.getSave())
     return d
   }
   load(data: any) {
@@ -551,14 +570,13 @@ export class Model {
       this.totalCuerrency = new Decimal(data.u)
     else
       this.totalCuerrency = new Decimal(0)
-    if ("h" in data) {
-      for (let mod of data.h) {
-        const newMod = suffixs.find(n => n.id === mod)
-        if (newMod)
-          this.currentMods.push(newMod)
-      }
-    } else
-      this.currentMods = new Array<Modifier>()
+    if ("h" in data)
+      this.currentMods = Modifier.load(data.h)
+
+    this.nextMods = []
+    if ("n" in data)
+      for (let m of data.n)
+        this.nextMods.push(Modifier.load(m))
 
     this.reloadTickSpeed()
     this.reloadMaxNode()
