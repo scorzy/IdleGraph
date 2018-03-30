@@ -1,8 +1,8 @@
-<div class="card-block">
-  <h3 class="card-title">
+<div class="card-block" [ngClass]="{'bg-success': ack.done }">
+  <h3 class="card-title" [ngClass]="{'text-dark': ack.done }">
     <clr-icon shape="success-standard" class="is-success is-solid" *ngIf="ack.done"></clr-icon>
     {{ack.title}}</h3>
-  <p class="card-text">
+  <p class="card-text" [ngClass]="{'text-grey': ack.done }">
     {{ack.description}}
     <br/> {{ack.reward}}
   </p>

@@ -1,9 +1,12 @@
 <div class="card-block">
   <h3 class="card-title">
     {{mod.name}}</h3>
-  <ul class="list">
+  <ul class="list-unstyled">
     <li *ngFor="let m of strings">
       {{m}}
     </li>
   </ul>
+  <div class="card-footer" *ngIf="prestigeBtn">
+      <button class="btn btn-sm btn-primary" (click)="prestige()">Go</button>
+  </div>
 </div>

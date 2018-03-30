@@ -25,6 +25,7 @@ export class ServService {
   autoBuyersEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
   achievementsEmitter: EventEmitter<Achievement> = new EventEmitter<Achievement>()
   buyNodeEmitter: EventEmitter<MyNode> = new EventEmitter<MyNode>()
+  prestigeEmitter: EventEmitter<number> = new EventEmitter<number>()
 
   linkTheme: HTMLLinkElement
 
@@ -42,7 +43,7 @@ export class ServService {
     this.options = new Options()
     this.load(true)
     if (!this.model) {
-      this.model = new Model(toastr, this.achievementsEmitter, this.buyNodeEmitter)
+      this.model = new Model(toastr, this.achievementsEmitter, this.buyNodeEmitter, this.prestigeEmitter)
       this.setTheme()
     }
     this.model.formatter = this.options.formatter
@@ -111,7 +112,7 @@ export class ServService {
         return false
       }
       this.model = null
-      this.model = new Model(this.toastr, this.achievementsEmitter, this.buyNodeEmitter)
+      this.model = new Model(this.toastr, this.achievementsEmitter, this.buyNodeEmitter, this.prestigeEmitter)
       if (!!data.o)
         this.options.load(data.o)
       this.setTheme()

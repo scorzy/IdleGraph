@@ -55,6 +55,18 @@ export class MyNode {
     if (this.producer.length === 0)
       this.prodPerSec = this.prodPerSec.times(model.getTotalMod(Mod.LEAF_PROD))
 
+    switch (this.level) {
+      case 2:
+        this.prodPerSec = this.prodPerSec.times(model.getTotalMod(Mod.NODE1))
+        break
+      case 3:
+        this.prodPerSec = this.prodPerSec.times(model.getTotalMod(Mod.NODE2))
+        break
+      case 4:
+        this.prodPerSec = this.prodPerSec.times(model.getTotalMod(Mod.NODE3))
+        break
+    }
+
     if (this.level <= model.softResetAcks.length && model.softResetAcks[this.level - 1].done)
       this.prodPerSec = this.prodPerSec.times(1.1)
   }

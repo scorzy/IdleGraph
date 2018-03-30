@@ -10,10 +10,11 @@ import { ToastsManager } from 'ng2-toastr'
 import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers';
 
 // const INIT_CUR = new Decimal(200)
-const INIT_CUR = new Decimal(1E300).times(new Decimal(1E300))
+const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
+const MAX_NODE = 50
 
 export class Model {
 
@@ -25,7 +26,7 @@ export class Model {
   tickSpeedCostMulti = new Decimal(30)
   tickSpeedOwned = new Decimal(0)
   tickSpeedCost = INIT_TICK_COST
-  maxNode = 50
+  maxNode = MAX_NODE
 
   softResetNum = 1
   softResetReq = new Decimal(1E6)
@@ -62,12 +63,19 @@ export class Model {
   achievements = new Array<Achievement>()
   softResetAcks = new Array<Achievement>()
 
+  prefixAcks = new Array<Achievement>()
+  graphAcks = new Array<Achievement>()
+  suffixAcks = new Array<Achievement>()
+
   currentMods = new Modifier(-1, "")
   nextMods = new Array<Modifier>()
 
+  visivisited = new Array<Number>()
+
   constructor(public toastr: ToastsManager,
     public achievementsEmitter: EventEmitter<Achievement>,
-    public buyNodeEmitter: EventEmitter<MyNode>) {
+    public buyNodeEmitter: EventEmitter<MyNode>,
+    public prestigeEmitter: EventEmitter<number>) {
     this.prestigeBonus.fill(0)
     this.init()
     //#region Prestige
@@ -189,29 +197,47 @@ export class Model {
     this.checkMaxCollapse()
     //#endregion
     //#region Achivements
-    const firsthAck = new Achievement(0, "Linear", "Do one soft reset", "+10% production from node of level 1",
+    const firsthAck = new Achievement(1, "Linear", "Do one soft reset", "+10% production from node of level 1",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const secondAck = new Achievement(0, "Quadratic", "Do two soft reset", "+10% production from node of level 2",
+    const secondAck = new Achievement(2, "Quadratic", "Do two soft reset", "+10% production from node of level 2",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const thirdAck = new Achievement(0, "Cubic", "Do three reset", "+10% production from node of level 3",
+    const thirdAck = new Achievement(3, "Cubic", "Do three reset", "+10% production from node of level 3",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g4Ack = new Achievement(0, "Quartic ", "Do four soft reset", "+10% production from node of level 4",
+    const g4Ack = new Achievement(4, "Quartic ", "Do four soft reset", "+10% production from node of level 4",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g5Ack = new Achievement(0, "Quintic ", "Do five soft reset", "+10% production from node of level 5",
+    const g5Ack = new Achievement(5, "Quintic ", "Do five soft reset", "+10% production from node of level 5",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g6Ack = new Achievement(0, "Sextic", "Do six soft reset", "+10% production from node of level 6",
+    const g6Ack = new Achievement(6, "Sextic", "Do six soft reset", "+10% production from node of level 6",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g7Ack = new Achievement(0, "Septic", "Do seven soft reset", "+10% production from node of level 7",
+    const g7Ack = new Achievement(7, "Septic", "Do seven soft reset", "+10% production from node of level 7",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g8Ack = new Achievement(0, "Octic", "Do eight soft reset", "+10% production from node of level 8",
+    const g8Ack = new Achievement(8, "Octic", "Do eight soft reset", "+10% production from node of level 8",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g9Ack = new Achievement(0, "Nonic", "Do nine soft reset", "+10% production from node of level 9",
+    const g9Ack = new Achievement(9, "Nonic", "Do nine soft reset", "+10% production from node of level 9",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g10Ack = new Achievement(0, "Decic", "Do ten soft reset", "+10% production from node of level 10",
+    const g10Ack = new Achievement(10, "Decic", "Do ten soft reset", "+10% production from node of level 10",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
 
     this.softResetAcks.push(firsthAck, secondAck, thirdAck, g4Ack, g5Ack, g6Ack, g7Ack, g8Ack, g9Ack, g10Ack)
     this.achievements = this.achievements.concat(this.softResetAcks)
+
+    const pre1 = new Achievement(11, "Prefix", "Complete 5 prefix", "Prefix are 100% better")
+    const pre2 = new Achievement(12, "Prefix 2", "Complete 10 prefix", "Prefix are 100% better")
+    const pre3 = new Achievement(13, "Prefix 3", "Complete 15 prefix", "Prefix are 100% better")
+    this.prefixAcks = [pre1, pre2, pre3]
+
+    const graph1 = new Achievement(14, "Graph", "Complete 5 graph", "Graph are 100% better")
+    const graph2 = new Achievement(15, "Graph 2", "Complete 10 graph", "Graph are 100% better")
+    const graph3 = new Achievement(16, "Graph 3", "Complete 15 graph", "Graph are 100% better")
+    this.graphAcks = [graph1, graph2, graph3]
+
+    const suffix1 = new Achievement(17, "Suffix", "Complete 5 suffix", "Suffix are 100% better")
+    const suffix2 = new Achievement(18, "Suffix 2", "Complete 10 suffix", "Suffix are 100% better")
+    const suffix3 = new Achievement(19, "Suffix 3", "Complete 15 suffix", "Suffix are 100% better")
+    this.suffixAcks = [suffix1, suffix2, suffix3]
+
+    this.achievements = this.achievements.concat(this.prefixAcks).concat(this.graphAcks).concat(this.suffixAcks)
+
     //#endregion
     this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
     this.currentMods = this.getRandomGraph()
@@ -249,9 +275,12 @@ export class Model {
     this.maxTime = new UpToTimePipe().transform((BASE_TIME_BANK.plus(this.prestigeBonus[Type.TIME_BANK_1H])).times(3600))
   }
   getTotalMod(mod: Mod, noPercent = false): number {
-    let ret = this.currentMods.mods.filter(n => n[0] === mod).map(m => m[1]).reduce((p, c) => p + c, 0)
+    let ret = this.currentMods.mods.filter(n => n[0] === mod)
+      .map(m => m[1]).reduce((p, c) => p + c, 0)
+
     if (!noPercent)
       ret = 1 + ret / 100
+
     return ret
   }
   //#region Update
@@ -308,7 +337,7 @@ export class Model {
     node.producer.forEach(prod => this.edges.remove(prod.id + "-" + node.id))
   }
   reloadMaxNode() {
-    this.maxNode = Math.floor((100 + this.prestigeBonus[Type.MAX_NODE_ADD] * 5) *
+    this.maxNode = Math.floor((MAX_NODE + this.prestigeBonus[Type.MAX_NODE_ADD] * 5) *
       (this.prestigeBonus[Type.MAX_NODE_MULTI] / 10 + 1))
   }
   //#endregion
@@ -429,12 +458,33 @@ export class Model {
     this.reloadEarnPrestigeCur()
     this.canPrestige = this.thisRunPrestige > 1
   }
-  prestige(surrender = false) {
+  prestige(surrender = false, mod: Modifier) {
     if (!surrender) {
       if (!this.canPrestige)
         return false
 
+      this.currentMods.visit.forEach(v => {
+        if (this.visivisited.findIndex(m => m === v) < 0)
+          this.visivisited.push(v)
+      })
+      const numPref = this.visivisited.filter(t => t < 1E2).length
+      const numGraph = this.visivisited.filter(t => t < 1E3).length
+      const numSuffix = this.visivisited.filter(t => t < 1E4).length
+
+      for (let i = 0; i < 3; i++)
+        if (!this.prefixAcks[i].done && numPref >= 5 * (1 + i))
+          this.unlockAchievement(this.prefixAcks[i])
+      for (let i = 0; i < 3; i++)
+        if (!this.graphAcks[i].done && numGraph >= 5 * (1 + i))
+          this.unlockAchievement(this.graphAcks[i])
+      for (let i = 0; i < 3; i++)
+        if (!this.suffixAcks[i].done && numSuffix >= 5 * (1 + i))
+          this.unlockAchievement(this.suffixAcks[i])
+
       this.prestigeCurrency = Math.floor(this.thisRunPrestige + this.prestigeCurrency)
+      this.currentMods = mod
+    } else {
+      this.currentMods = new Modifier(-1, "Home World")
     }
     this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
     this.init()
@@ -442,6 +492,8 @@ export class Model {
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     this.softResetCheck()
+
+    this.prestigeEmitter.emit(1)
   }
   buySkill(skill: Skill) {
     if (this.prestigeCurrency < 1)
@@ -475,13 +527,22 @@ export class Model {
     const suffix = Suffixs[Math.floor(Math.random() * (Suffixs.length))]
 
     const mod = new Modifier(-1, prefix.name + " " + graph.name + " " + suffix.name)
+    mod.visit = [prefix.id, graph.id, suffix.id]
 
-    prefix.mods.concat(graph.mods).concat(suffix.mods).forEach(m => {
-      const old = mod.mods.find(o => o[0] === m[0])
-      if (old === undefined)
-        mod.mods.push([m[0], m[1]])
-      else
-        old[1] = old[1] + m[1]
+    const stuffs: [[Mod, number][], number][] = [
+      [prefix.mods, this.prefixAcks.filter(a => a.done).length + 1],
+      [graph.mods, this.graphAcks.filter(b => b.done).length + 1],
+      [suffix.mods, this.suffixAcks.filter(c => c.done).length + 1]]
+
+    stuffs.forEach(s => {
+      s[0].forEach(m2 => {
+        const old = mod.mods.find(o => o[0] === m2[0])
+        const val = m2[1] * s[1]
+        if (old === undefined)
+          mod.mods.push([m2[0], val])
+        else
+          old[1] = old[1] + val
+      })
     })
 
     return mod
@@ -528,27 +589,26 @@ export class Model {
   //#endregion
   //#region Save Load
   getSave(): any {
-    const d: any = {}
-    d.c = this.cuerrency.getSave(this)
-    d.s = this.softResetNum
-    d.m = this.maxNode
-    d.p = this.prestigeCurrency
-    d.l = this.tickSpeedOwned
-    d.o = this.skills.get({ filter: i => i.owned }).map(p => p.id)
-    d.t = this.time
-    d.a = this.autoBuyers.map(a => a.save())
-    d.k = this.achievements.filter(k => k.done).map(a => a.id)
-    d.u = this.totalCuerrency
-    d.h = this.currentMods.getSave()
-    d.n = this.nextMods.map(m => m.getSave())
-    return d
+    return {
+      c: this.cuerrency.getSave(this),
+      s: this.softResetNum,
+      p: this.prestigeCurrency,
+      l: this.tickSpeedOwned,
+      o: this.skills.get({ filter: i => i.owned }).map(p => p.id),
+      t: this.time,
+      a: this.autoBuyers.map(a => a.save()),
+      k: this.achievements.filter(k => k.done).map(a => a.id),
+      u: this.totalCuerrency,
+      h: this.currentMods.getSave(),
+      n: this.nextMods.map(m => m.getSave()),
+      v: this.visivisited
+    }
   }
   load(data: any) {
     this.nodes = new vis.DataSet()
     this.edges = new vis.DataSet()
     if ("c" in data) this.cuerrency = MyNode.generate(data.c, this, null)
     this.cuerrency.label = "Main"
-    if ("m" in data) this.maxNode = data.m
     if ("p" in data) this.prestigeCurrency = data.p
     if ("s" in data) this.softResetNum = data.s
     if ("o" in data) this.skills.get(data.o).forEach(s => this.setSkill(s))
@@ -580,6 +640,15 @@ export class Model {
       for (let m of data.n)
         this.nextMods.push(Modifier.load(m))
 
+    if ("v" in data)
+      this.visivisited = data.v
+    else
+      this.visivisited = new Array<Number>()
+
+    this.reloadAll()
+  }
+  //#endregion
+  reloadAll() {
     this.reloadTickSpeed()
     this.reloadMaxNode()
     this.myNodes.forEach(n => n.reloadPerSec(this))
@@ -589,6 +658,5 @@ export class Model {
     this.checkMaxCollapse()
     this.softResetCheck()
   }
-  //#endregion
 
 }

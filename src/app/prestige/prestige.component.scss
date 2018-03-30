@@ -1,3 +1,16 @@
-p{
-  margin-top:0.1rem;
+p {
+    margin-top: 0.1rem;
+}
+
+.minHeight {
+    min-height: 4rem;
+}
+
+:host ::ng-deep .prestige {
+    .modal-body>:last-child {
+        margin-bottom: 7px;
+    }
+    .modal-body>:first-child {
+        margin-top: -19px;
+    }
 }
