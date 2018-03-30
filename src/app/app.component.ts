@@ -1,9 +1,8 @@
-import { Component, ViewContainerRef, OnInit, OnDestroy } from '@angular/core';
-import { ServService } from './serv.service';
-import { ToastsManager } from 'ng2-toastr';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import * as Decimal from 'break_infinity.js'
+import { Component, ViewContainerRef, OnInit, OnDestroy } from '@angular/core'
+import { ServService } from './serv.service'
+import { ToastsManager } from 'ng2-toastr'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { ReactiveFormsModule } from '@angular/forms'
 
 @Component({
   selector: 'app-root',
@@ -47,18 +46,18 @@ export class AppComponent implements OnInit, OnDestroy {
     return "header-" + this.serv.options.header
   }
   checkTime() {
-
     const maxTime = this.serv.model.time.toNumber()
     if (maxTime > 0) {
-      this.max_hh = maxTime / 3600
-      this.max_mm = maxTime % 3600
-      this.max_ss = maxTime % 60
+      this.max_hh = Math.min(this.max_ss, maxTime / 3600)
+      this.max_mm = Math.min(this.max_ss, maxTime / 60, 60)
+      this.max_ss = Math.min(this.max_ss, maxTime, 60)
 
       this.no_hh = this.hh > this.max_hh || this.hh < 0
       this.no_mm = this.mm > this.max_mm || this.mm < 0
       this.no_ss = this.ss > this.max_ss || this.ss < 0
 
-      this.canWarp = !(this.no_hh || this.no_mm || this.no_ss)
+      this.canWarp = !(this.no_hh || this.no_mm || this.no_ss) ||
+        maxTime > (this.ss + this.mm * 60 + this.hh * 3600)
     } else {
       this.max_hh = this.max_mm = this.max_ss = 0
       this.no_hh = this.no_mm = this.no_ss = true

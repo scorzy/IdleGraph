@@ -28,7 +28,7 @@ export class Modifier {
   }
 }
 
-export const Prefixs: Array<Modifier> = [
+export const Suffixs: Array<Modifier> = [
   new Modifier(0, ""),
   new Modifier(1, "of tick speed", [[Mod.TICK_SPEED, 100]]),
   new Modifier(2, "of sacrify", [[Mod.SACRIFY, 100]]),
@@ -38,7 +38,6 @@ export const Prefixs: Array<Modifier> = [
 ]
 
 export const Ggraph: Array<Modifier> = [
-  new Modifier(1E2 + 0, ""),
   new Modifier(1E2 + 1, "Thick", [[Mod.TICK_SPEED, 100]]),
   new Modifier(1E2 + 2, "Temple", [[Mod.SACRIFY, 100]]),
   new Modifier(1E2 + 3, "Bonus", [[Mod.BONUS, 100]]),
@@ -46,9 +45,9 @@ export const Ggraph: Array<Modifier> = [
   new Modifier(1E2 + 5, "Warp", [[Mod.WARP, 100]])
 ]
 
-export const Suffixs: Array<Modifier> = [
+export const Prefixs: Array<Modifier> = [
   new Modifier(1E3, ""),
-  new Modifier(1E3 + 1, "Fast", [[Mod.TICK_SPEED, 100]]),
+  new Modifier(1E3 + 1, "Faster", [[Mod.TICK_SPEED, 100]]),
   new Modifier(1E3 + 2, "Sacrilegious", [[Mod.SACRIFY, 100]]),
   new Modifier(1E3 + 3, "Better", [[Mod.BONUS, 100]]),
   new Modifier(1E3 + 4, "Future", [[Mod.TIME, 100]]),

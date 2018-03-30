@@ -276,7 +276,9 @@ export class Model {
   warp(delta: Decimal): boolean {
     if (delta.gt(this.time)) return false
     this.time = this.time.minus(delta)
-    this.update(delta.times(1000).times(this.getTotalMod(Mod.WARP)).toNumber())
+    const up = delta.times(this.getTotalMod(Mod.WARP))
+    this.update(up.times(1000).toNumber())
+    this.toastr.info("" + new UpToTimePipe().transform(up), "Time Warp")
     return true
   }
   getToAdd(node: MyNode, level: number): Decimal {

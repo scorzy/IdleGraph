@@ -19,5 +19,5 @@
     </p>
   </ng-template>
 
-  <app-world [mod]="serv.model.currentMods"></app-world>
+  <app-world [mod]="serv.model.currentMods" *ngIf="!!serv.model.currentMods"></app-world>
 </div>
