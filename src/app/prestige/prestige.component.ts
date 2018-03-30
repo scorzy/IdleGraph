@@ -13,6 +13,7 @@ export class PrestigeComponent implements OnInit, OnDestroy {
   upSub: any
   Number = Number
   surrenderModal = false
+  selModal = false
 
   constructor(public ser: ServService) { }
 

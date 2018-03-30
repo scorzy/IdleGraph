@@ -28,7 +28,6 @@ import { AutoBuyerComponent } from './auto-buyer/auto-buyer.component';
 import { AchivementComponent } from './achivement/achivement.component';
 import { AchivementListComponent } from './achivement-list/achivement-list.component';
 import { WorldComponent } from './world/world.component';
-import { WorldSelectorComponent } from './world-selector/world-selector.component';
 
 export class CustomOptions extends ToastOptions {
   animate = 'fade'
@@ -99,8 +98,7 @@ const appRoutes: Routes = [
     AutoBuyerComponent,
     AchivementComponent,
     AchivementListComponent,
-    WorldComponent,
-    WorldSelectorComponent
+    WorldComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),

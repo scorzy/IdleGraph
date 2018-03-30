@@ -52,6 +52,9 @@ export class MyNode {
   reloadPerSec(model: Model) {
     this.prodPerSec = this.getBonus(model).plus(1).times(this.sacrificeBonus.div(100).plus(1))
 
+    if (this.producer.length === 0)
+      this.prodPerSec = this.prodPerSec.times(model.getTotalMod(Mod.LEAF_PROD))
+
     if (this.level <= model.softResetAcks.length && model.softResetAcks[this.level - 1].done)
       this.prodPerSec = this.prodPerSec.times(1.1)
   }
@@ -81,6 +84,9 @@ export class MyNode {
     producer.reloadNewProdPrice()
     producer.reloadPriceBuy()
     this.reloadNewProdPrice()
+
+    this.reloadPerSec(model)
+    producer.reloadPerSec(model)
 
     return producer
   }

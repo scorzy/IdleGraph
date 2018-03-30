@@ -25,7 +25,7 @@ export class Model {
   tickSpeedCostMulti = new Decimal(30)
   tickSpeedOwned = new Decimal(0)
   tickSpeedCost = INIT_TICK_COST
-  maxNode = 100
+  maxNode = 50
 
   softResetNum = 1
   softResetReq = new Decimal(1E6)

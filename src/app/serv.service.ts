@@ -49,7 +49,7 @@ export class ServService {
     this.document.querySelector('head').appendChild(this.linkTheme)
 
     const source = Observable
-      .interval(200).subscribe(() => {
+      .interval(400).subscribe(() => {
         const now = Date.now()
         const delta = now - this.last
         this.model.mainUpdate(delta)
