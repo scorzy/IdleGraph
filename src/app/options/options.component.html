@@ -61,5 +61,22 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label>Main node:</label>
+      <input [(colorPicker)]="ser.options.mainColor" [style.background]="ser.options.mainColor" (colorPickerChange)="nodeColorChanged = true"
+      />
+    </div>
+    <div class="form-group">
+      <label>Normal:</label>
+      <input [(colorPicker)]="ser.options.normalColor" [style.background]="ser.options.normalColor" (colorPickerChange)="nodeColorChanged = true"
+      />
+    </div>
+    <div class="form-group">
+      <label>Leaf:</label>
+      <input [(colorPicker)]="ser.options.leafColor" [style.background]="ser.options.leafColor" (colorPickerChange)="nodeColorChanged = true"
+      />
+    </div>
+    <button class="btn btn-danger-outline" (click)="resetColors()">Reset Colors</button>
+
   </section>
 </form>

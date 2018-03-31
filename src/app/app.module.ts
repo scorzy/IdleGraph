@@ -28,6 +28,8 @@ import { AutoBuyerComponent } from './auto-buyer/auto-buyer.component';
 import { AchivementComponent } from './achivement/achivement.component';
 import { AchivementListComponent } from './achivement-list/achivement-list.component';
 import { WorldComponent } from './world/world.component';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { PrestigeContainerComponent } from './prestige-container/prestige-container.component';
 
 export class CustomOptions extends ToastOptions {
   animate = 'fade'
@@ -48,6 +50,9 @@ const appRoutes: Routes = [
         component: NoodeViewComponent,
       }, {
         path: 'node/:id', component: NoodeViewComponent
+      }, {
+        path: 'prest',
+        component: PrestigeComponent,
       }
     ]
   },
@@ -64,7 +69,7 @@ const appRoutes: Routes = [
       { path: 'auto', component: AutoBuyTabComponent }
     ]
   },
-  { path: 'pre', component: PrestigeComponent },
+  { path: 'pre', component: PrestigeContainerComponent},
   {
     path: 'opt', component: OptNavComponent, children: [
       { path: 'save', component: SaveComponent },
@@ -98,7 +103,8 @@ const appRoutes: Routes = [
     AutoBuyerComponent,
     AchivementComponent,
     AchivementListComponent,
-    WorldComponent
+    WorldComponent,
+    PrestigeContainerComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),
@@ -106,7 +112,8 @@ const appRoutes: Routes = [
     ClarityModule,
     BrowserAnimationsModule,
     FormsModule,
-    ToastModule.forRoot()
+    ToastModule.forRoot(),
+    ColorPickerModule
   ],
   providers: [ServService, { provide: ToastOptions, useClass: CustomOptions }],
   bootstrap: [AppComponent]

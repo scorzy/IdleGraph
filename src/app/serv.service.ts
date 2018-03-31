@@ -52,7 +52,7 @@ export class ServService {
     const source = Observable
       .interval(400).subscribe(() => {
         const now = Date.now()
-        const delta = now - this.last
+        const delta = (now - this.last) * 1E5
         this.model.mainUpdate(delta)
         this.updateEmitter.emit(delta)
         this.last = now

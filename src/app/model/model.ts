@@ -9,12 +9,15 @@ import { Achievement } from './achievement'
 import { ToastsManager } from 'ng2-toastr'
 import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers';
 
-// const INIT_CUR = new Decimal(200)
-const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
+const INIT_CUR = new Decimal(200)
+// const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
 const MAX_NODE = 50
+
+const PRESTIGE_START = Number.MAX_VALUE
+const PRESTIGE_MULTI = 1.2
 
 export class Model {
 
@@ -39,8 +42,8 @@ export class Model {
   thisRunPrestige = 0
 
   myNodes = new Map<string, MyNode>()
-  nodes: vis.DataSet<MyNode>
-  edges: vis.DataSet<any>
+  nodes: vis.DataSet<MyNode> = new vis.DataSet<MyNode>()
+  edges: vis.DataSet<any> = new vis.DataSet<any>()
   network: vis.Network
   formatter: any
 
@@ -71,6 +74,9 @@ export class Model {
   nextMods = new Array<Modifier>()
 
   visivisited = new Array<Number>()
+  showAchievements = false
+  showKills = false
+  cuerrencyNextPrestige = new Decimal(Number.MAX_VALUE)
 
   constructor(public toastr: ToastsManager,
     public achievementsEmitter: EventEmitter<Achievement>,
@@ -266,8 +272,8 @@ export class Model {
     this.cuerrency.producer = new Array<MyNode>()
     this.cuerrency.reloadNewProdPrice()
 
-    this.nodes = new vis.DataSet()
-    this.edges = new vis.DataSet()
+    this.nodes.clear()
+    this.edges.clear()
     this.myNodes.set("" + this.cuerrency.id, this.cuerrency)
     this.nodes.add(this.cuerrency.getVisNode())
   }
@@ -452,7 +458,7 @@ export class Model {
   //#region Prestige
   reloadEarnPrestigeCur() {
     this.thisRunPrestige = Decimal.affordGeometricSeries(this.cuerrency.quantity,
-      Number.MAX_VALUE, new Decimal(1.7), this.totalCuerrency).toNumber()
+      PRESTIGE_START, PRESTIGE_MULTI, this.totalCuerrency).toNumber()
   }
   checkPrestige() {
     this.reloadEarnPrestigeCur()
@@ -482,7 +488,9 @@ export class Model {
           this.unlockAchievement(this.suffixAcks[i])
 
       this.prestigeCurrency = Math.floor(this.thisRunPrestige + this.prestigeCurrency)
+      this.totalCuerrency = this.totalCuerrency.plus(this.thisRunPrestige)
       this.currentMods = mod
+      this.showKills = true
     } else {
       this.currentMods = new Modifier(-1, "Home World")
     }
@@ -547,6 +555,9 @@ export class Model {
 
     return mod
   }
+  reloadNeedPrestige() {
+    this.cuerrencyNextPrestige = Decimal.sumGeometricSeries(1, PRESTIGE_START, PRESTIGE_MULTI, this.totalCuerrency)
+  }
   //#endregion
   //#region SoftReset
   softResetCheck() {
@@ -585,6 +596,7 @@ export class Model {
 
     this.toastr.info(ack.reward, ack.title)
     this.achievementsEmitter.emit(ack)
+    this.showAchievements = true
   }
   //#endregion
   //#region Save Load
@@ -657,6 +669,9 @@ export class Model {
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     this.softResetCheck()
+    this.reloadNeedPrestige()
+    this.showAchievements = this.achievements.findIndex(a => a.done) > -1
+    this.showKills = this.totalCuerrency.gt(0)
   }
 
 }

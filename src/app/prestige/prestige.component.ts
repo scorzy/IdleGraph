@@ -10,7 +10,6 @@ import { Modifier } from '../model/modifiers'
   styleUrls: ['./prestige.component.scss']
 })
 export class PrestigeComponent implements OnInit, OnDestroy {
-  @HostBinding('class.content-container') className = 'content-container'
   upSub: any
   prestSub: any
   Number = Number
@@ -37,7 +36,7 @@ export class PrestigeComponent implements OnInit, OnDestroy {
     this.prestSub.unsubscribe()
   }
   getVal() {
-    return this.ser.model.thisRunPrestige * 100
+    return this.ser.model.cuerrency.quantity.log10() / this.ser.model.cuerrencyNextPrestige.log10() * 100
   }
   getSoftVal() {
     return this.ser.model.softResetHave.div(this.ser.model.softResetReq).times(100).toNumber()

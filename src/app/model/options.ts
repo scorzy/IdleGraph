@@ -1,6 +1,10 @@
 import { numberformat } from 'swarm-numberformat'
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class Options {
+
+  static ref: Options
 
   formatter = new numberformat.Formatter({ format: 'standard', sigfigs: 2, flavor: 'short' })
   colAlert = true
@@ -14,7 +18,12 @@ export class Options {
   sacAllAlert = true
   lines = 6
 
+  mainColor = "rgb(255,168,7)"
+  normalColor = "rgb(97,195,238)"
+  leafColor = '#7BE141'
+
   constructor() {
+    Options.ref = this
   }
   generateFormatter() {
     this.formatter = new numberformat.Formatter({
@@ -23,6 +32,11 @@ export class Options {
           this.numFormat === "E" ? 'engineering' : 'longScale'))
       , sigfigs: 2, flavor: 'short'
     })
+  }
+  resetColors() {
+    this.mainColor = "rgb(255,168,7)"
+    this.normalColor = "rgb(97,195,238)"
+    this.leafColor = '#7BE141'
   }
   save(): any {
     return {
@@ -34,7 +48,10 @@ export class Options {
       g: this.showGraph,
       k: this.colAllAlert,
       l: this.sacAllAlert,
-      p: this.lines
+      p: this.lines,
+      mc: this.mainColor,
+      nc: this.normalColor,
+      lc: this.leafColor
     }
   }
   load(data) {
@@ -48,6 +65,12 @@ export class Options {
     this.numFormat = "n" in data ? data.n : "S"
     if ("p" in data)
       this.lines = data.p
+    if ("mc" in data)
+      this.mainColor = data.mc
+    if ("nc" in data)
+      this.normalColor = data.nc
+    if ("lc" in data)
+      this.leafColor = data.lc
     this.generateFormatter()
   }
 }

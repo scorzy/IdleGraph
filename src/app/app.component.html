@@ -9,14 +9,14 @@
         skipLocationChange>
         Presige
       </a>
-      <a href="javascript://" class="nav-link nav-text" [routerLink]="'pnav'" [routerLinkActiveOptions]="{exact: false}"
+      <a *ngIf="serv.model.showKills" href="javascript://" class="nav-link nav-text" [routerLink]="'pnav'" [routerLinkActiveOptions]="{exact: false}"
         [routerLinkActive]="'active'" skipLocationChange>
-        Skill
+        Skills
         <span class="badge badge-success" *ngIf="serv.model.prestigeCurrency > 0">{{serv.model.prestigeCurrency | format}}</span>
       </a>
-      <a href="javascript://" class="nav-link nav-text" [routerLink]="'ack'" [routerLinkActiveOptions]="{exact: false}"
+      <a *ngIf="serv.model.showAchievements" href="javascript://" class="nav-link nav-text" [routerLink]="'ack'" [routerLinkActiveOptions]="{exact: false}"
         [routerLinkActive]="'active'" skipLocationChange>
-        Ack
+        Achievements
       </a>
     </div>
     <div class="header-actions">

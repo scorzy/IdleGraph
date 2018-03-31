@@ -28,6 +28,7 @@ declare class Decimal {
   pow: (any) => Decimal
   cmp: (any) => number
   ln: () => number
+  log10: () => number
 
   toNumber: () => number
 
@@ -37,4 +38,5 @@ declare class Decimal {
   static sumGeometricSeries: (any, any2, any3, any4) => Decimal
   static affordGeometricSeries: (any, any2, any3, any4) => Decimal
   static ln: (any) => number
+  static log10: (any) => number
 }

@@ -1,6 +1,8 @@
 import { Model } from './model'
 import { Type } from './skill'
-import { Mod } from './modifiers';
+import { Mod } from './modifiers'
+import { Options } from './options'
+
 const BONUS = new Decimal(0.1)
 
 export class MyNode {
@@ -36,11 +38,12 @@ export class MyNode {
 
   }
   getVisNode(): any {
+    const opt = Options.ref
     return {
       id: this.id,
       label: this.label,
-      color: this.level === 1 ? "rgb(255,168,7)" :
-        (this.producer.length === 0 ? '#7BE141' : "rgb(97,195,238)")
+      color: this.level === 1 ? opt.mainColor :
+        (this.producer.length === 0 ? opt.leafColor : opt.normalColor)
     }
   }
   updateVis(model: Model) {

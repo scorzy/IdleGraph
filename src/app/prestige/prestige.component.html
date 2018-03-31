@@ -1,51 +1,48 @@
-<div class="content-area">
+<div class="minHeight">
+  <h3>Soft Reset</h3>
+  <p>
+    Reset everything except prestige bonus and get a tickspeed boost and a sacrifice boost. You need {{ser.model.softResetReq
+    | format}} node of level {{ser.model.softResetNum +1}}.
+  </p>
+  <div *ngIf="!ser.model.canSoftReset; else softReset">
+    <div class="progress">
+      <progress max="100" [value]="getSoftVal()"></progress>
+    </div>
+  </div>
+</div>
 
-  <div class="minHeight">
-    <h3>Soft Reset</h3>
-    <p>
-      Reset everything except prestige bonus and get a tickspeed boost and a sacrifice boost. You need {{ser.model.softResetReq
-      | format}} node of level {{ser.model.softResetNum +1}}.
-    </p>
-    <div *ngIf="!ser.model.canSoftReset; else softReset">
-      <div class="progress">
-        <progress max="100" [value]="getSoftVal()"></progress>
-      </div>
+<div class="minHeight prestige">
+  <h3>Prestige</h3>
+  <p>
+    Reset everything except prestige bonus, incluting soft reset. You need {{ser.model.cuerrencyNextPrestige
+    | format}} main Main node.
+  </p>
+  <div *ngIf="!ser.model.canPrestige; else Prestige">
+    <div class="progress">
+      <progress max="100" [value]="getVal()"></progress>
     </div>
   </div>
 
-  <div class="minHeight prestige">
-    <h3>Prestige</h3>
-    <p>
-      Reset everything except prestige bonus, incluting soft reset.
-    </p>
-    <div *ngIf="!ser.model.canPrestige; else Prestige">
-      <div class="progress">
-        <progress max="100" [value]="getVal()"></progress>
-      </div>
-    </div>
-
-    <clr-modal [(clrModalOpen)]="selModal" [clrModalSize]="'xl'" class="preModal">
-        <h3 class="modal-title">Select your next graph:</h3>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-xs-4" *ngFor="let w of ser.model.nextMods; trackBy:getId">
-              <app-world [mod]="w" [prestigeBtn]="true"></app-world>
-            </div>
-          </div>
+  <clr-modal [(clrModalOpen)]="selModal" [clrModalSize]="'xl'" class="preModal">
+    <h3 class="modal-title">Select your next graph:</h3>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-xs-4" *ngFor="let w of ser.model.nextMods; trackBy:getId">
+          <app-world [mod]="w" [prestigeBtn]="true"></app-world>
         </div>
-      </clr-modal>
-  </div>
+      </div>
+    </div>
+  </clr-modal>
+</div>
 
-  <div class="minHeight">
-    <h3>Surrender</h3>
-    <p>
-      Restart this run.
-    </p>
-    <button class="btn btn-danger-outline" (click)="surrenderModal = true">
-      Surrender
-    </button>
-  </div>
-
+<div class="minHeight">
+  <h3>Surrender</h3>
+  <p>
+    Restart this run.
+  </p>
+  <button class="btn btn-danger-outline" (click)="surrenderModal = true">
+    Surrender
+  </button>
 </div>
 
 <ng-template #softReset>
@@ -70,4 +67,3 @@
     </button>
   </div>
 </clr-modal>
-

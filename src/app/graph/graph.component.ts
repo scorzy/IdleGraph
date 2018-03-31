@@ -42,7 +42,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!!edge) {
           this.serv.edgeEmitter.emit(edge)
         } else
-          this.router.navigateByUrl("/main")
+          this.router.navigateByUrl("/main/prest")
       }
     })
     this.serv.model.network = this.network

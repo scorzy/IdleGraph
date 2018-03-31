@@ -31,6 +31,7 @@
     "lz-string": "^1.4.4",
     "moment": "^2.21.0",
     "ng2-toastr": "^4.1.2",
+    "ngx-color-picker": "^5.3.8",
     "normalize.css": "^7.0.0",
     "rxjs": "^5.5.8",
     "swarm-numberformat": "^0.4.0",
