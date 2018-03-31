@@ -1,0 +1,66 @@
+<h1>HOW TO PLAY</h1>
+<p>
+  Idle Graph is an Idle Incremental. The main goal is to reach enough main currency to prestige. When
+  prestige you will star a new semi random Graph and you get some skill points.
+</p>
+
+<clr-stack-view>
+  <!-- <clr-stack-header>Angular stack view</clr-stack-header> -->
+
+  <clr-stack-block>
+    <clr-stack-label>Graph</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        In this game there is a tree of resource generators. The root node is your main currency, every node
+        has a level, that is the distance from Main, sarting from 1. A -> b implies that A make B Main
+        node, leafs and other node have different colors.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+    <clr-stack-label>Buy</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        With the Buy button you can buy more node, by buying node you also get a "bought bonus" that increase
+        productivity.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+    <clr-stack-label>Producer</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        With the Producer button you can buy a producer of the current node.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+    <clr-stack-label>Ticks</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        Nodes production is based on /tick, not os "per second". You can increase your tick per second to maximize production.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+      <clr-stack-label>Sacrifice</clr-stack-label>
+      <clr-stack-block>
+        <clr-stack-label></clr-stack-label>
+        <clr-stack-content>
+          You can sacrifice node of level greater than 3 to gain a production bonus.
+          Sacrifice will decrease the quantity of all node produced by this to zero, recursive.
+          Sacrifice bonus is based on level and quantity of sacrificed nodes and level of this current node.
+          New sacrifice bonus will substitute your previous sacrifice bonus, you can only sacrifice if the new sacrifice bonus is greater of actual bonus.
+        </clr-stack-content>
+      </clr-stack-block>
+    </clr-stack-block>
+
+</clr-stack-view>

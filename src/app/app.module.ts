@@ -30,6 +30,7 @@ import { AchivementListComponent } from './achivement-list/achivement-list.compo
 import { WorldComponent } from './world/world.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { PrestigeContainerComponent } from './prestige-container/prestige-container.component';
+import { HelpComponent } from './help/help.component';
 
 export class CustomOptions extends ToastOptions {
   animate = 'fade'
@@ -73,7 +74,8 @@ const appRoutes: Routes = [
   {
     path: 'opt', component: OptNavComponent, children: [
       { path: 'save', component: SaveComponent },
-      { path: 'opt', component: OptionsComponent }
+      { path: 'opt', component: OptionsComponent },
+      { path: 'help', component: HelpComponent }
     ]
   }, {
     path: 'ack', component: AchivementListComponent
@@ -104,7 +106,8 @@ const appRoutes: Routes = [
     AchivementComponent,
     AchivementListComponent,
     WorldComponent,
-    PrestigeContainerComponent
+    PrestigeContainerComponent,
+    HelpComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),

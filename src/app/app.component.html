@@ -1,29 +1,30 @@
 <div class="main-container">
   <header [ngClass]="getClass()">
     <div class="header-nav">
-      <a href="javascript://" class="nav-link nav-text" [routerLink]="'main'" [routerLinkActive]="'active'"
-        skipLocationChange>
+      <a href="javascript://" class="nav-link nav-text" [routerLink]="'main'" [routerLinkActive]="'active'">
         Graph
       </a>
-      <a href="javascript://" class="nav-link nav-text" [routerLink]="'pre'" [routerLinkActive]="'active'"
-        skipLocationChange>
+      <a href="javascript://" class="nav-link nav-text" [routerLink]="'pre'" [routerLinkActive]="'active'">
         Presige
       </a>
-      <a *ngIf="serv.model.showKills" href="javascript://" class="nav-link nav-text" [routerLink]="'pnav'" [routerLinkActiveOptions]="{exact: false}"
-        [routerLinkActive]="'active'" skipLocationChange>
+      <a *ngIf="serv.model.showKills" href="javascript://" class="nav-link nav-text" [routerLink]="'pnav'"
+        [routerLinkActiveOptions]="{exact: false}" [routerLinkActive]="'active'">
         Skills
         <span class="badge badge-success" *ngIf="serv.model.prestigeCurrency > 0">{{serv.model.prestigeCurrency | format}}</span>
       </a>
-      <a *ngIf="serv.model.showAchievements" href="javascript://" class="nav-link nav-text" [routerLink]="'ack'" [routerLinkActiveOptions]="{exact: false}"
-        [routerLinkActive]="'active'" skipLocationChange>
+      <a *ngIf="serv.model.showAchievements" href="javascript://" class="nav-link nav-text" [routerLink]="'ack'"
+        [routerLinkActiveOptions]="{exact: false}" [routerLinkActive]="'active'">
         Achievements
       </a>
     </div>
     <div class="header-actions">
-      <a href="javascript://" class="nav-link nav-icon" (click)="warpModal = true" skipLocationChange>
+      <a href="javascript://" class="nav-link nav-icon" (click)="warpModal = true">
         <clr-icon shape="clock"></clr-icon>
       </a>
-      <a href="javascript://" class="nav-link nav-icon" [routerLink]="'opt/save'" skipLocationChange>
+      <a href="javascript://" class="nav-link nav-icon" [routerLink]="'opt/help'">
+        <clr-icon shape="help"></clr-icon>
+      </a>
+      <a href="javascript://" class="nav-link nav-icon" [routerLink]="'opt/save'">
         <clr-icon shape="cog"></clr-icon>
       </a>
     </div>
@@ -35,9 +36,8 @@
 <clr-modal [(clrModalOpen)]="warpModal">
   <h3 class="modal-title">Time Warp !</h3>
   <div class="modal-body">
-    <p>You can skip up to {{serv.model.time | upToTime}}
-       ({{serv.model.time | format}} s)
-       ; max: {{serv.model.maxTime}} </p>
+    <p>You can skip up to {{serv.model.time | upToTime}} ({{serv.model.time | format}} s) ; max: {{serv.model.maxTime}}
+    </p>
     <form class="form">
       <section class="form-block">
         <div class="form-group row">
@@ -52,11 +52,11 @@
           </div>
           <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
             <input class="form-control" type="number" id="gForm_2" placeholder="0" name="mm" size="10" [(ngModel)]="mm"
-              min=0 max={{max_mm}} (onchange)="checkTime()" [class.invalid]="no_mm" >
+              min=0 max={{max_mm}} (onchange)="checkTime()" [class.invalid]="no_mm">
           </div>
           <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12">
             <input class="form-control" type="number" id="gForm_3" placeholder="0" name="ss" size="10" [(ngModel)]="ss"
-              min=0 max={{max_ss}} (onchange)="checkTime()" [class.invalid]="no_ss" >
+              min=0 max={{max_ss}} (onchange)="checkTime()" [class.invalid]="no_ss">
           </div>
         </div>
       </section>
@@ -64,7 +64,6 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="warpModal = false">Cancel</button>
-    <button type="button" class="btn btn-success" (click)="warp()"
-    [disabled]="!canWarp" >Warp</button>
+    <button type="button" class="btn btn-success" (click)="warp()" [disabled]="!canWarp">Warp</button>
   </div>
 </clr-modal>
