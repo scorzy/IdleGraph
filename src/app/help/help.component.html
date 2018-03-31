@@ -1,7 +1,7 @@
 <h1>HOW TO PLAY</h1>
 <p>
-  Idle Graph is an Idle Incremental. The main goal is to reach enough main currency to prestige. When
-  prestige you will star a new semi random Graph and you get some skill points.
+  Idle Graph is an Idle Incremental. The main goal is to reach enough main currency to prestige. When prestige
+  you will star a new semi random Graph and you get some skill points.
 </p>
 
 <clr-stack-view>
@@ -45,22 +45,83 @@
     <clr-stack-block>
       <clr-stack-label></clr-stack-label>
       <clr-stack-content>
-        Nodes production is based on /tick, not os "per second". You can increase your tick per second to maximize production.
+        Nodes production is based on /tick, not os "per second". You can increase your tick per second to maximize
+        production.
       </clr-stack-content>
     </clr-stack-block>
   </clr-stack-block>
 
   <clr-stack-block>
-      <clr-stack-label>Sacrifice</clr-stack-label>
-      <clr-stack-block>
-        <clr-stack-label></clr-stack-label>
-        <clr-stack-content>
-          You can sacrifice node of level greater than 3 to gain a production bonus.
-          Sacrifice will decrease the quantity of all node produced by this to zero, recursive.
-          Sacrifice bonus is based on level and quantity of sacrificed nodes and level of this current node.
-          New sacrifice bonus will substitute your previous sacrifice bonus, you can only sacrifice if the new sacrifice bonus is greater of actual bonus.
-        </clr-stack-content>
-      </clr-stack-block>
+    <clr-stack-label>Sacrifice</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        You can sacrifice node of level greater than 2 to gain a production bonus. Sacrifice will decrease the
+        quantity of all node produced by this to zero, recursive. Sacrifice bonus is based on level and
+        quantity of sacrificed nodes and level of this current node. New sacrifice bonus will substitute
+        your previous sacrifice bonus, you can only sacrifice if the new sacrifice bonus is greater of
+        actual bonus.
+      </clr-stack-content>
     </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+    <clr-stack-label>Max Node</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        The maximum number of node you can have is capped. It start from 50 but there are skills to increase
+        it.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+    <clr-stack-label>Collapse</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        Node of level greater than 3 can be collapsed. Collapse will group all producer of the current node by
+        level, quantity sacrifice bonus and bought quantity will be the sum of collapsed nodes.
+        <br/> Collapse will decrease the quantity of all node produced by this to zero, recursive. With collapse
+        you will be able to buy new node of higher level.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+    <clr-stack-label>Soft Reset</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        This is the first level of prestige. You will restart with only the main node but with a small tick speed
+        boost and a sacrifice boost.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+    <clr-stack-label>Prestige</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        This is the actual prestige system. It reset everything except skills and time. Prestige gives you skill
+        points and you can get more prestige points per prestige. Earned skill points are based on lifetime
+        earned skills point. With prestige you will need to select a new Graph with some random bonus,
+        this bonus substitute the previous bonus.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
+
+  <clr-stack-block>
+    <clr-stack-label>Time</clr-stack-label>
+    <clr-stack-block>
+      <clr-stack-label></clr-stack-label>
+      <clr-stack-content>
+        Some skills will give you "Time". Time can be spent to speed up the game.
+        To sped time click on the clock in the top right.
+      </clr-stack-content>
+    </clr-stack-block>
+  </clr-stack-block>
 
 </clr-stack-view>
