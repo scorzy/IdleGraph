@@ -5,12 +5,12 @@ import { Edge } from 'vis'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
 import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
-import { Achievement } from './achievement'
+import { Achievement } from './achievement';
 import { ToastsManager } from 'ng2-toastr'
-import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers';
+import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers'
 
-const INIT_CUR = new Decimal(200)
-// const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
+// const INIT_CUR = new Decimal(200)
+const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
@@ -20,6 +20,8 @@ const PRESTIGE_START = Number.MAX_VALUE
 const PRESTIGE_MULTI = 1.2
 
 export class Model {
+
+  static model: Model
 
   private deltaT = new Decimal(0)
 
@@ -70,6 +72,8 @@ export class Model {
   graphAcks = new Array<Achievement>()
   suffixAcks = new Array<Achievement>()
 
+  why: Achievement
+
   currentMods = new Modifier(-1, "")
   nextMods = new Array<Modifier>()
 
@@ -82,6 +86,9 @@ export class Model {
     public achievementsEmitter: EventEmitter<Achievement>,
     public buyNodeEmitter: EventEmitter<MyNode>,
     public prestigeEmitter: EventEmitter<number>) {
+
+    Model.model = this
+
     this.prestigeBonus.fill(0)
     this.init()
     //#region Prestige
@@ -195,6 +202,29 @@ export class Model {
     this.skillEdges.add({ from: 2087, to: 1603 })
     this.skillEdges.add({ from: 2092, to: 1602 })
 
+    this.makeLine(1303, 2100, Type.BULK_BUY, 3)
+    this.makeLine(1313, 2200, Type.BULK_BUY, 3)
+    this.skillEdges.add({ from: 2102, to: 2202 })
+
+    this.makeLine(1500, 2300, Type.BULK_BUY, 3)
+    this.makeLine(1501, 2310, Type.BULK_BUY, 3)
+    this.makeLine(781, 2320, Type.BULK_BUY, 3)
+    this.makeLine(711, 2330, Type.BULK_BUY, 3)
+    this.makeLine(503, 2340, Type.BULK_BUY, 3)
+    this.skillEdges.add({ from: 509, to: 2342 })
+
+    this.makeLine(2003, 2350, Type.BOUGHT_BONUS, 3)
+    this.skillEdges.add({ from: 2352, to: 912 })
+
+    this.makeLine(208, 2360, Type.MAX_NODE_ADD, 3)
+    this.skillEdges.add({ from: 2362, to: 102 })
+
+    this.makeLine(204, 2370, Type.MAX_NODE_ADD, 3)
+    this.skillEdges.add({ from: 2372, to: 803 })
+
+    this.makeLine(2312, 2380, Type.MAX_NODE_ADD, 3)
+    this.skillEdges.add({ from: 1181, to: 2382 })
+
     console.log("Tot skill point: " + this.skills.length)
 
     this.reloadMaxTime()
@@ -203,25 +233,25 @@ export class Model {
     this.checkMaxCollapse()
     //#endregion
     //#region Achivements
-    const firsthAck = new Achievement(1, "Linear", "Do one soft reset", "+10% production from node of level 1",
+    const firsthAck = new Achievement(1, "Linear", "Do one soft reset", "+10% production from node of level 2",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const secondAck = new Achievement(2, "Quadratic", "Do two soft reset", "+10% production from node of level 2",
+    const secondAck = new Achievement(2, "Quadratic", "Do two soft reset", "+10% production from node of level 3",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const thirdAck = new Achievement(3, "Cubic", "Do three reset", "+10% production from node of level 3",
+    const thirdAck = new Achievement(3, "Cubic", "Do three reset", "+10% production from node of level 4",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g4Ack = new Achievement(4, "Quartic ", "Do four soft reset", "+10% production from node of level 4",
+    const g4Ack = new Achievement(4, "Quartic ", "Do four soft reset", "+10% production from node of level 5",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g5Ack = new Achievement(5, "Quintic ", "Do five soft reset", "+10% production from node of level 5",
+    const g5Ack = new Achievement(5, "Quintic ", "Do five soft reset", "+10% production from node of level 6",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g6Ack = new Achievement(6, "Sextic", "Do six soft reset", "+10% production from node of level 6",
+    const g6Ack = new Achievement(6, "Sextic", "Do six soft reset", "+10% production from node of level 7",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g7Ack = new Achievement(7, "Septic", "Do seven soft reset", "+10% production from node of level 7",
+    const g7Ack = new Achievement(7, "Septic", "Do seven soft reset", "+10% production from node of level 8",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g8Ack = new Achievement(8, "Octic", "Do eight soft reset", "+10% production from node of level 8",
+    const g8Ack = new Achievement(8, "Octic", "Do eight soft reset", "+10% production from node of level 9",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g9Ack = new Achievement(9, "Nonic", "Do nine soft reset", "+10% production from node of level 9",
+    const g9Ack = new Achievement(9, "Nonic", "Do nine soft reset", "+10% production from node of level 10",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
-    const g10Ack = new Achievement(10, "Decic", "Do ten soft reset", "+10% production from node of level 10",
+    const g10Ack = new Achievement(10, "Decic", "Do ten soft reset", "+10% production from node of level 11",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
 
     this.softResetAcks.push(firsthAck, secondAck, thirdAck, g4Ack, g5Ack, g6Ack, g7Ack, g8Ack, g9Ack, g10Ack)
@@ -243,6 +273,10 @@ export class Model {
     this.suffixAcks = [suffix1, suffix2, suffix3]
 
     this.achievements = this.achievements.concat(this.prefixAcks).concat(this.graphAcks).concat(this.suffixAcks)
+
+    this.why = new Achievement(20, "Why ?", "Buy a single second level node when you have more of 1E100 of them",
+      "+10% production from node of level 2", (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    this.achievements.push(this.why)
 
     //#endregion
     this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
@@ -413,7 +447,10 @@ export class Model {
   //#endregion
   //#region Auto Buyers
   reloadAutoBuyers() {
-    this.autoBuyers.forEach(a => a.reloadInterval(this))
+    this.autoBuyers.forEach(a => {
+      a.reloadInterval(this)
+      a.reloadBulk(this)
+    })
     this.autoBuyersActiveOrder = this.autoBuyers.filter(a => a.on).sort((a, b) => a.priority - b.priority)
     console.log(this.autoBuyersActiveOrder)
   }

@@ -65,7 +65,8 @@ export enum Type {
   ALL_AUTOBUY_INTERVAL,
   MAX_AUTO_BUY_PERC,
   BOUGHT_BONUS,
-  DOUBLE_BONUS
+  DOUBLE_BONUS,
+  BULK_BUY
 }
 export const labels = [
   "+10%\ntick speed",
@@ -77,18 +78,19 @@ export const labels = [
   "+0.05 \ntime /s",
   "+1H \nmax time",
   "+1 \nmax autobuyers",
-  "-5% maxAll\ninterval",
-  "-5% warp\ninterval",
-  "-5% buy node\ninterval",
-  "-5% buy producer\ninterval",
-  "-5% buy tickspeed\ninterval",
-  "-5% buy leaf prod.\ninterval",
-  "-5% leaf sacrify\ninterval",
-  "-5% collapse\ninterval",
-  "-5% autobuyers\ninterval",
+  "-15% maxAll\ninterval",
+  "-15% warp\ninterval",
+  "-15% buy node\ninterval",
+  "-15% buy producer\ninterval",
+  "-15% buy tickspeed\ninterval",
+  "-15% buy leaf prod.\ninterval",
+  "-15% leaf sacrify\ninterval",
+  "-15% collapse\ninterval",
+  "-15% autobuyers\ninterval",
   "+20% max\nautobuyers",
   "+20% bought\nbonus",
-  "double \nbought bonus"
+  "double \nbought bonus",
+  "x2 bulk buy"
 ]
 
 export const notableSkills = [
@@ -97,5 +99,6 @@ export const notableSkills = [
   Type.SACRIFY_SPECIAL,
   Type.TIME_BANK_1H,
   Type.DOUBLE_BONUS,
-  Type.MAX_AUTO_BUY
+  Type.MAX_AUTO_BUY,
+  Type.MAX_AUTO_BUY_PERC
 ]

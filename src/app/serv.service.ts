@@ -9,8 +9,8 @@ import { ToastsManager } from 'ng2-toastr'
 import { DOCUMENT } from '@angular/common'
 import * as moment from 'moment'
 import * as Decimal from 'break_infinity.js'
-import { Achievement } from './model/achievement';
-import { MyNode } from './model/node';
+import { Achievement } from './model/achievement'
+import { MyNode } from './model/node'
 
 @Injectable()
 export class ServService {
@@ -52,7 +52,7 @@ export class ServService {
     const source = Observable
       .interval(400).subscribe(() => {
         const now = Date.now()
-        const delta = (now - this.last) * 10
+        const delta = (now - this.last) * 1E4
         this.model.mainUpdate(delta)
         this.updateEmitter.emit(delta)
         this.last = now

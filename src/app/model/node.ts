@@ -4,6 +4,7 @@ import { Mod } from './modifiers'
 import { Options } from './options'
 
 const BONUS = new Decimal(0.1)
+const COST_PER_LEVEL = new Decimal(50)
 
 export class MyNode {
 
@@ -56,6 +57,9 @@ export class MyNode {
       .times(model.getTotalMod(Mod.BONUS))
   }
   reloadPerSec(model: Model) {
+    if (this.level === 1)
+      return
+
     this.prodPerSec = this.getBonus(model).plus(1).times(this.sacrificeBonus.div(100).plus(1))
 
     if (this.producer.length === 0)
@@ -73,20 +77,36 @@ export class MyNode {
         break
     }
 
-    if (this.level <= model.softResetAcks.length && model.softResetAcks[this.level - 1].done)
+    if ((this.level - 1) <= model.softResetAcks.length && model.softResetAcks[this.level - 2].done)
+      this.prodPerSec = this.prodPerSec.times(1.1)
+
+    if (this.level === 2 && model.why.done)
       this.prodPerSec = this.prodPerSec.times(1.1)
   }
 
-  buy(model: Model): boolean {
+  buy(model: Model, upTo = new Decimal(1)): boolean {
     if (this.level === 1 || !this.canBuy(model))
       return false
-    model.cuerrency.quantity = model.cuerrency.quantity.minus(this.priceBuy)
-    const buyQta = new Decimal(1)
+
+
+    const maxBuy = Decimal.affordGeometricSeries(model.cuerrency.quantity,
+      COST_PER_LEVEL, new Decimal(1.1), this.bought)
+
+    const buyQta = Decimal.min(maxBuy, upTo)
+    const price = Decimal.sumGeometricSeries(buyQta, COST_PER_LEVEL, new Decimal(1.1), this.quantity)
+
+    model.cuerrency.quantity = model.cuerrency.quantity.minus(price)
     this.quantity = this.quantity.plus(buyQta)
     this.bought = this.bought.plus(buyQta)
+
     this.reloadPriceBuy()
     this.reloadPerSec(model)
     model.buyNodeEmitter.emit(this)
+
+    if (this.level === 2 && !model.why.done && this.quantity.gte(1E100) &&
+      upTo.gte(0.9) && upTo.lte(1.3))
+      model.unlockAchievement(model.why)
+
     return true
   }
   buyNewProducer(model: Model): MyNode {
@@ -136,7 +156,7 @@ export class MyNode {
   }
 
   reloadPriceBuy() {
-    this.priceBuy = Decimal.pow(1.1, this.bought).times(Decimal.pow(50, this.level - 1))
+    this.priceBuy = Decimal.pow(1.1, this.bought).times(Decimal.pow(COST_PER_LEVEL, this.level - 1))
   }
   reloadNewProdPrice() {
     this.priceNewProd = Decimal.pow(1.07, this.producer.length).times(Decimal.pow(50, this.level))

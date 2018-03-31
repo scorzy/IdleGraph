@@ -29,6 +29,7 @@ declare class Decimal {
   cmp: (any) => number
   ln: () => number
   log10: () => number
+  floor: () => Decimal
 
   toNumber: () => number
 

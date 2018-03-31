@@ -7,6 +7,7 @@
   <div>
     <p class="card-text">
       Interval: {{autoB.interval | format}} s
+      <span *ngIf="autoB.upTo.gte(1.5)"> Bulk buy: {{autoB.upTo | format}}</span>
     </p>
 
     <div class="toggle-switch onOff">

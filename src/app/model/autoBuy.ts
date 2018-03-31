@@ -6,6 +6,7 @@ export abstract class AutoBuy {
   on = false
   canBuy = false
   interval = 0
+  startUpTo = new Decimal(0)
   upTo = new Decimal(0)
   wait = 0
   priority = 0
@@ -37,6 +38,11 @@ export abstract class AutoBuy {
     this.reloadInterval(model)
     this.wait = 0
   }
+
+  reloadBulk(model: Model) {
+    if (this.startUpTo.gte(1.1))
+      this.upTo = this.startUpTo.times(Decimal.pow(2, model.prestigeBonus[Type.BULK_BUY]))
+  }
   //#region Save Load
   save(): any {
     return {
@@ -63,7 +69,7 @@ export class MaxAllAutoBuy extends AutoBuy {
     super(
       (model, upTo) => model.maxAll(),
       (model) => {
-        return 400 * Math.pow(0.95, model.prestigeBonus[Type.MAX_ALL_INTERVAL])
+        return 400 * Math.pow(0.85, model.prestigeBonus[Type.MAX_ALL_INTERVAL])
       }
     )
     this.id = 0
@@ -76,7 +82,7 @@ export class TimeAutoBuy extends AutoBuy {
     super(
       (model, upTo) => model.warp(upTo),
       (model) => {
-        return 300 * Math.pow(0.95, model.prestigeBonus[Type.MAX_TIME_INTERVAL])
+        return 300 * Math.pow(0.85, model.prestigeBonus[Type.MAX_TIME_INTERVAL])
       }
     )
     this.id = 1
@@ -97,11 +103,12 @@ export class BuyAutoBuy extends AutoBuy {
         return done
       },
       (model) => {
-        return 200 * Math.pow(0.95, model.prestigeBonus[Type.BUY_NODE_INTERVAL])
+        return 200 * Math.pow(0.85, model.prestigeBonus[Type.BUY_NODE_INTERVAL])
       }
     )
     this.id = 100 * this.level
     this.name = "Buy node of level " + this.level
+    this.startUpTo = new Decimal(100 / level).floor()
   }
 }
 
@@ -117,7 +124,7 @@ export class ProdAutoBuy extends AutoBuy {
         return done
       },
       (model) => {
-        return 600 * Math.pow(0.95, model.prestigeBonus[Type.BUY_PRODUCER_INTERVAL])
+        return 600 * Math.pow(0.85, model.prestigeBonus[Type.BUY_PRODUCER_INTERVAL])
       }
     )
     this.id = 10000 * this.level
@@ -130,7 +137,7 @@ export class TickAutoBuy extends AutoBuy {
     super(
       (model, upTo) => model.buyTickSpeed(),
       (model) => {
-        return 300 * Math.pow(0.95, model.prestigeBonus[Type.BUY_TICKSPEED_INTERVAL])
+        return 300 * Math.pow(0.85, model.prestigeBonus[Type.BUY_TICKSPEED_INTERVAL])
       }
     )
     this.id = 2
@@ -143,7 +150,7 @@ export class BuyLeafProd extends AutoBuy {
     super(
       (model, upTo) => model.leafProd(),
       (model) => {
-        return 900 * Math.pow(0.95, model.prestigeBonus[Type.BUY_LEAF_PROD_INTERVAL])
+        return 900 * Math.pow(0.85, model.prestigeBonus[Type.BUY_LEAF_PROD_INTERVAL])
       }
     )
     this.id = 3
@@ -156,7 +163,7 @@ export class LeafSacrify extends AutoBuy {
     super(
       (model, upTo) => model.leafSacrify(),
       (model) => {
-        return 900 * Math.pow(0.95, model.prestigeBonus[Type.LEAF_SACRIFY_INTERVAL])
+        return 900 * Math.pow(0.85, model.prestigeBonus[Type.LEAF_SACRIFY_INTERVAL])
       }
     )
     this.id = 4
@@ -169,7 +176,7 @@ export class Collapse extends AutoBuy {
     super(
       (model, upTo) => model.maxCollapse(),
       (model) => {
-        return 900 * Math.pow(0.95, model.prestigeBonus[Type.COLLAPSE_INTERVAL])
+        return 900 * Math.pow(0.85, model.prestigeBonus[Type.COLLAPSE_INTERVAL])
       }
     )
     this.id = 5
