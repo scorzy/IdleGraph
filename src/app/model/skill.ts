@@ -4,6 +4,7 @@ export class Skill {
 
   color = noColor
   setColor = this.setColorF
+  isNotable = false
 
   constructor(
     public id: number,
@@ -24,18 +25,23 @@ export class Skill {
       this.x = positions[this.id].x
       this.y = positions[this.id].y
     }
-
+    this.isNotable = notableSkills.indexOf(this.type) > -1
     this.setColor()
   }
 
   public setColorF() {
-    this.color = this.owned ? ownedColor : (this.avaiable ? aviableColor : noColor)
+    this.color = this.isNotable ?
+      this.owned ? notableColor : (this.avaiable ? notableAviableColor : notableNoColor) :
+      this.owned ? ownedColor : (this.avaiable ? aviableColor : noColor)
   }
 }
 
-const aviableColor = "#7BE141"
-const ownedColor = "#FEFF73"
+const aviableColor = "#FEFF73"
+const ownedColor =  "#7BE141"
 const noColor = "#c0c0c0"
+const notableAviableColor = "#e14141"
+const notableNoColor = "#d8938a"
+const notableColor = "#ef2007"
 
 export enum Type {
   TICK_SPEED,
@@ -60,7 +66,6 @@ export enum Type {
   BOUGHT_BONUS,
   DOUBLE_BONUS
 }
-
 export const labels = [
   "+10%\ntick speed",
   "+1 tick /s",
@@ -83,4 +88,13 @@ export const labels = [
   "+20% max\nautobuyers",
   "+20% bought\nbonus",
   "double \nbought bonus"
+]
+
+export const notableSkills = [
+  Type.TICK_SPEED_ADD,
+  Type.MAX_NODE_MULTI,
+  Type.SACRIFY_SPECIAL,
+  Type.TIME_BANK_1H,
+  Type.DOUBLE_BONUS,
+  Type.MAX_AUTO_BUY
 ]

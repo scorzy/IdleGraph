@@ -39,9 +39,12 @@ export class MyNode {
     return {
       id: this.id,
       label: this.label,
-      // x: this.x,
-      // y: this.y
+      color: this.level === 1 ? "rgb(255,168,7)" :
+        (this.producer.length === 0 ? '#7BE141' : "rgb(97,195,238)")
     }
+  }
+  updateVis(model: Model) {
+    model.nodes.update(this.getVisNode())
   }
   getBonus(model: Model): Decimal {
     return BONUS.times(this.bought)
@@ -99,6 +102,9 @@ export class MyNode {
 
     this.reloadPerSec(model)
     producer.reloadPerSec(model)
+
+    this.updateVis(model)
+    producer.updateVis(model)
 
     return producer
   }
@@ -269,7 +275,7 @@ export class MyNode {
     node.reloadPriceBuy()
 
     model.myNodes.set("" + node.id, node)
-    model.nodes.add(node.getVisNode())
+
     if (!!parent)
       node.product = parent
 
@@ -277,6 +283,7 @@ export class MyNode {
       for (let prodData of data.p)
         node.producer.push(MyNode.generate(prodData, model, node))
 
+    model.nodes.add(node.getVisNode())
     if (!!parent)
       model.edges.add({
         id: node.id + "-" + parent.id,
