@@ -222,12 +222,18 @@ export class MyNode {
       product.quantity = new Decimal(0)
       product = product.product
     }
+    let productor: MyNode = this
+    while (productor) {
+      productor.updateVis(model)
+      productor = productor.producer[0]
+    }
     this.reloadNewProdPrice()
     this.reloadPriceBuy()
     this.reloadPerSec(model)
     this.collapsible = this.level > 2 && this.producer.length > 1
     model.checkLeafSacrify()
     model.checkMaxCollapse()
+
     return true
   }
   addToList(list: Array<MyNode>): Array<MyNode> {
