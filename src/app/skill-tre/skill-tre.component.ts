@@ -1,6 +1,6 @@
-import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
+import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks'
 import { ServService } from './../serv.service'
-import { Component, OnInit, HostBinding, AfterViewInit } from '@angular/core';
+import { Component, OnInit, HostBinding, AfterViewInit } from '@angular/core'
 import * as vis from 'vis'
 import { Skill } from '../model/skill';
 

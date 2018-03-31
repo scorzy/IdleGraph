@@ -1,25 +1,33 @@
-<div class="row">
-  <div class="col-xs-12">
-    <div class="btn-group">
+<!-- <div class="row">
+  <div class="col-xs-12"> -->
+    <div class="row flex-items-xs-between">
+      <div class="btn-group">
 
-      <button class="btn btn-sm" *ngIf="node.level > 1" (click)="node.buy(ser.model)" [disabled]="!node?.canBuy(ser.model)">Buy {{node.priceBuy | format}}
-      </button>
+        <button class="btn btn-sm" *ngIf="node.level > 1" (click)="node.buy(ser.model)" [disabled]="!node?.canBuy(ser.model)">Buy {{node.priceBuy | format}}
+        </button>
 
-      <button class="btn btn-sm btn-success-outline" (click)="node.buyNewProducer(ser.model)" [disabled]="!node?.canBuyNewProd(ser.model)">
-        Producer {{node.priceNewProd | format}}
-      </button>
+        <button class="btn btn-sm btn-success-outline" (click)="node.buyNewProducer(ser.model)" [disabled]="!node?.canBuyNewProd(ser.model)">
+          Producer {{node.priceNewProd | format}}
+        </button>
 
-      <button class="btn btn-sm btn-warning-outline" (click)="sacrificeOrOpen()" *ngIf="node.level > 2" [disabled]="!node?.canSacrifice">
-        Sacrify +{{node.sacrificeMulti | format}} %
-      </button>
+        <button class="btn btn-sm btn-warning-outline" (click)="sacrificeOrOpen()" *ngIf="node.level > 2" [disabled]="!node?.canSacrifice">
+          Sacrify +{{node.sacrificeMulti | format}} %
+        </button>
 
-      <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="node.collapsible ">
-        Collapse
-      </button>
+        <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="node.collapsible ">
+          Collapse
+        </button>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-sm btn-danger-outline" (click)="removeModal = true" *ngIf="node.level >1 ">
+          Remove
+        </button>
+      </div>
 
     </div>
-  </div>
-</div>
+  <!-- </div>
+</div> -->
 
 <!-- Modal -->
 
@@ -54,5 +62,19 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="sacModal=false">Cancel</button>
     <button type="button" class="btn btn-primary btn-danger" (click)="node.sacrifice(ser.model); sacModal=false">Sacrify</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="removeModal">
+  <h3 class="modal-title">Remove</h3>
+  <div class="modal-body">
+    <p>
+      Remove this node and all all parents ?
+      <br/> This will not grant any bonus.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="removeModal=false">Cancel</button>
+    <button type="button" class="btn btn-primary btn-danger" (click)="node.remove(ser.model); removeModal=false">Remove</button>
   </div>
 </clr-modal>

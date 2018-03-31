@@ -14,6 +14,7 @@ export class NodeLineComponent implements OnInit, OnDestroy {
   updateSub: any
   colModal = false
   sacModal = false
+  removeModal = false
 
   constructor(public ser: ServService) { }
 

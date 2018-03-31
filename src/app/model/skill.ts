@@ -39,7 +39,8 @@ export class Skill {
 const aviableColor = "#FEFF73"
 const ownedColor =  "#7BE141"
 const noColor = "#c0c0c0"
-const notableAviableColor = "#e14141"
+
+const notableAviableColor = "#ffc471"
 const notableNoColor = "#d8938a"
 const notableColor = "#ef2007"
 

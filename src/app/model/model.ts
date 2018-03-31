@@ -341,6 +341,7 @@ export class Model {
     this.nodes.remove("" + node.id)
     this.edges.remove(node.id + "-" + node.product.id)
     node.producer.forEach(prod => this.edges.remove(prod.id + "-" + node.id))
+    node.product.reloadNewProdPrice()
   }
   reloadMaxNode() {
     this.maxNode = Math.floor((MAX_NODE + this.prestigeBonus[Type.MAX_NODE_ADD] * 5) *
@@ -414,6 +415,7 @@ export class Model {
   reloadAutoBuyers() {
     this.autoBuyers.forEach(a => a.reloadInterval(this))
     this.autoBuyersActiveOrder = this.autoBuyers.filter(a => a.on).sort((a, b) => a.priority - b.priority)
+    console.log(this.autoBuyersActiveOrder)
   }
   getMaxAutoBuy(): number {
     return this.prestigeBonus[Type.MAX_AUTO_BUY] * (Math.pow(1.2, this.prestigeBonus[Type.MAX_AUTO_BUY_PERC]))

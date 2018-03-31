@@ -142,6 +142,15 @@ export class MyNode {
     this.priceNewProd = Decimal.pow(1.07, this.producer.length).times(Decimal.pow(50, this.level))
   }
 
+  remove(model: Model): boolean {
+    if (this.level === 1)
+      return false
+
+    model.remove(this)
+    if (this.producer.length > 0)
+      this.producer.forEach(n => n.remove(model))
+    return true
+  }
   //#region Sacrifice
   reloadSacrificeMulti(model: Model): Decimal {
     if (this.level < 3)
@@ -150,17 +159,19 @@ export class MyNode {
     let prod = this.product
     let bonus = new Decimal(0)
     while (!!prod && prod.level > 1) {
-      bonus = bonus.plus(Decimal.pow(prod.quantity, prod.level).div(prod.level))
+      bonus = bonus.plus(
+        new Decimal(prod.quantity.ln() / 0.7)
+          .times(Decimal.pow(1.05 + model.softResetNum / 10, prod.level)).times(prod.level))
       prod = prod.product
     }
-
+    console.log(bonus.toString())
     if (bonus.lte(10))
       return new Decimal(0)
 
-    this.sacrificeMulti = new Decimal(bonus.ln() * (this.level) / 2.5)
+    this.sacrificeMulti = bonus.div(10) // new Decimal(bonus.ln() * (this.level) / 2.5)
       .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] / 10)
       .times(Decimal.pow(2, model.softResetNum))
-      .times(model.getTotalMod(Mod.SACRIFY, true))
+      .times(model.getTotalMod(Mod.SACRIFY))
 
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus)
 
