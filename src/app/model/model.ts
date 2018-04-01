@@ -9,15 +9,15 @@ import { Achievement } from './achievement';
 import { ToastsManager } from 'ng2-toastr'
 import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers'
 
-// const INIT_CUR = new Decimal(200)
-const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
+const INIT_CUR = new Decimal(200)
+// const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
 const MAX_NODE = 50
 
 const PRESTIGE_START = Number.MAX_VALUE
-const PRESTIGE_MULTI = 1.2
+const PRESTIGE_MULTI = 1E4
 
 export class Model {
 
@@ -342,7 +342,10 @@ export class Model {
     this.perSec = this.cuerrency.producer.map(n => n.prodPerSec.times(n.quantity))
       .reduce((p, n) => p.plus(n), new Decimal(0)).times(this.tickSpeed)
   }
-  warp(delta: Decimal): boolean {
+  maxWarp() {
+    return this.warp(new Decimal(this.time))
+  }
+  warp(delta = new Decimal(1)): boolean {
     if (delta.gt(this.time)) return false
     this.time = this.time.minus(delta)
     const up = delta.times(this.getTotalMod(Mod.WARP))
@@ -378,7 +381,7 @@ export class Model {
     node.product.reloadNewProdPrice()
   }
   reloadMaxNode() {
-    this.maxNode = Math.floor((MAX_NODE + this.prestigeBonus[Type.MAX_NODE_ADD] * 5) *
+    this.maxNode = Math.floor((MAX_NODE + this.prestigeBonus[Type.MAX_NODE_ADD]) *
       (this.prestigeBonus[Type.MAX_NODE_MULTI] / 10 + 1))
   }
   //#endregion
@@ -391,35 +394,46 @@ export class Model {
 
     this.myNodes.forEach(n => {
       if (n.canBuy(this))
-        stuff.push([n.priceBuy, n.buy.bind(n)])
+        stuff.push([n.priceBuy, n.maxAllBuy.bind(n)])
       if (n.canBuyNewProd(this))
         stuff.push([n.priceNewProd, n.buyNewProducer.bind(n)])
     })
     if (stuff.length > 0) {
       stuff = stuff.sort((a, b) => a[0].cmp(b[0]))
-      for (let el of stuff)
+      for (let el of stuff) {
         if (!el[1](this))
           break
         else
           bought = true
+      }
     }
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     return bought
   }
-  leafSacrify() {
+  leafSacrify(leaf = false) {
     let ret = false
-    this.myNodes.forEach(node => {
-      if (node.producer.length === 0)
-        if (node.sacrifice(this))
-          ret = true
+    const nodes = Array.from(this.myNodes.values())
+      .filter(node => node.producer.length === 0 || !leaf)
+      .sort((a, b) => b.level - a.level)
+
+    nodes.forEach(node => {
+      console.log(node.id)
+      if (node.sacrifice(this))
+        ret = true
     })
     return ret
   }
-  leafProd() {
+  leafProd(all = false) {
     let ret = false
+
+    let maxLevel = 1
+    if (!all)
+      maxLevel = Array.from(this.myNodes.values()).map(n => n.level)
+        .reduce((p, c) => Math.max(p, c), 0)
+
     this.myNodes.forEach(node => {
-      if (node.producer.length === 0)
+      if (node.producer.length === 0 && (all || node.level === maxLevel))
         if (node.buyNewProducer(this))
           ret = true
     })
@@ -444,6 +458,16 @@ export class Model {
   checkMaxCollapse() {
     this.showMaxCollapse = !!Array.from(this.myNodes.values()).find(n => n.collapsible)
   }
+  maxLeafBuy(all = true) {
+    let maxLevel = 2
+    if (!all)
+      maxLevel = Array.from(this.myNodes.values()).map(n => n.level)
+        .reduce((p, c) => Math.max(p, c), 0)
+    Array.from(this.myNodes.values())
+      .filter(l => l.producer.length === 0 && (all || l.level === maxLevel))
+      .sort((a, b) => a.quantity.cmp(b.quantity))
+      .forEach(l => l.buy(this, new Decimal(1), true))
+  }
   //#endregion
   //#region Auto Buyers
   reloadAutoBuyers() {
@@ -452,7 +476,6 @@ export class Model {
       a.reloadBulk(this)
     })
     this.autoBuyersActiveOrder = this.autoBuyers.filter(a => a.on).sort((a, b) => a.priority - b.priority)
-    console.log(this.autoBuyersActiveOrder)
   }
   getMaxAutoBuy(): number {
     return this.prestigeBonus[Type.MAX_AUTO_BUY] * (Math.pow(1.2, this.prestigeBonus[Type.MAX_AUTO_BUY_PERC]))
@@ -482,7 +505,7 @@ export class Model {
     //  Prestige additive
     this.tickSpeed = this.tickSpeed.plus(this.prestigeBonus[Type.TICK_SPEED_ADD])
     //  Soft Reset
-    this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.2, this.softResetNum - 1))
+    this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.3, this.softResetNum - 1))
     //  Manual buy
     this.tickSpeed = this.tickSpeed.times(INIT_TICK_MULTI.times(this.tickSpeedOwned).plus(1))
     //  Prestige
@@ -539,6 +562,8 @@ export class Model {
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     this.softResetCheck()
+
+    this.reloadAll()
 
     this.prestigeEmitter.emit(1)
   }
@@ -695,6 +720,10 @@ export class Model {
       this.visivisited = data.v
     else
       this.visivisited = new Array<Number>()
+
+    this.skills.forEach(s => this.setSkill(s))
+    this.totalCuerrency = new Decimal(100)
+    this.showKills = true
 
     this.reloadAll()
   }

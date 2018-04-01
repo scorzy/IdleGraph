@@ -1,19 +1,19 @@
 <div class="row">
-    <div class="col-xs btn-group">
-      <button class="btn btn-sm" (click)="ser.model.buyTickSpeed(true)" [disabled]="!ser.model.canBuyTickSpeed()">
-        Max Tick Speed
-      </button>
-      <button class="btn btn-sm btn-success-outline" (click)="ser.model.leafProd()">
-        Leaf Prod.
-      </button>
-      <button class="btn btn-sm btn-danger-outline" (click)="sacrificeOrOpen()" *ngIf="ser.model.showLeafSacrify">
-        Leaf Sacrifice
-      </button>
-      <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="ser.model.showMaxCollapse">
-        Collapse Max
-      </button>
-    </div>
+  <div class="col-xs btn-group">
+    <button class="btn btn-sm" (click)="ser.model.buyTickSpeed(true)" [disabled]="!ser.model.canBuyTickSpeed()">
+      Max Tick Speed
+    </button>
+    <button class="btn btn-sm btn-success-outline" (click)="ser.model.leafProd()">
+      Leaf Prod.
+    </button>
+    <button class="btn btn-sm btn-danger-outline" (click)="sacrificeOrOpen()" *ngIf="ser.model.showLeafSacrify">
+      Max Sacrifice
+    </button>
+    <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="ser.model.showMaxCollapse">
+      Collapse Max
+    </button>
   </div>
+</div>
 
 
 <clr-modal [(clrModalOpen)]="colModal">

@@ -1,32 +1,35 @@
 <!-- <div class="row">
   <div class="col-xs-12"> -->
-    <div class="row flex-items-xs-between">
-      <div class="btn-group">
+<div class="row flex-items-xs-between">
+  <div class="btn-group">
 
-        <button class="btn btn-sm" *ngIf="node.level > 1" (click)="node.buy(ser.model)" [disabled]="!node?.canBuy(ser.model)">Buy {{node.priceBuy | format}}
-        </button>
+    <button class="btn btn-sm" *ngIf="node.level > 1" (click)="node.buyMax(ser.model)" [disabled]="!node?.canBuy(ser.model)">Max Buy
+    </button>
 
-        <button class="btn btn-sm btn-success-outline" (click)="node.buyNewProducer(ser.model)" [disabled]="!node?.canBuyNewProd(ser.model)">
-          Producer {{node.priceNewProd | format}}
-        </button>
+    <button class="btn btn-sm" *ngIf="node.level > 1" (click)="node.buy(ser.model)" [disabled]="!node?.canBuy(ser.model)">Buy {{node.priceBuy | format}}
+    </button>
 
-        <button class="btn btn-sm btn-warning-outline" (click)="sacrificeOrOpen()" *ngIf="node.level > 2" [disabled]="!node?.canSacrifice">
-          Sacrify +{{node.sacrificeMulti | format}} %
-        </button>
+    <button class="btn btn-sm btn-success-outline" (click)="node.buyNewProducer(ser.model)" [disabled]="!node?.canBuyNewProd(ser.model)">
+      Producer {{node.priceNewProd | format}}
+    </button>
 
-        <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="node.collapsible ">
-          Collapse
-        </button>
-      </div>
+    <button class="btn btn-sm btn-warning-outline" (click)="sacrificeOrOpen()" *ngIf="node.level > 2" [disabled]="!node?.canSacrifice">
+      Sacrify +{{node.sacrificeMulti | format}} %
+    </button>
 
-      <div class="btn-group">
-        <button class="btn btn-sm btn-danger-outline" (click)="removeModal = true" *ngIf="node.level >1 ">
-          Remove
-        </button>
-      </div>
+    <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="node.collapsible ">
+      Collapse
+    </button>
+  </div>
 
-    </div>
-  <!-- </div>
+  <div class="btn-group">
+    <button class="btn btn-sm btn-danger-outline" (click)="removeModal = true" *ngIf="node.level >1 ">
+      Remove
+    </button>
+  </div>
+
+</div>
+<!-- </div>
 </div> -->
 
 <!-- Modal -->

@@ -8,11 +8,21 @@
       </div>
     </div>
     <div class="col-xs-6">
-      <app-top></app-top>
-      <div class="margin">
-        <app-overview></app-overview>
+      <div class="flex-container">
+
+        <div>
+          <app-top></app-top>
+          <div class="margin">
+            <app-overview></app-overview>
+          </div>
+          <router-outlet></router-outlet>
+        </div>
+
+        <div class="bottom">
+          <app-prestige-footer></app-prestige-footer>
+        </div>
+
       </div>
-      <router-outlet></router-outlet>
     </div>
   </div>
 </div>

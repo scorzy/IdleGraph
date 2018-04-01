@@ -31,6 +31,8 @@ import { WorldComponent } from './world/world.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { PrestigeContainerComponent } from './prestige-container/prestige-container.component';
 import { HelpComponent } from './help/help.component';
+import { UtilityComponent } from './utility/utility.component';
+import { PrestigeFooterComponent } from './prestige-footer/prestige-footer.component';
 
 export class CustomOptions extends ToastOptions {
   animate = 'fade'
@@ -53,7 +55,7 @@ const appRoutes: Routes = [
         path: 'node/:id', component: NoodeViewComponent
       }, {
         path: 'prest',
-        component: PrestigeComponent,
+        component: UtilityComponent,
       }
     ]
   },
@@ -107,7 +109,9 @@ const appRoutes: Routes = [
     AchivementListComponent,
     WorldComponent,
     PrestigeContainerComponent,
-    HelpComponent
+    HelpComponent,
+    UtilityComponent,
+    PrestigeFooterComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),

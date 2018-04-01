@@ -71,7 +71,7 @@ export enum Type {
 export const labels = [
   "+10%\ntick speed",
   "+1 tick /s",
-  "+5\nmax node",
+  "+1\nmax node",
   "+10%\nmax node",
   "+10%\nsacrify",
   "sacrify only 90%\nof nodes",

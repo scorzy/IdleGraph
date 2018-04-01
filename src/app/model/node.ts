@@ -4,7 +4,8 @@ import { Mod } from './modifiers'
 import { Options } from './options'
 
 const BONUS = new Decimal(0.1)
-const COST_PER_LEVEL = new Decimal(50)
+const COST_PER_LEVEL = new Decimal(10)
+const INCREMENT_PERCENT = new Decimal(1.001)
 
 export class MyNode {
 
@@ -83,19 +84,24 @@ export class MyNode {
     if (this.level === 2 && model.why.done)
       this.prodPerSec = this.prodPerSec.times(1.1)
   }
-
-  buy(model: Model, upTo = new Decimal(1)): boolean {
+  maxAllBuy(model: Model) {
+    return this.buy(model, new Decimal(10))
+  }
+  buyMax(model: Model) {
+    return this.buy(model, new Decimal(10), true)
+  }
+  buy(model: Model, upTo = new Decimal(1), max = false): boolean {
     if (this.level === 1 || !this.canBuy(model))
       return false
 
 
-    const maxBuy = Decimal.affordGeometricSeries(model.cuerrency.quantity,
-      COST_PER_LEVEL, new Decimal(1.1), this.bought)
+    const maxBuy = Decimal.affordGeometricSeries(this.product.quantity,
+      COST_PER_LEVEL, INCREMENT_PERCENT, this.bought)
 
-    const buyQta = Decimal.min(maxBuy, upTo)
-    const price = Decimal.sumGeometricSeries(buyQta, COST_PER_LEVEL, new Decimal(1.1), this.quantity)
+    const buyQta = max ? maxBuy : Decimal.min(maxBuy, upTo)
+    const price = Decimal.sumGeometricSeries(buyQta, COST_PER_LEVEL, INCREMENT_PERCENT, this.bought)
 
-    model.cuerrency.quantity = model.cuerrency.quantity.minus(price)
+    this.product.quantity = this.product.quantity.minus(price)
     this.quantity = this.quantity.plus(buyQta)
     this.bought = this.bought.plus(buyQta)
 
@@ -114,7 +120,7 @@ export class MyNode {
     if (!this.canBuyNewProd(model))
       return null
 
-    model.cuerrency.quantity = model.cuerrency.quantity.minus(this.priceNewProd)
+    this.quantity = this.quantity.minus(this.priceNewProd)
 
     const producer = model.getNewNode()
     this.addProducer(producer, model)
@@ -152,14 +158,14 @@ export class MyNode {
     return !model.cuerrency.quantity.lt(this.priceBuy) && this.level > 1
   }
   canBuyNewProd(model: Model): boolean {
-    return !model.cuerrency.quantity.lt(this.priceNewProd) && model.myNodes.size < model.maxNode
+    return !this.quantity.lt(this.priceNewProd) && model.myNodes.size < model.maxNode
   }
 
   reloadPriceBuy() {
-    this.priceBuy = Decimal.pow(1.1, this.bought).times(Decimal.pow(COST_PER_LEVEL, this.level - 1))
+    this.priceBuy = COST_PER_LEVEL.times(Decimal.pow(INCREMENT_PERCENT, this.bought).times(Decimal.pow(2, this.level - 1)))
   }
   reloadNewProdPrice() {
-    this.priceNewProd = Decimal.pow(1.07, this.producer.length).times(Decimal.pow(50, this.level))
+    this.priceNewProd = COST_PER_LEVEL.times(Decimal.pow(1.1, this.producer.length).times(Decimal.pow(2, this.level)))
   }
 
   remove(model: Model): boolean {
@@ -181,7 +187,7 @@ export class MyNode {
     while (!!prod && prod.level > 1) {
       bonus = bonus.plus(
         new Decimal(prod.quantity.ln() / 0.7)
-          .times(Decimal.pow(1.05 + model.softResetNum / 10, prod.level)).times(prod.level))
+          .times(Decimal.pow(1.05 + model.softResetNum / 5, prod.level)).times(prod.level))
       prod = prod.product
     }
     console.log(bonus.toString())
@@ -195,10 +201,10 @@ export class MyNode {
 
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus)
 
-
     return this.sacrificeMulti
   }
   sacrifice(model: Model): boolean {
+    this.reloadSacrificeMulti(model)
     if (this.sacrificeBonus.gte(this.reloadSacrificeMulti(model)))
       return false
 

@@ -1,0 +1,41 @@
+<h3>Leafs:</h3>
+<div class="row flex-items-xs-between">
+  <div class="col-xs btn-group">
+    <button class="btn btn-sm" (click)="ser.model.maxLeafBuy(true)">
+      Max Buy
+    </button>
+    <button class="btn btn-sm btn-success-outline" (click)="ser.model.leafProd(true)">
+      Max Producer
+    </button>
+    <button class="btn btn-sm btn-danger-outline" (click)="ser.model.leafSacrify(true)">
+      Max Sacrifice
+    </button>
+  </div>
+</div>
+
+<h3>Max level leafs:</h3>
+<div class="row flex-items-xs-between">
+  <div class="col-xs btn-group">
+    <button class="btn btn-sm" (click)="ser.model.maxLeafBuy(false)">
+      Max Buy
+    </button>
+    <button class="btn btn-sm btn-success-outline" (click)="ser.model.leafProd(false)">
+      Max Producer
+    </button>
+    <button class="btn btn-sm btn-danger-outline" (click)="ser.model.leafSacrify(true)">
+      Max Sacrifice
+    </button>
+  </div>
+</div>
+
+<h3>Tick and Time:</h3>
+<div class="row flex-items-xs-between">
+  <div class="col-xs btn-group">
+    <button class="btn btn-sm" (click)="ser.model.buyTickSpeed(true)" [disabled]="!ser.model.canBuyTickSpeed()">
+      Max Tick Speed
+    </button>
+    <button class="btn btn-sm btn-success-outline" (click)="ser.model.maxWarp()" [disabled]="!ser.model.time.gte(1)">
+      Max Warp
+    </button>
+  </div>
+</div>
