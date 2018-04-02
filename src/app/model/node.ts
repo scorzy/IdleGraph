@@ -186,18 +186,19 @@ export class MyNode {
     let bonus = new Decimal(0)
     while (!!prod && prod.level > 1) {
       bonus = bonus.plus(
-        new Decimal(prod.quantity.ln() / 0.7)
-          .times(Decimal.pow(1.05 + model.softResetNum / 5, prod.level)).times(prod.level))
+        new Decimal(prod.quantity.gte(11) ? prod.quantity.log10() : new Decimal(0))
+          .times(Decimal.pow(2 + model.softResetNum, prod.level)).times(prod.level))
       prod = prod.product
     }
-    console.log(bonus.toString())
+    // console.log(bonus.toString())
     if (bonus.lte(10))
       return new Decimal(0)
 
-    this.sacrificeMulti = bonus.div(10) // new Decimal(bonus.ln() * (this.level) / 2.5)
+    this.sacrificeMulti = new Decimal(bonus
       .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] / 10)
       .times(Decimal.pow(2, model.softResetNum))
       .times(model.getTotalMod(Mod.SACRIFY))
+      .ln() / 0.1)
 
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus)
 
