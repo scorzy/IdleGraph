@@ -82,6 +82,8 @@ export class Model {
   showKills = false
   cuerrencyNextPrestige = new Decimal(Number.MAX_VALUE)
 
+  factorial: Map<number, Decimal> = new Map()
+
   constructor(public toastr: ToastsManager,
     public achievementsEmitter: EventEmitter<Achievement>,
     public buyNodeEmitter: EventEmitter<MyNode>,
@@ -323,6 +325,20 @@ export class Model {
 
     return ret
   }
+  getFactorial(num: number): Decimal {
+    // console.log(num)
+    if (num < 2)
+      return new Decimal(1)
+
+    let f = this.factorial.get(num)
+    if (f === undefined) {
+      f = this.getFactorial(num - 1).times(num)
+      this.factorial.set(num, f)
+    }
+
+    // console.log(num + " : " + f.toString())
+    return f
+  }
   //#region Update
   mainUpdate(delta: number) {
     this.time = Decimal.min(
@@ -354,7 +370,11 @@ export class Model {
     return true
   }
   getToAdd(node: MyNode, level: number): Decimal {
-    let toAdd = node.quantity.times(node.prodPerSec.times(Decimal.pow(this.deltaT, level).div(level)))
+    let toAdd = node.quantity
+      .times(node.prodPerSec)
+      .times(Decimal.pow(this.deltaT, level))
+      .div(this.getFactorial(level))
+
     node.producer.forEach(n => toAdd = toAdd.plus(this.getToAdd(n, level + 1)))
     return toAdd
   }
@@ -721,9 +741,9 @@ export class Model {
     else
       this.visivisited = new Array<Number>()
 
-    this.skills.forEach(s => this.setSkill(s))
-    this.totalCuerrency = new Decimal(100)
-    this.showKills = true
+    // this.skills.forEach(s => this.setSkill(s))
+    // this.totalCuerrency = new Decimal(100)
+    // this.showKills = true
 
     this.reloadAll()
   }

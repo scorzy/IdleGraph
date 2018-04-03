@@ -76,6 +76,7 @@ export class ServService {
       const save: any = {}
       save.m = this.model.getSave()
       save.o = this.options.save()
+      save.time = this.last
       return LZString.compressToBase64(JSON.stringify(save))
     } catch (ex) {
       this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Save Error")
@@ -116,6 +117,7 @@ export class ServService {
       if (!!data.o)
         this.options.load(data.o)
       this.setTheme()
+      this.last = data.time
       this.model.load(data.m)
       setTimeout(() => this.toastr.success("", "Game Loaded"), 0)
     } catch (ex) {
