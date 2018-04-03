@@ -9,8 +9,8 @@ import { Achievement } from './achievement';
 import { ToastsManager } from 'ng2-toastr'
 import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers'
 
-const INIT_CUR = new Decimal(200)
-// const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
+// const INIT_CUR = new Decimal(200)
+const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
@@ -306,7 +306,7 @@ export class Model {
     this.cuerrency.quantity = INIT_CUR
     this.cuerrency.bought = new Decimal(0)
     this.cuerrency.producer = new Array<MyNode>()
-    this.cuerrency.reloadNewProdPrice()
+    this.cuerrency.reloadNewProdPrice(this)
 
     this.nodes.clear()
     this.edges.clear()
@@ -398,7 +398,8 @@ export class Model {
     this.nodes.remove("" + node.id)
     this.edges.remove(node.id + "-" + node.product.id)
     node.producer.forEach(prod => this.edges.remove(prod.id + "-" + node.id))
-    node.product.reloadNewProdPrice()
+    node.product.reloadNewProdPrice(this)
+    // node.product.updateVis(this)
   }
   reloadMaxNode() {
     this.maxNode = Math.floor((MAX_NODE + this.prestigeBonus[Type.MAX_NODE_ADD]) *
@@ -751,7 +752,11 @@ export class Model {
   reloadAll() {
     this.reloadTickSpeed()
     this.reloadMaxNode()
-    this.myNodes.forEach(n => n.reloadPerSec(this))
+    this.myNodes.forEach(n => {
+      n.reloadPerSec(this)
+      n.reloadNewProdPrice(this)
+      n.reloadPriceBuy()
+    })
     this.reloadMaxTime()
     this.reloadAutoBuyers()
     this.checkLeafSacrify()
