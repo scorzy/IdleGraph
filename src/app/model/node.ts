@@ -53,7 +53,7 @@ export class MyNode {
   }
   getBonus(model: Model): Decimal {
     return BONUS.times(this.bought)
-      .times(1 + model.prestigeBonus[Type.BOUGHT_BONUS] * 0.2)
+      .times(1 + model.prestigeBonus[Type.BOUGHT_BONUS] * 0.3)
       .times(Math.pow(2, model.prestigeBonus[Type.DOUBLE_BONUS]))
       .times(model.getTotalMod(Mod.BONUS))
   }
@@ -83,6 +83,9 @@ export class MyNode {
 
     if (this.level === 2 && model.why.done)
       this.prodPerSec = this.prodPerSec.times(1.1)
+
+    if (this.level === 2 && model.notThatGame.done)
+      this.prodPerSec = this.prodPerSec.times(1.1)
   }
   maxAllBuy(model: Model) {
     return this.buy(model, new Decimal(10))
@@ -96,10 +99,10 @@ export class MyNode {
 
 
     const maxBuy = Decimal.affordGeometricSeries(model.cuerrency.quantity,
-      COST_PER_LEVEL, INCREMENT_PERCENT, this.bought)
+      this.getNodeBasePrice(), INCREMENT_PERCENT, this.bought)
 
     const buyQta = max ? maxBuy : Decimal.min(maxBuy, upTo)
-    const price = Decimal.sumGeometricSeries(buyQta, COST_PER_LEVEL, INCREMENT_PERCENT, this.bought)
+    const price = Decimal.sumGeometricSeries(buyQta, this.getNodeBasePrice(), INCREMENT_PERCENT, this.bought)
 
     model.cuerrency.quantity = model.cuerrency.quantity.minus(price)
     this.quantity = this.quantity.plus(buyQta)
@@ -135,6 +138,9 @@ export class MyNode {
     this.updateVis(model)
     producer.updateVis(model)
 
+    if (this.level === 1 && this.producer.length > 49)
+      model.unlockAchievement(model.notThatGame)
+
     return producer
   }
 
@@ -160,16 +166,18 @@ export class MyNode {
   canBuyNewProd(model: Model): boolean {
     return !model.cuerrency.quantity.lt(this.priceNewProd) && model.myNodes.size < model.maxNode
   }
-
-  reloadPriceBuy() {
-    this.priceBuy = COST_PER_LEVEL
-      .times(Decimal.pow(INCREMENT_PERCENT, this.bought))
+  getNodeBasePrice(): Decimal {
+    return COST_PER_LEVEL
       .times(Decimal.pow(10, this.level - 2))
   }
+  reloadPriceBuy() {
+    this.priceBuy = this.getNodeBasePrice()
+      .times(Decimal.pow(INCREMENT_PERCENT, this.bought))
+  }
   reloadNewProdPrice(model: Model) {
-    this.priceNewProd = COST_PER_LEVEL
+    this.priceNewProd = this.getNodeBasePrice()
       .times(Decimal.pow(2, this.producer.length))
-      .times(Decimal.pow(100, this.level - 1))
+      .times(Decimal.pow(10, this.level))
       .times(model.getFactorial(this.level))
   }
 
@@ -192,13 +200,13 @@ export class MyNode {
     let bonus = new Decimal(0)
     while (!!prod && prod.level > 1) {
       bonus = bonus.plus(
-        new Decimal(prod.quantity.log10())
+        new Decimal(prod.quantity.times(Decimal.pow(2, model.softResetNum)).log10())
       )
       prod = prod.product
     }
 
     this.sacrificeMulti = bonus
-      .times(Decimal.pow(2, model.softResetNum))
+      .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] * 0.3)
 
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus) && this.sacrificeMulti.gte(1)
 

@@ -15,6 +15,7 @@ const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
 const MAX_NODE = 50
+const TICK_COST_MULTI = new Decimal(1E3)
 
 const PRESTIGE_START = Number.MAX_VALUE
 const PRESTIGE_MULTI = 1E4
@@ -28,7 +29,7 @@ export class Model {
   cuerrency = new MyNode()
   tickSpeed = new Decimal(1)
   tickSpeedMulti = INIT_TICK_MULTI
-  tickSpeedCostMulti = new Decimal(30)
+
   tickSpeedOwned = new Decimal(0)
   tickSpeedCost = INIT_TICK_COST
   maxNode = MAX_NODE
@@ -73,6 +74,7 @@ export class Model {
   suffixAcks = new Array<Achievement>()
 
   why: Achievement
+  notThatGame: Achievement
 
   currentMods = new Modifier(-1, "")
   nextMods = new Array<Modifier>()
@@ -259,26 +261,35 @@ export class Model {
     this.softResetAcks.push(firsthAck, secondAck, thirdAck, g4Ack, g5Ack, g6Ack, g7Ack, g8Ack, g9Ack, g10Ack)
     this.achievements = this.achievements.concat(this.softResetAcks)
 
-    const pre1 = new Achievement(11, "Prefix", "Complete 5 prefix", "Prefix are 100% better")
-    const pre2 = new Achievement(12, "Prefix 2", "Complete 10 prefix", "Prefix are 100% better")
-    const pre3 = new Achievement(13, "Prefix 3", "Complete 15 prefix", "Prefix are 100% better")
-    this.prefixAcks = [pre1, pre2, pre3]
+    const pre1 = new Achievement(11, "Prefix", "Complete 2 prefix", "Prefix are 100% better")
+    const pre2 = new Achievement(12, "Prefix 2", "Complete 4 prefix", "Prefix are 100% better")
+    // const pre3 = new Achievement(13, "Prefix 3", "Complete 15 prefix", "Prefix are 100% better")
+    this.prefixAcks = [pre1, pre2]
 
-    const graph1 = new Achievement(14, "Graph", "Complete 5 graph", "Graph are 100% better")
-    const graph2 = new Achievement(15, "Graph 2", "Complete 10 graph", "Graph are 100% better")
-    const graph3 = new Achievement(16, "Graph 3", "Complete 15 graph", "Graph are 100% better")
-    this.graphAcks = [graph1, graph2, graph3]
+    const graph1 = new Achievement(14, "Graph", "Complete 2 graph", "Graph are 100% better")
+    const graph2 = new Achievement(15, "Graph 2", "Complete 4 graph", "Graph are 100% better")
+    // const graph3 = new Achievement(16, "Graph 3", "Complete 15 graph", "Graph are 100% better")
+    this.graphAcks = [graph1, graph2]
 
-    const suffix1 = new Achievement(17, "Suffix", "Complete 5 suffix", "Suffix are 100% better")
-    const suffix2 = new Achievement(18, "Suffix 2", "Complete 10 suffix", "Suffix are 100% better")
-    const suffix3 = new Achievement(19, "Suffix 3", "Complete 15 suffix", "Suffix are 100% better")
-    this.suffixAcks = [suffix1, suffix2, suffix3]
+    const suffix1 = new Achievement(17, "Suffix", "Complete 2 suffix", "Suffix are 100% better")
+    const suffix2 = new Achievement(18, "Suffix 2", "Complete 4 suffix", "Suffix are 100% better")
+    // const suffix3 = new Achievement(19, "Suffix 3", "Complete 15 suffix", "Suffix are 100% better")
+    this.suffixAcks = [suffix1, suffix2]
 
     this.achievements = this.achievements.concat(this.prefixAcks).concat(this.graphAcks).concat(this.suffixAcks)
 
-    this.why = new Achievement(20, "Why ?", "Buy a single second level node when you have more of 1E100 of them",
-      "+10% production from node of level 2", (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    this.why = new Achievement(20, "Why ?",
+      "Buy a single second level node when you have more of 1E100 of them",
+      "+10% production from node of level 2",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
     this.achievements.push(this.why)
+
+    this.notThatGame = new Achievement(21,
+      "Not that kind of game !",
+      "Get 50 producer of level 2",
+      "+10% production from node of level 2",
+      (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
+    this.achievements.push(this.notThatGame)
 
     //#endregion
     this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
@@ -295,7 +306,6 @@ export class Model {
   init() {
     this.tickSpeed = new Decimal(1)
     this.tickSpeedMulti = INIT_TICK_MULTI
-    this.tickSpeedCostMulti = new Decimal(30)
     this.tickSpeedOwned = new Decimal(0)
     this.tickSpeedCost = INIT_TICK_COST
 
@@ -511,9 +521,9 @@ export class Model {
       return false
 
     const toBuy = max ?
-      Decimal.affordGeometricSeries(this.cuerrency.quantity, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
+      Decimal.affordGeometricSeries(this.cuerrency.quantity, INIT_TICK_COST, TICK_COST_MULTI, this.tickSpeedOwned)
       : new Decimal(1)
-    const totalPrice = Decimal.sumGeometricSeries(toBuy, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
+    const totalPrice = Decimal.sumGeometricSeries(toBuy, INIT_TICK_COST, TICK_COST_MULTI, this.tickSpeedOwned)
 
     this.cuerrency.quantity = this.cuerrency.quantity.minus(totalPrice)
     this.tickSpeedOwned = this.tickSpeedOwned.plus(toBuy)
@@ -526,16 +536,16 @@ export class Model {
     //  Prestige additive
     this.tickSpeed = this.tickSpeed.plus(this.prestigeBonus[Type.TICK_SPEED_ADD])
     //  Soft Reset
-    this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.3, this.softResetNum - 1))
+    this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.2, this.softResetNum - 1))
     //  Manual buy
     this.tickSpeed = this.tickSpeed.times(INIT_TICK_MULTI.times(this.tickSpeedOwned).plus(1))
     //  Prestige
-    this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] / 10)
+    this.tickSpeed = this.tickSpeed.times(1 + this.prestigeBonus[Type.TICK_SPEED] * 0.3)
 
     // Mod
     this.tickSpeed = this.tickSpeed.times(this.getTotalMod(Mod.TICK_SPEED))
     //  Price
-    this.tickSpeedCost = Decimal.sumGeometricSeries(1, INIT_TICK_COST, this.tickSpeedCostMulti, this.tickSpeedOwned)
+    this.tickSpeedCost = Decimal.sumGeometricSeries(1, INIT_TICK_COST, TICK_COST_MULTI, this.tickSpeedOwned)
   }
   //#endregion
   //#region Prestige
@@ -557,18 +567,17 @@ export class Model {
           this.visivisited.push(v)
       })
       const numPref = this.visivisited.filter(t => t < 1E2).length
-      const numGraph = this.visivisited.filter(t => t < 1E3).length
-      const numSuffix = this.visivisited.filter(t => t < 1E4).length
+      const numGraph = this.visivisited.filter(t => t < 1E3 && t > 99).length
+      const numSuffix = this.visivisited.filter(t => t < 1E4 && t > 1E3).length
 
-      for (let i = 0; i < 3; i++)
-        if (!this.prefixAcks[i].done && numPref >= 5 * (1 + i))
+      for (let i = 0; i < 2; i++) {
+        if (!this.prefixAcks[i].done && numPref >= 2 * (1 + i))
           this.unlockAchievement(this.prefixAcks[i])
-      for (let i = 0; i < 3; i++)
-        if (!this.graphAcks[i].done && numGraph >= 5 * (1 + i))
+        if (!this.graphAcks[i].done && numGraph >= 2 * (1 + i))
           this.unlockAchievement(this.graphAcks[i])
-      for (let i = 0; i < 3; i++)
-        if (!this.suffixAcks[i].done && numSuffix >= 5 * (1 + i))
+        if (!this.suffixAcks[i].done && numSuffix >= 2 * (1 + i))
           this.unlockAchievement(this.suffixAcks[i])
+      }
 
       this.prestigeCurrency = Math.floor(this.thisRunPrestige + this.prestigeCurrency)
       this.totalCuerrency = this.totalCuerrency.plus(this.thisRunPrestige)
@@ -742,9 +751,9 @@ export class Model {
     else
       this.visivisited = new Array<Number>()
 
-    // this.skills.forEach(s => this.setSkill(s))
-    // this.totalCuerrency = new Decimal(100)
-    // this.showKills = true
+    this.skills.forEach(s => this.setSkill(s))
+    this.totalCuerrency = new Decimal(100)
+    this.showKills = true
 
     this.reloadAll()
   }
