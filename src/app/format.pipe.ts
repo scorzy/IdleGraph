@@ -7,7 +7,18 @@ import { ServService } from './serv.service';
 export class FormatPipe implements PipeTransform {
   constructor(public serv: ServService) {  }
   transform(value: any, args?: any): any {
-    return this.serv.options.formatter.format(value)
+    value = new Decimal(value)
+    return this.serv.options.usaFormat ?
+    (
+      value.abs().lessThan(10) ? value.toNumber().toFixed(2).replace(/\.0+$/, '') :
+        value.abs().lessThan(100) ? value.toNumber().toFixed(1).replace(/\.0+$/, '') :
+          (value.greaterThanOrEqualTo(0) ? "" : "-") + this.serv.options.formatter.formatShort(value.abs())
+    ) : (
+      value.abs().lessThan(10) ? value.toNumber().toFixed(2).replace(/\.0+$/, '').replace(".", ",") :
+        value.abs().lessThan(100) ? value.toNumber().toFixed(1).replace(/\.0+$/, '').replace(".", ",") :
+          (value.greaterThanOrEqualTo(0) ? "" : "-") + this.serv.options.formatter.formatShort(value.abs()).replace(".", ",")
+    )
+
   }
 
 }

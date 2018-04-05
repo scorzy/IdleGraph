@@ -9,8 +9,8 @@ import { Achievement } from './achievement';
 import { ToastsManager } from 'ng2-toastr'
 import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers'
 
-// const INIT_CUR = new Decimal(200)
-const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
+const INIT_CUR = new Decimal(200)
+// const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(2)
 const BASE_TIME_BANK = new Decimal(4)
@@ -18,7 +18,7 @@ const MAX_NODE = 50
 const TICK_COST_MULTI = new Decimal(1E3)
 
 const PRESTIGE_START = Number.MAX_VALUE
-const PRESTIGE_MULTI = 1E4
+const PRESTIGE_MULTI = 1E3
 
 export class Model {
 
@@ -751,9 +751,9 @@ export class Model {
     else
       this.visivisited = new Array<Number>()
 
-    this.skills.forEach(s => this.setSkill(s))
-    this.totalCuerrency = new Decimal(100)
-    this.showKills = true
+    // this.skills.forEach(s => this.setSkill(s))
+    // this.totalCuerrency = new Decimal(100)
+    // this.showKills = true
 
     this.reloadAll()
   }

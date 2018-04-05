@@ -14,6 +14,14 @@
     </div>
 
     <div class="form-group">
+      <label for="t1">Alternative format:</label>
+      <div class="toggle-switch">
+        <input type="checkbox" name="al" id="al" [(ngModel)]="ser.options.usaFormat">
+        <label for="al">On</label>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="t1">Theme:</label>
       <div class="toggle-switch">
         <input type="checkbox" name="t1" id="t1" [(ngModel)]="ser.options.dark" (change)="ser.setTheme()">
@@ -77,6 +85,8 @@
       />
     </div>
     <button class="btn btn-danger-outline" (click)="resetColors()">Reset Colors</button>
+
+
 
   </section>
 </form>

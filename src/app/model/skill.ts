@@ -73,7 +73,7 @@ export const labels = [
   "+1 tick /s",
   "+1\nmax node",
   "+10%\nmax node",
-  "+30%\nsacrify",
+  "+70%\nsacrify",
   "sacrify only 90%\nof nodes",
   "+0.05 \ntime /s",
   "+1H \nmax time",

@@ -17,6 +17,7 @@ export class Options {
   colAllAlert = true
   sacAllAlert = true
   lines = 6
+  usaFormat = false
 
   mainColor = "rgb(255,168,7)"
   normalColor = "rgb(97,195,238)"
@@ -51,7 +52,8 @@ export class Options {
       p: this.lines,
       mc: this.mainColor,
       nc: this.normalColor,
-      lc: this.leafColor
+      lc: this.leafColor,
+      us: this.usaFormat
     }
   }
   load(data) {
@@ -71,6 +73,7 @@ export class Options {
       this.normalColor = data.nc
     if ("lc" in data)
       this.leafColor = data.lc
+    this.usaFormat = !!data.us
     this.generateFormatter()
   }
 }
