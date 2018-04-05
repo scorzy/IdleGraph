@@ -5,20 +5,20 @@ import { Edge } from 'vis'
 import { EventEmitter } from '@angular/core'
 import { Skill, Type, labels } from './skill'
 import { AutoBuy, MaxAllAutoBuy, TimeAutoBuy, BuyAutoBuy, ProdAutoBuy, TickAutoBuy, BuyLeafProd, LeafSacrify, Collapse } from './autoBuy'
-import { Achievement } from './achievement';
+import { Achievement } from './achievement'
 import { ToastsManager } from 'ng2-toastr'
 import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers'
 
 const INIT_CUR = new Decimal(200)
 // const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
-const INIT_TICK_MULTI = new Decimal(2)
+const INIT_TICK_MULTI = new Decimal(1)
 const BASE_TIME_BANK = new Decimal(4)
 const MAX_NODE = 50
 const TICK_COST_MULTI = new Decimal(1E3)
 
 const PRESTIGE_START = Number.MAX_VALUE
-const PRESTIGE_MULTI = 1E3
+const PRESTIGE_MULTI = 2E3
 
 export class Model {
 
@@ -75,6 +75,7 @@ export class Model {
 
   why: Achievement
   notThatGame: Achievement
+  levelAck: Achievement
 
   currentMods = new Modifier(-1, "")
   nextMods = new Array<Modifier>()
@@ -287,9 +288,15 @@ export class Model {
     this.notThatGame = new Achievement(21,
       "Not that kind of game !",
       "Get 50 producer of level 2",
-      "+10% production from node of level 2",
+      "Start 10 with node of level 2",
       (model) => model.myNodes.forEach(n => n.reloadPerSec(model)))
     this.achievements.push(this.notThatGame)
+
+    this.levelAck = new Achievement(22, "Last Level",
+      "Get a node of level 79",
+      "+1 max node",
+      (model) => model.reloadMaxNode())
+    this.achievements.push(this.levelAck)
 
     //#endregion
     this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
@@ -414,6 +421,9 @@ export class Model {
   reloadMaxNode() {
     this.maxNode = Math.floor((MAX_NODE + this.prestigeBonus[Type.MAX_NODE_ADD]) *
       (this.prestigeBonus[Type.MAX_NODE_MULTI] / 10 + 1))
+
+    if (this.levelAck.done)
+      this.maxNode += 1
   }
   //#endregion
   //#region MAX
@@ -474,11 +484,20 @@ export class Model {
   }
   maxCollapse() {
     let ret = false
-    this.myNodes.forEach(node => {
-      if (node.level === 3 && node.collapsible)
-        if (node.collapse(this))
-          ret = true
-    })
+    const maxLevel = Array.from(this.myNodes.values())
+      .map(n => n.level).reduce((p, c) => Math.max(p, c), -1)
+    for (let l = 3; l <= maxLevel; l++) {
+      this.myNodes.forEach(node => {
+        if (node.level === l && node.collapsible)
+          if (node.collapse(this))
+            ret = true
+      })
+    }
+    // this.myNodes.forEach(node => {
+    //   if (node.level === 3 && node.collapsible)
+    //     if (node.collapse(this))
+    //       ret = true
+    // })
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     return ret
@@ -536,7 +555,7 @@ export class Model {
     //  Prestige additive
     this.tickSpeed = this.tickSpeed.plus(this.prestigeBonus[Type.TICK_SPEED_ADD])
     //  Soft Reset
-    this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.2, this.softResetNum - 1))
+    this.tickSpeed = this.tickSpeed.times(Decimal.pow(1.25, this.softResetNum - 1))
     //  Manual buy
     this.tickSpeed = this.tickSpeed.times(INIT_TICK_MULTI.times(this.tickSpeedOwned).plus(1))
     //  Prestige
@@ -588,6 +607,7 @@ export class Model {
     }
     this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
     this.init()
+    this.addFirst()
     this.softResetNum = 1
     this.checkLeafSacrify()
     this.checkMaxCollapse()
@@ -663,12 +683,7 @@ export class Model {
   doSoftRest() {
     if (!this.canSoftReset) return false
     this.init()
-    // this.cuerrency.collapse(this)
-    // let node = this.cuerrency
-    // while (!!node && node.producer.length > 0) {
-    //   node.quantity = new Decimal(0)
-    //   node = node.producer[0]
-    // }
+    this.addFirst()
 
     if (this.softResetAcks.length >= this.softResetNum)
       this.unlockAchievement(this.softResetAcks[this.softResetNum - 1])
@@ -765,6 +780,7 @@ export class Model {
       n.reloadPerSec(this)
       n.reloadNewProdPrice(this)
       n.reloadPriceBuy()
+      n.collapsible = n.level > 2 && n.producer.length > 1
     })
     this.reloadMaxTime()
     this.reloadAutoBuyers()
@@ -776,4 +792,9 @@ export class Model {
     this.showKills = this.totalCuerrency.gt(0)
   }
 
+  addFirst() {
+    if (this.notThatGame.done) {
+      this.cuerrency.buyNewProducer(this, true).quantity = new Decimal(10)
+    }
+  }
 }

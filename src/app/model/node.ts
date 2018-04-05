@@ -83,9 +83,6 @@ export class MyNode {
 
     if (this.level === 2 && model.why.done)
       this.prodPerSec = this.prodPerSec.times(1.1)
-
-    if (this.level === 2 && model.notThatGame.done)
-      this.prodPerSec = this.prodPerSec.times(1.1)
   }
   maxAllBuy(model: Model) {
     return this.buy(model, new Decimal(10))
@@ -118,12 +115,14 @@ export class MyNode {
 
     return true
   }
-  buyNewProducer(model: Model): MyNode {
+  buyNewProducer(model: Model, free = false): MyNode {
 
-    if (!this.canBuyNewProd(model))
-      return null
+    if (!free) {
+      if (!this.canBuyNewProd(model))
+        return null
 
-    model.cuerrency.quantity = model.cuerrency.quantity.minus(this.priceNewProd)
+      model.cuerrency.quantity = model.cuerrency.quantity.minus(this.priceNewProd)
+    }
 
     const producer = model.getNewNode()
     this.addProducer(producer, model)
@@ -140,6 +139,9 @@ export class MyNode {
 
     if (this.level === 1 && this.producer.length > 49)
       model.unlockAchievement(model.notThatGame)
+
+    if (producer.level === 79)
+      model.unlockAchievement(model.levelAck)
 
     return producer
   }
@@ -176,8 +178,8 @@ export class MyNode {
   }
   reloadNewProdPrice(model: Model) {
     this.priceNewProd = this.getNodeBasePrice()
-      .times(Decimal.pow(2, this.producer.length))
-      .times(Decimal.pow(10, this.level))
+      .times(Decimal.pow(2.5, this.producer.length))
+      .times(Decimal.pow(12, this.level))
       .times(model.getFactorial(this.level))
   }
 
@@ -199,11 +201,12 @@ export class MyNode {
     let prod = this.product
     let bonus = new Decimal(0)
     while (!!prod && prod.level > 1) {
-      bonus = bonus.plus(new Decimal(prod.quantity.log10()))
+      if (prod.quantity.gte(11))
+        bonus = bonus.plus(new Decimal(prod.quantity.log10()))
       prod = prod.product
     }
 
-    this.sacrificeMulti = bonus.div(10).pow(2)
+    this.sacrificeMulti = bonus.div(10).pow(1.8 + model.softResetNum / 3)
       .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] * 0.7)
 
 
@@ -286,6 +289,8 @@ export class MyNode {
     this.collapsible = this.level > 2 && this.producer.length > 1
     model.checkLeafSacrify()
     model.checkMaxCollapse()
+
+
 
     return true
   }
