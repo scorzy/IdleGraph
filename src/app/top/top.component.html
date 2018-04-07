@@ -17,7 +17,8 @@
       <div>
         <div class="col-xs btn-group min2">
           <button class="btn tickBtn" (click)="serv.model.maxAll()">Max All</button>
-          <button class="btn tickBtn" (click)="serv.model.buyTickSpeed()" [disabled]="!serv.model.canBuyTickSpeed()">Tick {{serv.model.tickSpeedCost | format}}
+          <button class="btn tickBtn" (click)="serv.model.buyTickSpeed()" [disabled]="!serv.model.canBuyTickSpeed()">
+            Tick &nbsp;{{serv.model.tickSpeedCost | format}}
           </button>
         </div>
       </div>

@@ -39,7 +39,7 @@
           </clr-tab-content>
         </clr-tab>
         <clr-tab *ngIf="sons?.length >0">
-          <button clrTabLink id="link1">Sons</button>
+          <button clrTabLink id="link1">Children</button>
           <ng-template [(clrIfActive)]="sonsActive">
             <clr-tab-content>
               <app-node-table [nodes]="sons"></app-node-table>
