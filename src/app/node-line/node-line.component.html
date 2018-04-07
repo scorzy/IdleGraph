@@ -14,7 +14,7 @@
     </button>
 
     <button class="btn btn-sm btn-warning-outline" (click)="sacrificeOrOpen()" *ngIf="node.level > 2" [disabled]="!node?.canSacrifice">
-      Sacrify  &nbsp;+{{node.sacrificeMulti | format}} %
+      Sacrifice &nbsp;+{{node.sacrificeMulti | format}} %
     </button>
 
     <button class="btn btn-sm btn-danger-outline" (click)="collapseOrOpen()" *ngIf="node.collapsible ">
