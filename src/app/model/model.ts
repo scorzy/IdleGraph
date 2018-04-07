@@ -87,6 +87,7 @@ export class Model {
   cuerrencyNextPrestige = new Decimal(Number.MAX_VALUE)
 
   factorial: Map<number, Decimal> = new Map()
+  isFull = false
 
   constructor(public toastr: ToastsManager,
     public achievementsEmitter: EventEmitter<Achievement>,
@@ -416,6 +417,8 @@ export class Model {
 
     this.myNodes.set("" + node.id, node)
     this.nodes.add(node.getVisNode())
+
+    this.isFull = this.myNodes.size >= this.maxNode
     return node
   }
   remove(node: MyNode) {
@@ -426,6 +429,7 @@ export class Model {
     node.producer.forEach(prod => this.edges.remove(prod.id + "-" + node.id))
     node.product.reloadNewProdPrice(this)
     // node.product.updateVis(this)
+    this.isFull = this.myNodes.size >= this.maxNode
   }
   reloadMaxNode() {
     this.maxNode = Math.floor((MAX_NODE + this.prestigeBonus[Type.MAX_NODE_ADD]) *
@@ -433,6 +437,8 @@ export class Model {
 
     if (this.levelAck.done)
       this.maxNode += 1
+
+    this.isFull = this.myNodes.size >= this.maxNode
   }
   //#endregion
   //#region MAX
@@ -704,6 +710,7 @@ export class Model {
     this.reloadTickSpeed()
     this.checkLeafSacrify()
     this.checkMaxCollapse()
+    this.isFull = false
   }
   //#endregion
   //#region Achievements
@@ -802,6 +809,7 @@ export class Model {
     this.reloadNeedPrestige()
     this.showAchievements = this.achievements.findIndex(a => a.done) > -1
     this.showKills = this.totalCuerrency.gt(0)
+    this.isFull = (this.myNodes.size >= this.maxNode)
   }
 
   addFirst() {

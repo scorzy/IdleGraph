@@ -11,7 +11,8 @@
         <br/>
         <span>{{serv.model.tickSpeed | format}} tick /s</span>
         <br/>
-        <span>{{serv.model.myNodes.size | format}} / {{serv.model.maxNode | format}}</span>
+        <span [ngClass]="{'text-danger': serv.model.isFull }">
+          {{serv.model.myNodes.size | format}} / {{serv.model.maxNode | format}}</span>
       </div>
 
       <div>
