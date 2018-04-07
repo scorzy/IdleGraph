@@ -1,7 +1,6 @@
 # Idle Graph
 
-## This game is in development !
-This game is still in development, not ready for production. Prestige, options and other stuff are not implemented yet. This is just a prototype.
+This game is an incremental game about polynomial growth and graphs.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.0.
 
@@ -15,7 +14,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `ng build --prod --base-href ./` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
 ## Running unit tests
 
