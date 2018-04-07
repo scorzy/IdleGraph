@@ -33,6 +33,7 @@ import { PrestigeContainerComponent } from './prestige-container/prestige-contai
 import { HelpComponent } from './help/help.component';
 import { UtilityComponent } from './utility/utility.component';
 import { PrestigeFooterComponent } from './prestige-footer/prestige-footer.component';
+import { CreditsComponent } from './credits/credits.component';
 
 export class CustomOptions extends ToastOptions {
   animate = 'fade'
@@ -77,7 +78,8 @@ const appRoutes: Routes = [
     path: 'opt', component: OptNavComponent, children: [
       { path: 'save', component: SaveComponent },
       { path: 'opt', component: OptionsComponent },
-      { path: 'help', component: HelpComponent }
+      { path: 'help', component: HelpComponent },
+      { path: 'cre', component: CreditsComponent }
     ]
   }, {
     path: 'ack', component: AchivementListComponent
@@ -111,7 +113,8 @@ const appRoutes: Routes = [
     PrestigeContainerComponent,
     HelpComponent,
     UtilityComponent,
-    PrestigeFooterComponent
+    PrestigeFooterComponent,
+    CreditsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { useHash: true }),
