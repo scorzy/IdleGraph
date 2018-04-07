@@ -12,6 +12,9 @@ import * as Decimal from 'break_infinity.js'
 import { Achievement } from './model/achievement'
 import { MyNode } from './model/node'
 
+declare let kongregateAPI
+const GAME_VERSION = 1
+
 @Injectable()
 export class ServService {
 
@@ -19,6 +22,9 @@ export class ServService {
   options: Options
   last = 0
   graph: any = null
+
+  kongregate: any
+  isMainNav = true
 
   edgeEmitter: EventEmitter<string> = new EventEmitter<string>()
   updateEmitter: EventEmitter<number> = new EventEmitter<number>()
@@ -66,6 +72,29 @@ export class ServService {
         this.autoBuyersEmitter.emit(false)
       })
 
+    this.prestigeEmitter.subscribe(n => this.sendKong)
+    const url = (window.location !== window.parent.location)
+      ? document.referrer : document.location.href
+
+    if (url.includes("kongregate") && typeof kongregateAPI !== 'undefined') {
+      kongregateAPI.loadAPI(() => {
+
+        this.kongregate = kongregateAPI.getAPI()
+        console.log("KongregateAPI Loaded")
+
+        setTimeout(() => {
+          try {
+            console.log("Kongregate build")
+            this.sendKong()
+          } catch (e) {
+            console.log("Error: " + e.message)
+          }
+        }, 5 * 1000)
+
+      })
+    } else console.log("Github build")
+
+
   }
   clear() {
     localStorage.removeItem("save")
@@ -77,6 +106,7 @@ export class ServService {
       save.m = this.model.getSave()
       save.o = this.options.save()
       save.time = this.last
+      save.ver = GAME_VERSION
       return LZString.compressToBase64(JSON.stringify(save))
     } catch (ex) {
       this.toastr.error(ex && ex.message ? ex.message : "unknow error", "Save Error")
@@ -139,6 +169,14 @@ export class ServService {
   setTheme() {
     this.linkTheme.href = this.options.dark ?
       "clr-ui-dark.min.css" : "clr-ui.min.css"
+  }
+
+  sendKong() {
+    try {
+      this.kongregate.stats.submit('Prestige', this.model.totalCuerrency.toNumber())
+    } catch (e) {
+      console.log("Error: " + e.message)
+    }
   }
 
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
+declare let preventScroll
 
 @Component({
   selector: 'app-opt-nav',
@@ -11,6 +12,7 @@ export class OptNavComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    preventScroll()
   }
 
 }

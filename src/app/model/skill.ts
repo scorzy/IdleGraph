@@ -18,8 +18,8 @@ export class Skill {
     if (this.id === 0)
       this.avaiable = true
     if (this.label === "") {
-      this.label = this.id + " - " + labels[this.type]
-      // this.label = labels[this.type]
+      // this.label = this.id + " - " + labels[this.type]
+      this.label = labels[this.type]
     }
     if (this.id in positions) {
       this.x = positions[this.id].x

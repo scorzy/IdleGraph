@@ -1,7 +1,6 @@
 import { ServService } from './../serv.service';
 import { Achievement } from './../model/achievement'
 import { Component, OnInit, Input, HostBinding, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core'
-
 @Component({
   selector: 'app-achivement',
   templateUrl: './achivement.component.html',
@@ -21,6 +20,7 @@ export class AchivementComponent implements OnInit, OnDestroy {
       if (a === this.ack)
         this.cd.markForCheck()
     })
+
   }
   ngOnDestroy() {
     this.sub.unsubscribe()

@@ -76,6 +76,7 @@ export class Model {
   why: Achievement
   notThatGame: Achievement
   levelAck: Achievement
+  prestigeAck: Achievement
 
   currentMods = new Modifier(-1, "")
   nextMods = new Array<Modifier>()
@@ -230,7 +231,10 @@ export class Model {
     this.makeLine(2312, 2380, Type.MAX_NODE_ADD, 3)
     this.skillEdges.add({ from: 1181, to: 2382 })
 
-    console.log("Tot skill point: " + this.skills.length)
+    this.makeLine(1870, 2390, Type.TICK_SPEED, 1)
+    this.makeLine(2390, 2395, Type.TICK_SPEED_ADD, 1)
+
+    // console.log("Tot skill point: " + this.skills.length)
 
     this.reloadMaxTime()
     this.reloadAutoBuyers()
@@ -297,6 +301,11 @@ export class Model {
       "+1 max node",
       (model) => model.reloadMaxNode())
     this.achievements.push(this.levelAck)
+
+    this.prestigeAck = new Achievement(23, "First Prestige",
+      "Prestige for the first time",
+      "Start with 200 more currency")
+    this.achievements.push(this.prestigeAck)
 
     //#endregion
     this.nextMods = [this.getRandomGraph(), this.getRandomGraph(), this.getRandomGraph()]
@@ -459,7 +468,7 @@ export class Model {
       .sort((a, b) => b.level - a.level)
 
     nodes.forEach(node => {
-      console.log(node.id)
+      // console.log(node.id)
       if (node.sacrifice(this))
         ret = true
     })
@@ -602,6 +611,8 @@ export class Model {
       this.totalCuerrency = this.totalCuerrency.plus(this.thisRunPrestige)
       this.currentMods = mod
       this.showKills = true
+
+      this.unlockAchievement(this.prestigeAck)
     } else {
       this.currentMods = new Modifier(-1, "Home World")
     }
@@ -795,6 +806,9 @@ export class Model {
   addFirst() {
     if (this.notThatGame.done) {
       this.cuerrency.buyNewProducer(this, true).quantity = new Decimal(10)
+    }
+    if (this.prestigeAck.done) {
+      this.cuerrency.quantity = this.cuerrency.quantity.plus(200)
     }
   }
 }

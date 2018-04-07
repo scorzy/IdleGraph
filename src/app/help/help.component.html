@@ -57,10 +57,10 @@
       <clr-stack-label></clr-stack-label>
       <clr-stack-content>
         You can sacrifice node of level greater than 2 to gain a production bonus. Sacrifice will decrease the
-        quantity of all node produced by this to zero, recursive. Sacrifice bonus is based on level and
-        quantity of sacrificed nodes and level of this current node. New sacrifice bonus will substitute
-        your previous sacrifice bonus, you can only sacrifice if the new sacrifice bonus is greater of
-        actual bonus.
+        quantity of all node produced by this to zero and reset bought bonus, recursive. Sacrifice bonus
+        is based on level and quantity of sacrificed nodes. New sacrifice bonus will substitute your
+        previous sacrifice bonus, you can only sacrifice if the new sacrifice bonus is greater of actual
+        bonus.
       </clr-stack-content>
     </clr-stack-block>
   </clr-stack-block>
@@ -83,8 +83,8 @@
       <clr-stack-content>
         Node of level greater than 2 can be collapsed. Collapse will group all producer of the current node by
         level, quantity sacrifice bonus and bought quantity will be the sum of collapsed nodes.
-        <br/> Collapse will decrease the quantity of all node produced by this to zero, recursive. With collapse
-        you will be able to buy new node of higher level.
+        <br/> Collapse will decrease the quantity of all node produced by this to zero and reset bought bonus
+        and sacrifice bonus, recursive. With collapse you will be able to buy new node of higher level.
       </clr-stack-content>
     </clr-stack-block>
   </clr-stack-block>
@@ -94,8 +94,8 @@
     <clr-stack-block>
       <clr-stack-label></clr-stack-label>
       <clr-stack-content>
-        Remove button will remove the current node and all producers.
-        You will not get any bonus. Use this when you need more node of higher level.
+        Remove button will remove the current node and all producers. You will not get any bonus. Use this when
+        you need more node of higher level.
       </clr-stack-content>
     </clr-stack-block>
   </clr-stack-block>

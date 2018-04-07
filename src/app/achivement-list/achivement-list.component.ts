@@ -1,6 +1,7 @@
 import { ServService } from './../serv.service';
 import { Component, OnInit, ChangeDetectionStrategy, HostBinding } from '@angular/core';
 import { Achievement } from '../model/achievement';
+declare let preventScroll
 
 @Component({
   selector: 'app-achivement-list',
@@ -14,6 +15,7 @@ export class AchivementListComponent implements OnInit {
   constructor(public ser: ServService) { }
 
   ngOnInit() {
+    preventScroll()
   }
 
   getId (index: number, item: Achievement) {

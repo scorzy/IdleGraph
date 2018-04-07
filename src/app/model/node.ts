@@ -170,7 +170,7 @@ export class MyNode {
   }
   getNodeBasePrice(): Decimal {
     return COST_PER_LEVEL
-      .times(Decimal.pow(10, this.level - 2))
+      .times(Decimal.pow(1E2, this.level - 2))
   }
   reloadPriceBuy() {
     this.priceBuy = this.getNodeBasePrice()
@@ -308,8 +308,8 @@ export class MyNode {
   //#region Save and Load
   getSave(model: Model): any {
     const vis = model.nodes.get(this.id)
-    if (!vis)
-      console.log(this.id)
+    // if (!vis)
+    //   console.log(this.id)
     return {
       i: this.id,
       q: this.quantity,

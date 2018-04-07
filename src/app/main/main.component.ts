@@ -1,5 +1,6 @@
 import { Component, OnInit, HostBinding } from '@angular/core'
 import { ServService } from '../serv.service'
+declare let preventScroll
 
 @Component({
   selector: 'app-main',
@@ -12,6 +13,7 @@ export class MainComponent implements OnInit {
   constructor(public serv: ServService) { }
 
   ngOnInit() {
+    preventScroll()
   }
 
 }

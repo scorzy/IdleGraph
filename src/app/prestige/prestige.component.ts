@@ -3,6 +3,7 @@ import { Component, OnInit, HostBinding } from '@angular/core'
 import { Model } from '../model/model'
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks'
 import { Modifier } from '../model/modifiers'
+declare let preventScroll
 
 @Component({
   selector: 'app-prestige',
@@ -30,6 +31,8 @@ export class PrestigeComponent implements OnInit, OnDestroy {
     })
     this.ser.model.softResetCheck()
     this.ser.model.checkPrestige()
+
+    preventScroll()
   }
   ngOnDestroy() {
     this.upSub.unsubscribe()
