@@ -40,7 +40,7 @@ export class Model {
   canSoftReset = false
 
   canPrestige = false
-  prestigeCurrency = 200
+  prestigeCurrency = 0
   totalCuerrency = new Decimal(0)
   thisRunPrestige = 0
 
@@ -586,6 +586,7 @@ export class Model {
     this.canPrestige = this.thisRunPrestige > 1
   }
   prestige(surrender = false, mod: Modifier) {
+    this.reloadEarnPrestigeCur()
     if (!surrender) {
       if (!this.canPrestige)
         return false
