@@ -99,7 +99,7 @@ export class BuyAutoBuy extends AutoBuy {
         Array.from(model.myNodes.values())
           .filter(n => n.level === this.level && n.canBuy(model))
           .sort((a, b) => a.priceBuy.cmp(b.priceBuy))
-          .forEach(n => { if (n.buy(model)) done = true })
+          .forEach(n => { if (n.buy(model, upTo)) done = true })
         return done
       },
       (model) => {

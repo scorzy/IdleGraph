@@ -16,6 +16,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
   sons: Array<MyNode>
   parents: Array<MyNode>
   bonus: string = ""
+  branchBonus: string = ""
 
   public sonsActive = false
   public parentsActive = false
@@ -36,6 +37,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
       this.sons = new Array<MyNode>()
       if (this.node) {
         this.bonus = new FormatPipe(this.ser).transform(this.node.getBonus(this.ser.model))
+        this.branchBonus = new FormatPipe(this.ser).transform(this.node.getBranchBonus(this.ser.model))
         this.reloadSons()
         this.node.reloadStats()
       }
@@ -46,6 +48,7 @@ export class NoodeViewComponent implements OnInit, OnDestroy {
     this.subNode = this.ser.buyNodeEmitter.subscribe(n => {
       if (this.node && this.node === n) {
         this.bonus = new FormatPipe(this.ser).transform(this.node.getBonus(this.ser.model))
+        this.branchBonus = new FormatPipe(this.ser).transform(this.node.getBranchBonus(this.ser.model))
         this.node.reloadStats()
       }
     })

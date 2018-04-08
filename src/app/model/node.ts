@@ -51,6 +51,17 @@ export class MyNode {
   updateVis(model: Model) {
     model.nodes.update(this.getVisNode())
   }
+  getBranchBonus(model: Model): Decimal {
+    if (this.level === 1)
+      return new Decimal(0)
+
+    if (this.product.producer.length < 2 )
+      return new Decimal(0)
+
+    return Decimal.pow(2, this.product.producer.length - 1)
+      .times(1 + model.prestigeBonus[Type.BRANCH_ADD] * 0.2)
+      .times(1 + model.prestigeBonus[Type.BRANCH_MULTI] * 10)
+  }
   getBonus(model: Model): Decimal {
     return BONUS.times(this.bought)
       .times(1 + model.prestigeBonus[Type.BOUGHT_BONUS] * 0.3)
@@ -61,7 +72,9 @@ export class MyNode {
     if (this.level === 1)
       return
 
-    this.prodPerSec = this.getBonus(model).plus(1).times(this.sacrificeBonus.div(100).plus(1))
+    this.prodPerSec = this.getBonus(model).plus(1)
+      .times(this.sacrificeBonus.div(100).plus(1))
+      .times(this.getBranchBonus(model).plus(1))
 
     if (this.producer.length === 0)
       this.prodPerSec = this.prodPerSec.times(model.getTotalMod(Mod.LEAF_PROD))
@@ -85,7 +98,7 @@ export class MyNode {
       this.prodPerSec = this.prodPerSec.times(1.1)
   }
   maxAllBuy(model: Model) {
-    return this.buy(model, new Decimal(10))
+    return this.buy(model, new Decimal(10), true)
   }
   buyMax(model: Model) {
     return this.buy(model, new Decimal(10), true)

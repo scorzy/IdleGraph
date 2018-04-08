@@ -130,7 +130,8 @@ export class Model {
       [12, 300, Type.SACRIFY_MULTI, Type.SACRIFY_SPECIAL],
       [12, 400, Type.TIME_PER_SEC, Type.TIME_BANK_1H],
       [12, 500, Type.MAX_ALL_INTERVAL, Type.MAX_AUTO_BUY, Type.MAX_AUTO_BUY],
-      [12, 2000, Type.BOUGHT_BONUS, Type.DOUBLE_BONUS]
+      [12, 2000, Type.BOUGHT_BONUS, Type.DOUBLE_BONUS],
+      [12, 3000, Type.BRANCH_ADD, Type.BRANCH_MULTI]
     ]
     stuff.forEach(s => {
       this.skills.add(new Skill(s[1] - 1, s.length > 4 ? s[4] : s[2]))
@@ -234,6 +235,9 @@ export class Model {
 
     this.makeLine(1870, 2390, Type.TICK_SPEED, 1)
     this.makeLine(2390, 2395, Type.TICK_SPEED_ADD, 1)
+
+    this.makeLine(1600, 3085, Type.MAX_NODE_ADD, 3)
+    this.skillEdges.add({ from: 3080, to: 3087 })
 
     // console.log("Tot skill point: " + this.skills.length)
 

@@ -66,7 +66,9 @@ export enum Type {
   MAX_AUTO_BUY_PERC,
   BOUGHT_BONUS,
   DOUBLE_BONUS,
-  BULK_BUY
+  BULK_BUY,
+  BRANCH_ADD,
+  BRANCH_MULTI
 }
 export const labels = [
   "+30%\ntick speed",
@@ -90,7 +92,9 @@ export const labels = [
   "+20% max\nautobuyers",
   "+30% bought\nbonus",
   "double \nbought bonus",
-  "x2 bulk buy"
+  "x2 bulk buy",
+  "+20% branching\nbonus",
+  "x10 branching\nbonus"
 ]
 
 export const notableSkills = [
@@ -100,5 +104,6 @@ export const notableSkills = [
   Type.TIME_BANK_1H,
   Type.DOUBLE_BONUS,
   Type.MAX_AUTO_BUY,
-  Type.MAX_AUTO_BUY_PERC
+  Type.MAX_AUTO_BUY_PERC,
+  Type.BRANCH_MULTI
 ]

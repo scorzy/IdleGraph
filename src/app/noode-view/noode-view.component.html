@@ -33,6 +33,10 @@
               </span>
               <br/>
               <span *ngIf="node.level >1">
+                Branch bonus: + {{branchBonus}} %
+              </span>
+              <br/>
+              <span *ngIf="node.level >1">
                 Sacrifice bonuss: + {{node.sacrificeBonus | format}} %
               </span>
             </p>
