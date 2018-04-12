@@ -55,7 +55,7 @@ export class MyNode {
     if (this.level === 1)
       return new Decimal(0)
 
-    if (this.product.producer.length < 2 )
+    if (this.product.producer.length < 2)
       return new Decimal(0)
 
     return Decimal.pow(2, this.product.producer.length - 1)
@@ -222,6 +222,7 @@ export class MyNode {
     this.sacrificeMulti = bonus.div(10).pow(1.8 + model.softResetNum / 3)
       .times(1 + model.prestigeBonus[Type.SACRIFY_MULTI] * 0.7)
 
+    this.sacrificeMulti = Decimal.max(this.sacrificeMulti, 0)
 
     this.canSacrifice = this.sacrificeMulti.gte(this.sacrificeBonus) && this.sacrificeMulti.gte(1)
 
