@@ -39,14 +39,19 @@ export class MyNode {
   constructor() {
 
   }
-  getVisNode(): any {
+  getVisNode(position = false): any {
     const opt = Options.ref
-    return {
+    const data: any = {
       id: this.id,
       label: this.label,
       color: this.level === 1 ? opt.mainColor :
-        (this.producer.length === 0 ? opt.leafColor : opt.normalColor)
+        (this.producer.length === 0 ? opt.leafColor : opt.normalColor),
     }
+    if (position) {
+      data.x = this.x
+      data.y = this.y
+    }
+    return data
   }
   updateVis(model: Model) {
     model.nodes.update(this.getVisNode())
@@ -136,8 +141,22 @@ export class MyNode {
 
       model.cuerrency.quantity = model.cuerrency.quantity.minus(this.priceNewProd)
     }
+    let x, y = 0
+    if (model.network) {
+      model.network.storePositions()
+      const visNode = model.nodes.get("" + this.id)
+      if (visNode) {
+        x = visNode.x
+        y = visNode.y
+      }
+    }
 
-    const producer = model.getNewNode()
+    const rand = Math.random() * 2 * Math.PI
+    const r = 100
+    x = x + Math.cos(rand) * r
+    y = y + Math.cos(rand) * r
+
+    const producer = model.getNewNode(x, y)
     this.addProducer(producer, model)
 
     producer.reloadNewProdPrice(model)

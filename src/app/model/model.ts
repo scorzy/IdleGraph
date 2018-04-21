@@ -9,8 +9,8 @@ import { Achievement } from './achievement'
 import { ToastsManager } from 'ng2-toastr'
 import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers'
 
-const INIT_CUR = new Decimal(200)
-// const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
+// const INIT_CUR = new Decimal(200)
+const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(1)
 const BASE_TIME_BANK = new Decimal(4)
@@ -18,7 +18,7 @@ const MAX_NODE = 50
 const TICK_COST_MULTI = new Decimal(1E3)
 
 const PRESTIGE_START = Number.MAX_VALUE
-const PRESTIGE_MULTI = 2E3
+const PRESTIGE_MULTI = 2E4
 
 export class Model {
 
@@ -411,16 +411,18 @@ export class Model {
   }
   //#endregion
   //#region Node management
-  getNewNode(): MyNode {
+  getNewNode(x = 0, y = 0): MyNode {
     const node = new MyNode()
     node.id = this.nodes.max('id').id + 1
     node.label = "" + node.id
     node.quantity = new Decimal(1)
-    // node.reloadNewProdPrice()
-    // node.reloadPriceBuy()
+    if (x !== 0 || y !== 0) {
+      node.x = x
+      node.y = y
+    }
 
     this.myNodes.set("" + node.id, node)
-    this.nodes.add(node.getVisNode())
+    this.nodes.add(node.getVisNode(true))
 
     this.isFull = this.myNodes.size >= this.maxNode
     return node
