@@ -1,5 +1,5 @@
-import { numberformat } from 'swarm-numberformat'
 import { Injectable } from '@angular/core';
+declare let numberformat
 
 @Injectable()
 export class Options {
