@@ -9,8 +9,8 @@ import { Achievement } from './achievement'
 import { ToastsManager } from 'ng2-toastr'
 import { Modifier, Mod, Prefixs, Ggraph, Suffixs } from './modifiers'
 
-// const INIT_CUR = new Decimal(200)
-const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
+const INIT_CUR = new Decimal(200)
+// const INIT_CUR = new Decimal(1E300).times(new Decimal(1E100))
 const INIT_TICK_COST = new Decimal(500)
 const INIT_TICK_MULTI = new Decimal(1)
 const BASE_TIME_BANK = new Decimal(4)
