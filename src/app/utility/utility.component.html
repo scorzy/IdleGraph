@@ -1,4 +1,14 @@
-<h3>Leafs:</h3>
+<h3>Leafs:
+  <clr-signpost>
+    <clr-signpost-content *clrIfOpen>
+        <h4>Leafs</h4>
+        <p>Affects leafs.
+          A leaf is a node without producers, default color is green.
+          In graph theory a leaf is a vertex of degree 1.
+        </p>
+    </clr-signpost-content>
+  </clr-signpost>
+</h3>
 <div class="row flex-items-xs-between">
   <div class="col-xs btn-group">
     <button class="btn btn-sm" (click)="ser.model.maxLeafBuy(true)">
@@ -13,7 +23,15 @@
   </div>
 </div>
 
-<h3>Max level leafs:</h3>
+<h3>Max level leafs:
+<clr-signpost>
+  <clr-signpost-content *clrIfOpen>
+      <h4>Max level leafs</h4>
+      <p>Affects leafs of maximun level.</p>
+  </clr-signpost-content>
+</clr-signpost>
+</h3>
+
 <div class="row flex-items-xs-between">
   <div class="col-xs btn-group">
     <button class="btn btn-sm" (click)="ser.model.maxLeafBuy(false)">
@@ -28,7 +46,17 @@
   </div>
 </div>
 
-<h3>Tick and Time:</h3>
+<h3>Tick and Time:
+  <clr-signpost>
+    <clr-signpost-content *clrIfOpen>
+        <h4>Tick and Time</h4>
+        <p>
+          Tick speed is the game speed.<br/>
+          Time can be used to Fast forward, to unclock it prestige and get the appropriate skill.
+        </p>
+    </clr-signpost-content>
+  </clr-signpost>
+</h3>
 <div class="row flex-items-xs-between">
   <div class="col-xs btn-group">
     <button class="btn btn-sm" (click)="ser.model.buyTickSpeed(true)" [disabled]="!ser.model.canBuyTickSpeed()">
