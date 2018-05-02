@@ -717,6 +717,7 @@ export class Model {
     this.checkLeafSacrify()
     this.checkMaxCollapse()
     this.isFull = false
+    this.softResetCheck()
   }
   //#endregion
   //#region Achievements
