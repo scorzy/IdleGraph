@@ -141,7 +141,9 @@ export class MyNode {
 
       model.cuerrency.quantity = model.cuerrency.quantity.minus(this.priceNewProd)
     }
-    let x, y = 0
+    let x = 0
+    let y = 0
+
     if (model.network) {
       model.network.storePositions()
       const visNode = model.nodes.get("" + this.id)
